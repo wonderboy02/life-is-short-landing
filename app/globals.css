@@ -175,7 +175,7 @@
   }
 
   .animate-scroll-reviews {
-    animation: scroll-reviews 25s linear infinite;
+    animation: scroll-reviews 10s linear infinite;
     will-change: transform;
   }
 }

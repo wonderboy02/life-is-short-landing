@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
+import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Upload, Play, ImageIcon, Palette, Video, MessageCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -67,6 +68,32 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Instagram Embed Section */}
+      {/* <section className="pt-20 pb-8 flex justify-center">
+        <div className="max-w-xl w-full px-4">
+          <blockquote
+            className="instagram-media"
+            data-instgrm-permalink="https://www.instagram.com/reel/DRaiWFvCJx5/?utm_source=ig_embed&utm_campaign=loading"
+            data-instgrm-version="14"
+            style={{
+              background: '#FFF',
+              border: 0,
+              borderRadius: '3px',
+              boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
+              margin: '1px',
+              maxWidth: '540px',
+              minWidth: '326px',
+              padding: 0,
+              width: 'calc(100% - 2px)',
+            }}
+          />
+        </div>
+        <Script
+          src="https://www.instagram.com/embed.js"
+          strategy="lazyOnload"
+        />
+      </section> */}
 
       {/* Main Content */}
       <main className="pt-16">
@@ -376,8 +403,8 @@ export default function Home() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12 md:mb-20">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4 font-display">정성을 다하는 4단계</h2>
-                <p className="text-lg text-neutral-600">우리는 당신의 소중한 추억을 정성스럽게 다룹니다</p>
+                <h2 className="text-3xl md:text-5xl font-bold mb-4 font-display">저희는 이렇게 추억을 되살려 드려요</h2>
+                <p className="text-lg text-neutral-600">추억이 온전히 되살아날 수 있도록, <br></br>저희 팀의 기술을 최대한 활용하고 있어요.</p>
               </div>
 
               <div className="space-y-8 md:space-y-12">
@@ -394,7 +421,7 @@ export default function Home() {
                       </div>
                       {/* Step number overlay */}
                       <div className="absolute -top-3 -left-3 w-12 h-12 bg-neutral-900 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-                        1
+                        하나
                       </div>
                     </div>
                     <div className="space-y-3 text-center md:text-left">
@@ -402,9 +429,9 @@ export default function Home() {
                         <ImageIcon className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">사진 준비</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">부모님이 잘 나온 이쁜 사진</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">소중한 사진을 받아 검수해요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        흔들리지 않게 잘 보이도록 촬영해주시면 더욱 좋은 결과를 얻으실 수 있습니다.
+                        추억이 담긴 옛날 사진들은 찢어지거나, 훼손되거나, 빛바랜 경우가 많아요. 하지만 걱정하지 마세요. 그런 사진들도 휴대폰 카메라로 찍어서 보내주시면 저희가 검수를 도와드려요.
                       </p>
                     </div>
                   </div>
@@ -418,9 +445,9 @@ export default function Home() {
                         <Palette className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">화질과 색상 추가</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">AI를 활용해 사진을 최상의 품질로 복원해요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        AI를 통해 화질을 향상시키고 자연스러운 색상을 추가합니다. 오래된 사진도 생생하게 되살아납니다.
+                      추억의 해상도는 생생해야 하는 법이에요. AI를 이용해 "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래 흐려진 부분 등을 복원하고, 사진의 화질을 올려요. 
                       </p>
                     </div>
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
@@ -432,7 +459,7 @@ export default function Home() {
                         />
                       </div>
                       <div className="absolute -top-3 -right-3 w-12 h-12 bg-neutral-900 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-                        2
+                        둘
                       </div>
                     </div>
                   </div>
@@ -453,7 +480,7 @@ export default function Home() {
                         />
                       </div>
                       <div className="absolute -top-3 -left-3 w-12 h-12 bg-neutral-900 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-                        3
+                        셋
                       </div>
                     </div>
                     <div className="space-y-3 text-center md:text-left">
@@ -461,9 +488,9 @@ export default function Home() {
                         <Video className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">영상 제작</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">짧은 영상과 음악 첨부</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">복원된 사진을 가지고 영상화 작업을 거쳐요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        짧은 영상으로 제작하고 감성적인 음악을 첨부합니다. 추억이 더욱 생생하게 전달됩니다.
+                      Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화 작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
                       </p>
                     </div>
                   </div>
@@ -477,7 +504,7 @@ export default function Home() {
                         <MessageCircle className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">카카오톡 전송</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">카카오톡으로 영상을 받아보세요</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">카카오톡으로 영상을 보내드릴게요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                         하루 정도 소요되니 조금만 기다려주세요. 완성된 영상을 카카오톡으로 받아보실 수 있습니다.
                       </p>
@@ -485,13 +512,13 @@ export default function Home() {
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
                       <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-md">
                         <img
-                          src="/smartphone-receiving-kakaotalk-message-with-video.jpg"
+                          src="/kakaotalk.png"
                           alt="카카오톡 전송"
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="absolute -top-3 -right-3 w-12 h-12 bg-neutral-900 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-                        4
+                        넷
                       </div>
                     </div>
                   </div>
