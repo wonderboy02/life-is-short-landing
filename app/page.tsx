@@ -11,21 +11,31 @@ import { Label } from "@/components/ui/label"
 
 export default function Home() {
   const [showUpload, setShowUpload] = useState(false)
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [showForm, setShowForm] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        setUploadedImage(event.target?.result as string)
-        setShowForm(true)
-      }
-      reader.readAsDataURL(file)
+    const files = e.target.files
+    if (files) {
+      const fileArray = Array.from(files)
+      fileArray.forEach((file) => {
+        const reader = new FileReader()
+        reader.onload = (event) => {
+          setUploadedImages((prev) => [...prev, event.target?.result as string])
+          setShowForm(true)
+        }
+        reader.readAsDataURL(file)
+      })
+    }
+  }
+
+  const handleRemoveImage = (index: number) => {
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index))
+    if (uploadedImages.length === 1) {
+      setShowForm(false)
     }
   }
 
@@ -104,15 +114,15 @@ export default function Home() {
               {showUpload && (
                 <div className="mb-12 md:mb-16">
                   <div className="bg-neutral-50 rounded-2xl p-6 sm:p-8 md:p-12 border border-neutral-100">
-                    {!uploadedImage ? (
+                    {uploadedImages.length === 0 ? (
                       // Upload State
                       <div className="aspect-[4/3] md:aspect-video flex flex-col items-center justify-center gap-6">
                         <div className="w-16 h-16 rounded-full bg-neutral-900 flex items-center justify-center">
                           <Upload className="w-7 h-7 text-white" />
                         </div>
                         <div className="text-center">
-                          <h3 className="text-lg md:text-xl font-semibold mb-2 font-display">사진을 업로드하세요</h3>
-                          <p className="text-sm text-neutral-500 mb-6">JPG, PNG 형식 지원</p>
+                          <h3 className="text-lg md:text-xl font-semibold mb-2">사진을 업로드하세요</h3>
+                          <p className="text-sm text-neutral-500 mb-6">JPG, PNG 형식 지원 (여러 장 가능)</p>
                           <label htmlFor="photo-upload" className="inline-block">
                             <span className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-neutral-900 text-white hover:bg-neutral-800 h-10 px-8 cursor-pointer">
                               사진 넣기
@@ -122,6 +132,7 @@ export default function Home() {
                             id="photo-upload"
                             type="file"
                             accept="image/*"
+                            multiple
                             onChange={handleImageUpload}
                             className="hidden"
                           />
@@ -129,11 +140,38 @@ export default function Home() {
                       </div>
                     ) : !isSubmitted ? (
                       <div className="space-y-6">
-                        <div className="relative aspect-[4/3] md:aspect-video rounded-xl overflow-hidden bg-neutral-200">
-                          <img
-                            src={uploadedImage || "/placeholder.svg"}
-                            alt="Uploaded"
-                            className="w-full h-full object-cover"
+                        <div className="grid grid-cols-3 gap-4">
+                          {uploadedImages.map((image, index) => (
+                            <div key={index} className="relative aspect-square rounded-xl overflow-visible bg-neutral-200">
+                              <img
+                                src={image}
+                                alt={`Uploaded ${index + 1}`}
+                                className="w-full h-full object-cover rounded-xl"
+                              />
+                              <button
+                                onClick={() => handleRemoveImage(index)}
+                                className="absolute -top-2 -right-2 w-7 h-7 bg-black hover:bg-neutral-800 text-white rounded-full flex items-center justify-center shadow-lg text-lg font-light border-2 border-white"
+                                type="button"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="text-center">
+                          <label htmlFor="photo-upload-more" className="inline-block">
+                            <span className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-neutral-200 text-neutral-900 hover:bg-neutral-300 h-10 px-6 cursor-pointer">
+                              + 사진 추가
+                            </span>
+                          </label>
+                          <input
+                            id="photo-upload-more"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleImageUpload}
+                            className="hidden"
                           />
                         </div>
 
@@ -205,8 +243,8 @@ export default function Home() {
         </section>
 
         {/* Reviews Section */}
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="max-w-6xl mx-auto">
+        <section className="py-16 md:py-24 overflow-hidden">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12 md:mb-16">
               <div className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-100 rounded-full mb-6">
                 <span className="text-3xl font-bold text-neutral-900">1,247</span>
@@ -215,82 +253,103 @@ export default function Home() {
               <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">소중한 추억을 되찾은 분들의 이야기</h2>
               <p className="text-lg text-neutral-600">실제 사용자분들의 생생한 후기입니다</p>
             </div>
+          </div>
 
-            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-              {/* Review 1 */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-5 h-5 fill-yellow-400"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-neutral-700 leading-relaxed mb-6">
-                  어머니 젊으셨을 때 모습을 영상으로 보니 눈물이 났어요. 이렇게 아름다운 선물을 주셔서 감사합니다. 어머니께서도 너무 좋아하셨어요.
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-neutral-200"></div>
-                  <div>
-                    <div className="font-semibold text-sm">김민지</div>
-                    <div className="text-xs text-neutral-500">서울</div>
+          <div className="relative">
+            <div className="flex gap-6 animate-scroll-reviews">
+              {[...Array(2)].map((_, setIndex) => (
+                <div key={setIndex} className="flex gap-6 flex-shrink-0">
+                  {/* Review 1 */}
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-neutral-700 leading-relaxed mb-6">
+                      어머니가 정말 좋아하셨어요. 영상 보시면서 많이 우셨습니다.
+                    </p>
+                    <div className="text-sm text-neutral-600">박*영 (43세, 여)</div>
+                  </div>
+
+                  {/* Review 2 */}
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-neutral-700 leading-relaxed mb-6">
+                      아버지 젊으셨을 때 모습을 처음 봤어요. 가족들이 다 감동했습니다.
+                    </p>
+                    <div className="text-sm text-neutral-600">김*수 (47세, 남)</div>
+                  </div>
+
+                  {/* Review 3 */}
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-neutral-700 leading-relaxed mb-6">
+                      부모님 두 분 다 너무 좋아하셨어요. 감사합니다.
+                    </p>
+                    <div className="text-sm text-neutral-600">이*희 (51세, 여)</div>
+                  </div>
+
+                  {/* Review 4 */}
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-neutral-700 leading-relaxed mb-6">
+                      흑백 사진이었는데 색이 입혀지니 신기했어요. 어머니가 계속 보고 계세요.
+                    </p>
+                    <div className="text-sm text-neutral-600">최*민 (45세, 남)</div>
+                  </div>
+
+                  {/* Review 5 */}
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-neutral-700 leading-relaxed mb-6">
+                      아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
+                    </p>
+                    <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
+                  </div>
+
+                  {/* Review 6 */}
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                    <div className="flex gap-1 mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                        </svg>
+                      ))}
+                    </div>
+                    <p className="text-neutral-700 leading-relaxed mb-6">
+                      결과물이 기대 이상이었어요. 부모님이 매우 만족하셨습니다.
+                    </p>
+                    <div className="text-sm text-neutral-600">윤*호 (44세, 남)</div>
                   </div>
                 </div>
-              </div>
-
-              {/* Review 2 */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-5 h-5 fill-yellow-400"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-neutral-700 leading-relaxed mb-6">
-                  돌아가신 아버지의 청년 시절 사진을 보내드렸는데, 완성된 영상 보고 온 가족이 함께 울었습니다. 정말 감사드립니다.
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-neutral-200"></div>
-                  <div>
-                    <div className="font-semibold text-sm">이준호</div>
-                    <div className="text-xs text-neutral-500">부산</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Review 3 */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-5 h-5 fill-yellow-400"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-neutral-700 leading-relaxed mb-6">
-                  흑백 사진이 이렇게 생생하게 복원될 줄 몰랐어요. 부모님 결혼식 사진으로 만든 영상 정말 잘 받았습니다. 강력 추천합니다!
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-neutral-200"></div>
-                  <div>
-                    <div className="font-semibold text-sm">박서연</div>
-                    <div className="text-xs text-neutral-500">대구</div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
