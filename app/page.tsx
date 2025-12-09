@@ -149,7 +149,7 @@ export default function Home() {
                           <Upload className="w-7 h-7 text-white" />
                         </div>
                         <div className="text-center">
-                          <h3 className="text-lg md:text-xl font-semibold mb-2 font-display">소중한 추억을 업로드하세요</h3>
+                          <h3 className="text-lg md:text-xl font-semibold mb-2 font-display">소중한 추억을 업로드해주세요</h3>
                           <p className="text-sm text-neutral-500 mb-6">
                             초점이 잘 맞는, 정면에서 찍은 사진이 가장 좋아요.<br></br>JPG, PNG 형식을 지원해요.</p>
                           <label htmlFor="photo-upload" className="inline-block">
@@ -504,15 +504,15 @@ export default function Home() {
                         <MessageCircle className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">카카오톡 전송</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">카카오톡으로 영상을 보내드릴게요</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">영상은 물론, 복원된 사진까지 함께 <br></br>원본 화질로 보내드려요.</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        하루 정도 소요되니 조금만 기다려주세요. 완성된 영상을 카카오톡으로 받아보실 수 있습니다.
+                        하루 정도 소요되니 조금만 기다려주세요.<br></br> 완성된 영상을 카카오톡으로 받아보실 수 있습니다.
                       </p>
                     </div>
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
                       <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-md">
                         <img
-                          src="/kakaotalk.png"
+                          src="/kakao.png"
                           alt="카카오톡 전송"
                           className="w-full h-full object-cover"
                         />
