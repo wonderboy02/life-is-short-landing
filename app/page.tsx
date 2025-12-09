@@ -252,8 +252,8 @@ export default function Home() {
                 <span className="text-3xl font-bold text-neutral-900">1,247</span>
                 <span className="text-neutral-600">명의 사용자</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">소중한 추억을 되찾은 분들의 이야기</h2>
-              <p className="text-lg text-neutral-600">실제 사용자분들의 생생한 후기입니다</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">직접 감동을 선물해본 이들의 경험담</h2>
+              <p className="text-lg text-neutral-600">실제 사용자분들이 대가 없이 남겨주신 피드백이에요.</p>
             </div>
 
           <div className="relative">
@@ -305,15 +305,11 @@ export default function Home() {
                     <div className="text-sm text-neutral-600">이*희 (51세, 여)</div>
                   </div>
 
-              {/* Review 2 */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100">
+              {/* Review 4 (originally labelled Review 2) */}
+              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-5 h-5 fill-yellow-400"
-                      viewBox="0 0 20 20"
-                    >
+                    <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
                       <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                     </svg>
                   ))}
@@ -327,24 +323,11 @@ export default function Home() {
                     <div className="font-semibold text-sm">이준호</div>
                     <div className="text-xs text-neutral-500">부산</div>
                   </div>
+                </div>
+              </div>
 
                   {/* Review 5 */}
                   <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
-                  </div>
-
-              {/* Review 3 */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100">
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
                     <svg
@@ -352,6 +335,21 @@ export default function Home() {
                       className="w-5 h-5 fill-yellow-400"
                       viewBox="0 0 20 20"
                     >
+                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-neutral-700 leading-relaxed mb-6">
+                  아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
+                </p>
+                <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
+              </div>
+
+              {/* Review 6 (originally labelled Review 3) */}
+              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
                       <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
                     </svg>
                   ))}
@@ -366,12 +364,15 @@ export default function Home() {
                     <div className="text-xs text-neutral-500">대구</div>
                   </div>
                 </div>
-              ))}
+              </div>
+            </div>
+          ))}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="bg-neutral-50 py-16 md:py-24 border-y border-neutral-100">
+      <section className="bg-neutral-50 py-16 md:py-24 border-y border-neutral-100">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12 md:mb-20">
