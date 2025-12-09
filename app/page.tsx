@@ -632,6 +632,32 @@ export default function Home() {
                       </div>
                     </div>
 
+                    {/* 차별화 포인트 */}
+                    <div className="mb-5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
+                      <div className="text-center">
+                        <div className="text-lg font-bold text-neutral-900 mb-2">
+                          이제야 완성된 기술
+                        </div>
+                        <p className="text-sm text-neutral-700 leading-relaxed">
+                          단순한 복원이 아닙니다.<br />
+                          부모님 인생의 흐름을 하나의 감동적인 스토리로 만들어드립니다.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 영상 미리보기 */}
+                    <div className="mb-5 rounded-xl overflow-hidden bg-neutral-900">
+                      <video
+                        src="/hero_video_mq.mp4"
+                        controls
+                        preload="metadata"
+                        poster="/hero_video_poster.jpg"
+                        playsInline
+                        className="w-full"
+                        style={{ maxHeight: '500px' }}
+                      />
+                    </div>
+
                     <ul className="space-y-2.5 mb-5 text-sm">
                       <li className="flex items-start gap-2">
                         <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
@@ -654,19 +680,6 @@ export default function Home() {
                         <span className="text-neutral-700">카카오톡으로 간편하게 전송</span>
                       </li>
                     </ul>
-
-                    {/* 영상 미리보기 */}
-                    <div className="mb-5 rounded-xl overflow-hidden bg-neutral-900">
-                      <video
-                        src="/hero_video_mq.mp4"
-                        controls
-                        preload="metadata"
-                        poster="/hero_video_poster.jpg"
-                        playsInline
-                        className="w-full"
-                        style={{ maxHeight: '500px' }}
-                      />
-                    </div>
 
                     <Button
                       size="lg"
