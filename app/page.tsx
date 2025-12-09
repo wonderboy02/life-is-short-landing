@@ -61,7 +61,7 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded bg-neutral-900"></div>
-              <span className="text-lg font-semibold text-neutral-900">Life Is Short</span>
+              <span className="text-lg font-semibold text-neutral-900 font-display">Life Is Short</span>
             </div>
             <div className="text-sm text-neutral-500">Our Team</div>
           </div>
@@ -90,7 +90,7 @@ export default function Home() {
 
               {/* Right: Text Content */}
               <div className="order-1 md:order-2 space-y-6">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-balance leading-tight tracking-tight">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-balance leading-tight tracking-tight font-display">
                   당신의 손끝에서
                   <br />
                   다시 시작되는
@@ -227,7 +227,7 @@ export default function Home() {
                           <MessageCircle className="w-7 h-7 text-green-700" />
                         </div>
                         <div>
-                          <h3 className="text-xl md:text-2xl font-semibold mb-3">제출 완료!</h3>
+                          <h3 className="text-xl md:text-2xl font-semibold mb-3 font-display">제출 완료!</h3>
                           <p className="text-neutral-600 leading-relaxed max-w-md mx-auto">
                             소중한 사진 감사드립니다.
                             <br />곧 연락드리겠습니다.
@@ -250,7 +250,7 @@ export default function Home() {
                 <span className="text-3xl font-bold text-neutral-900">1,247</span>
                 <span className="text-neutral-600">명의 사용자</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">소중한 추억을 되찾은 분들의 이야기</h2>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">소중한 추억을 되찾은 분들의 이야기</h2>
               <p className="text-lg text-neutral-600">실제 사용자분들의 생생한 후기입니다</p>
             </div>
           </div>
@@ -358,7 +358,7 @@ export default function Home() {
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12 md:mb-20">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4">정성을 다하는 4단계</h2>
+                <h2 className="text-3xl md:text-5xl font-bold mb-4 font-display">정성을 다하는 4단계</h2>
                 <p className="text-lg text-neutral-600">우리는 당신의 소중한 추억을 정성스럽게 다룹니다</p>
               </div>
 
@@ -384,7 +384,7 @@ export default function Home() {
                         <ImageIcon className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">사진 준비</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold">부모님이 잘 나온 이쁜 사진</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">부모님이 잘 나온 이쁜 사진</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                         흔들리지 않게 잘 보이도록 촬영해주시면 더욱 좋은 결과를 얻으실 수 있습니다.
                       </p>
@@ -400,7 +400,7 @@ export default function Home() {
                         <Palette className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold">화질과 색상 추가</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">화질과 색상 추가</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                         AI를 통해 화질을 향상시키고 자연스러운 색상을 추가합니다. 오래된 사진도 생생하게 되살아납니다.
                       </p>
@@ -443,7 +443,7 @@ export default function Home() {
                         <Video className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">영상 제작</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold">짧은 영상과 음악 첨부</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">짧은 영상과 음악 첨부</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                         짧은 영상으로 제작하고 감성적인 음악을 첨부합니다. 추억이 더욱 생생하게 전달됩니다.
                       </p>
@@ -459,7 +459,7 @@ export default function Home() {
                         <MessageCircle className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">카카오톡 전송</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold">카카오톡으로 영상을 받아보세요</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">카카오톡으로 영상을 받아보세요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                         하루 정도 소요되니 조금만 기다려주세요. 완성된 영상을 카카오톡으로 받아보실 수 있습니다.
                       </p>
@@ -485,7 +485,7 @@ export default function Home() {
 
         <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance">소중한 추억을 되살려보세요</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance font-display">소중한 추억을 되살려보세요</h2>
             <Button
               size="lg"
               onClick={scrollToDemo}
@@ -503,7 +503,7 @@ export default function Home() {
           <div className="max-w-6xl mx-auto">
             <div className="grid md:grid-cols-3 gap-8 mb-8">
               <div>
-                <h3 className="font-semibold text-lg mb-3">Life is Short</h3>
+                <h3 className="font-semibold text-lg mb-3 font-display">Life is Short</h3>
                 <p className="text-sm text-neutral-600 leading-relaxed">
                   부모님의 소중한 추억을
                   <br />
@@ -511,11 +511,11 @@ export default function Home() {
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold mb-3 text-sm">문의</h4>
+                <h4 className="font-semibold mb-3 text-sm font-display">문의</h4>
                 <p className="text-sm text-neutral-600">이메일: wondolee28@gmail.com</p>
               </div>
               <div>
-                <h4 className="font-semibold mb-3 text-sm">서비스</h4>
+                <h4 className="font-semibold mb-3 text-sm font-display">서비스</h4>
                 <ul className="text-sm text-neutral-600 space-y-2">
                   <li>사진 복원</li>
                   <li>영상 제작</li>

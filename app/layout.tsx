@@ -1,9 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist } from "next/font/google"
 import "./globals.css"
-
-const geist = Geist({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "추억을 다시, 영상으로 | AI 사진 영상 변환",
@@ -35,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${geist.className} antialiased`}>{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   )
 }
