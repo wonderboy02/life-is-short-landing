@@ -262,7 +262,7 @@ export default function Home() {
               {[...Array(2)].map((_, setIndex) => (
                 <div key={setIndex} className="flex gap-6 flex-shrink-0">
                   {/* Review 1 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
                     <div className="flex gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
@@ -277,7 +277,7 @@ export default function Home() {
                   </div>
 
                   {/* Review 2 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
                     <div className="flex gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
@@ -292,7 +292,7 @@ export default function Home() {
                   </div>
 
                   {/* Review 3 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
                     <div className="flex gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
@@ -307,7 +307,7 @@ export default function Home() {
                   </div>
 
                   {/* Review 4 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
                     <div className="flex gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
@@ -322,7 +322,7 @@ export default function Home() {
                   </div>
 
                   {/* Review 5 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
                     <div className="flex gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
@@ -337,7 +337,7 @@ export default function Home() {
                   </div>
 
                   {/* Review 6 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
+                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
                     <div className="flex gap-1 mb-4">
                       {[...Array(5)].map((_, i) => (
                         <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
@@ -493,8 +493,7 @@ export default function Home() {
                 <span className="text-sm font-semibold text-red-600">🎉 출시 기념 특가</span>
                 <span className="text-xs text-red-500">최대 60% 할인</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 font-display">요금제 선택</h2>
-              <p className="text-neutral-600">부모님께 가장 적합한 플랜을 선택하세요</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 font-display">소중한 추억을 되살려보세요</h2>
             </div>
 
             <div className="space-y-3">
@@ -560,13 +559,14 @@ export default function Home() {
                     </ul>
 
                     <Button
+                      size="lg"
                       onClick={(e) => {
                         e.stopPropagation()
                         scrollToDemo()
                       }}
-                      className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
+                      className="w-full bg-neutral-900 hover:bg-neutral-800 text-white px-10 py-6 text-lg"
                     >
-                      이 요금제로 시작하기
+                      바로 제작하기
                     </Button>
                   </div>
                 )}
@@ -653,28 +653,16 @@ export default function Home() {
                       </li>
                     </ul>
 
-                    <div className="space-y-2">
-                      <Button
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          // 예시 영상 보기 - 위로 스크롤
-                          document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" })
-                        }}
-                        className="w-full border-neutral-300 hover:bg-neutral-50"
-                      >
-                        예시 영상 보기
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          scrollToDemo()
-                        }}
-                        className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
-                      >
-                        이 요금제로 시작하기
-                      </Button>
-                    </div>
+                    <Button
+                      size="lg"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        scrollToDemo()
+                      }}
+                      className="w-full bg-neutral-900 hover:bg-neutral-800 text-white px-10 py-6 text-lg"
+                    >
+                      바로 제작하기
+                    </Button>
                   </div>
                 )}
               </div>
@@ -756,27 +744,16 @@ export default function Home() {
                       </li>
                     </ul>
 
-                    <div className="space-y-2">
-                      <Button
-                        variant="outline"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" })
-                        }}
-                        className="w-full border-neutral-300 hover:bg-neutral-50"
-                      >
-                        예시 영상 보기
-                      </Button>
-                      <Button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          scrollToDemo()
-                        }}
-                        className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
-                      >
-                        이 요금제로 시작하기
-                      </Button>
-                    </div>
+                    <Button
+                      size="lg"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        scrollToDemo()
+                      }}
+                      className="w-full bg-neutral-900 hover:bg-neutral-800 text-white px-10 py-6 text-lg"
+                    >
+                      바로 제작하기
+                    </Button>
                   </div>
                 )}
               </div>
@@ -785,19 +762,6 @@ export default function Home() {
             <p className="text-center text-xs text-neutral-500 mt-6">
               * 출시 기념 특가는 조기 마감될 수 있습니다
             </p>
-          </div>
-        </section>
-
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance font-display">소중한 추억을 되살려보세요</h2>
-            <Button
-              size="lg"
-              onClick={scrollToDemo}
-              className="bg-neutral-900 hover:bg-neutral-800 text-white px-12 py-6 text-lg"
-            >
-              바로 제작하기
-            </Button>
           </div>
         </section>
       </main>
