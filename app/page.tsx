@@ -8,6 +8,7 @@ import { Upload, Play, ImageIcon, Palette, Video, MessageCircle, ChevronDown, Ch
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import Marquee from "react-fast-marquee"
 
 export default function Home() {
   const [showUpload, setShowUpload] = useState(false)
@@ -257,103 +258,97 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative">
-            <div className="flex gap-6 animate-scroll-reviews">
-              {[...Array(2)].map((_, setIndex) => (
-                <div key={setIndex} className="flex gap-6 flex-shrink-0">
-                  {/* Review 1 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      어머니가 정말 좋아하셨어요. 영상 보시면서 많이 우셨습니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">박*영 (43세, 여)</div>
-                  </div>
-
-                  {/* Review 2 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      아버지 젊으셨을 때 모습을 처음 봤어요. 가족들이 다 감동했습니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">김*수 (47세, 남)</div>
-                  </div>
-
-                  {/* Review 3 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      부모님 두 분 다 너무 좋아하셨어요. 감사합니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">이*희 (51세, 여)</div>
-                  </div>
-
-                  {/* Review 4 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      흑백 사진이었는데 색이 입혀지니 신기했어요. 어머니가 계속 보고 계세요.
-                    </p>
-                    <div className="text-sm text-neutral-600">최*민 (45세, 남)</div>
-                  </div>
-
-                  {/* Review 5 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
-                  </div>
-
-                  {/* Review 6 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      결과물이 기대 이상이었어요. 부모님이 매우 만족하셨습니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">윤*호 (44세, 남)</div>
-                  </div>
-                </div>
-              ))}
+          <Marquee gradient={false} speed={40} className="py-4">
+            {/* Review 1 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                어머니가 정말 좋아하셨어요. 영상 보시면서 많이 우셨습니다.
+              </p>
+              <div className="text-sm text-neutral-600">박*영 (43세, 여)</div>
             </div>
-          </div>
+
+            {/* Review 2 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                아버지 젊으셨을 때 모습을 처음 봤어요. 가족들이 다 감동했습니다.
+              </p>
+              <div className="text-sm text-neutral-600">김*수 (47세, 남)</div>
+            </div>
+
+            {/* Review 3 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                부모님 두 분 다 너무 좋아하셨어요. 감사합니다.
+              </p>
+              <div className="text-sm text-neutral-600">이*희 (51세, 여)</div>
+            </div>
+
+            {/* Review 4 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                흑백 사진이었는데 색이 입혀지니 신기했어요. 어머니가 계속 보고 계세요.
+              </p>
+              <div className="text-sm text-neutral-600">최*민 (45세, 남)</div>
+            </div>
+
+            {/* Review 5 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
+              </p>
+              <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
+            </div>
+
+            {/* Review 6 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                결과물이 기대 이상이었어요. 부모님이 매우 만족하셨습니다.
+              </p>
+              <div className="text-sm text-neutral-600">윤*호 (44세, 남)</div>
+            </div>
+          </Marquee>
         </section>
 
         <section className="bg-neutral-50 py-16 md:py-24 border-y border-neutral-100">
@@ -402,7 +397,11 @@ export default function Home() {
                         <Palette className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">AI를 활용해 사진을 최상의 품질로 복원해요</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">
+                        최첨단 AI를 활용해
+                        <br />
+                        사진을 최상의 품질로 복원해요
+                      </h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                         AI를 이용해 "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래 흐려진 부분 등을 복원하고, 사진의 화질을 올려요. 추억의 해상도는 생생해야 하는 법이니까요.
                       </p>
@@ -445,7 +444,10 @@ export default function Home() {
                         <Video className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">영상 제작</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">복원된 사진을 가지고 영상화 작업을 거쳐요</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">
+                        복원된 사진을
+                        <br /> 
+                        첨단 AI 기술을 활용해 영상으로 만들어요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                         Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화 작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
                       </p>
@@ -601,7 +603,7 @@ export default function Home() {
                       {selectedPlan === "story" && <Check className="w-4 h-4 text-white" />}
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">청춘 스토리</h3>
+                      <h3 className="font-semibold text-lg">다시 돌아온 청춘 스토리</h3>
                       <p className="text-sm text-neutral-500">가장 많이 선택하는</p>
                     </div>
                   </div>
