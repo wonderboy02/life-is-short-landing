@@ -655,6 +655,19 @@ export default function Home() {
                       </li>
                     </ul>
 
+                    {/* 영상 미리보기 */}
+                    <div className="mb-5 rounded-xl overflow-hidden bg-neutral-900">
+                      <video
+                        src="/hero_video_mq.mp4"
+                        controls
+                        preload="metadata"
+                        poster="/hero_video_poster.jpg"
+                        playsInline
+                        className="w-full"
+                        style={{ maxHeight: '500px' }}
+                      />
+                    </div>
+
                     <Button
                       size="lg"
                       onClick={(e) => {
