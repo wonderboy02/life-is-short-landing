@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Upload, Play, ImageIcon, Palette, Video, MessageCircle } from "lucide-react"
+import { Upload, Play, ImageIcon, Palette, Video, MessageCircle, ChevronDown, Check } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
@@ -16,6 +16,8 @@ export default function Home() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<"single" | "story" | "premium">("story")
+  const [expandedPlan, setExpandedPlan] = useState<"single" | "story" | "premium" | null>("story")
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -384,9 +386,9 @@ export default function Home() {
                         <ImageIcon className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">사진 준비</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">부모님이 잘 나온 이쁜 사진</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">소중한 사진을 받아 검수해요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        흔들리지 않게 잘 보이도록 촬영해주시면 더욱 좋은 결과를 얻으실 수 있습니다.
+                        추억이 담긴 옛날 사진들은 찢어지거나, 훼손되거나, 빛바랜 경우가 많아요. 하지만 걱정하지 마세요. 그런 사진들도 휴대폰 카메라로 찍어 보내주시면 저희가 검수를 해드려요.
                       </p>
                     </div>
                   </div>
@@ -400,9 +402,9 @@ export default function Home() {
                         <Palette className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">화질과 색상 추가</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">AI를 활용해 사진을 최상의 품질로 복원해요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        AI를 통해 화질을 향상시키고 자연스러운 색상을 추가합니다. 오래된 사진도 생생하게 되살아납니다.
+                        AI를 이용해 "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래 흐려진 부분 등을 복원하고, 사진의 화질을 올려요. 추억의 해상도는 생생해야 하는 법이니까요.
                       </p>
                     </div>
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
@@ -443,9 +445,9 @@ export default function Home() {
                         <Video className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">영상 제작</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">짧은 영상과 음악 첨부</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">복원된 사진을 가지고 영상화 작업을 거쳐요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        짧은 영상으로 제작하고 감성적인 음악을 첨부합니다. 추억이 더욱 생생하게 전달됩니다.
+                        Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화 작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
                       </p>
                     </div>
                   </div>
@@ -461,7 +463,7 @@ export default function Home() {
                       </div>
                       <h3 className="text-xl md:text-2xl font-bold font-display">카카오톡으로 영상을 받아보세요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        하루 정도 소요되니 조금만 기다려주세요. 완성된 영상을 카카오톡으로 받아보실 수 있습니다.
+                        하루 정도 소요되니 조금만 기다려주세요. 완성된 영상과 함께 복원된 사진들도 원본 화질로 모두 보내드립니다.
                       </p>
                     </div>
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
@@ -480,6 +482,309 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Pricing Section */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 bg-gradient-to-b from-white to-neutral-50">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-full mb-4">
+                <span className="text-sm font-semibold text-red-600">🎉 출시 기념 특가</span>
+                <span className="text-xs text-red-500">최대 60% 할인</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 font-display">요금제 선택</h2>
+              <p className="text-neutral-600">부모님께 가장 적합한 플랜을 선택하세요</p>
+            </div>
+
+            <div className="space-y-3">
+              {/* 단품 제작 */}
+              <div
+                className={`bg-white rounded-2xl border-2 transition-all cursor-pointer ${
+                  selectedPlan === "single" ? "border-neutral-900 shadow-md" : "border-neutral-200 hover:border-neutral-300"
+                }`}
+                onClick={() => {
+                  setSelectedPlan("single")
+                  setExpandedPlan(expandedPlan === "single" ? null : "single")
+                }}
+              >
+                <div className="p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedPlan === "single"
+                          ? "border-neutral-900 bg-neutral-900"
+                          : "border-neutral-300"
+                      }`}
+                    >
+                      {selectedPlan === "single" && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">단품 제작</h3>
+                      <p className="text-sm text-neutral-500">원하는 만큼만</p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-neutral-400 transition-transform ${
+                      expandedPlan === "single" ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {expandedPlan === "single" && (
+                  <div className="px-5 pb-5 pt-2 border-t border-neutral-100">
+                    <div className="mb-4">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-sm text-neutral-400 line-through">3,000원</span>
+                        <span className="text-2xl font-bold text-neutral-900">1,500원</span>
+                        <span className="text-sm text-neutral-600">/장</span>
+                      </div>
+                      <span className="inline-block px-2 py-0.5 bg-red-50 text-red-600 text-xs font-medium rounded">
+                        50% 할인
+                      </span>
+                    </div>
+
+                    <ul className="space-y-2 mb-4 text-sm text-neutral-600">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span>사진 1장당 가격</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span>AI 화질 복원 및 컬러 추가</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span>고품질 이미지 전송</span>
+                      </li>
+                    </ul>
+
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        scrollToDemo()
+                      }}
+                      className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
+                    >
+                      이 요금제로 시작하기
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* 청춘 스토리 (기본 선택 & 펼쳐짐) */}
+              <div
+                className={`bg-white rounded-2xl border-2 transition-all cursor-pointer relative overflow-visible ${
+                  selectedPlan === "story" ? "border-neutral-900 shadow-lg" : "border-neutral-200 hover:border-neutral-300"
+                }`}
+                onClick={() => {
+                  setSelectedPlan("story")
+                  setExpandedPlan(expandedPlan === "story" ? null : "story")
+                }}
+              >
+                {/* 인기 배지 */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                  <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                    ⭐ 가장 인기
+                  </div>
+                </div>
+
+                <div className="p-5 flex items-center justify-between pt-7">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedPlan === "story"
+                          ? "border-neutral-900 bg-neutral-900"
+                          : "border-neutral-300"
+                      }`}
+                    >
+                      {selectedPlan === "story" && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">청춘 스토리</h3>
+                      <p className="text-sm text-neutral-500">가장 많이 선택하는</p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-neutral-400 transition-transform ${
+                      expandedPlan === "story" ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {expandedPlan === "story" && (
+                  <div className="px-5 pb-5 pt-2 border-t border-neutral-100">
+                    <div className="bg-gradient-to-r from-neutral-50 to-neutral-100 rounded-xl p-4 mb-4">
+                      <div className="text-center mb-3">
+                        <div className="text-2xl font-bold mb-1">🎬 사진 10장 → 1분 영상</div>
+                      </div>
+                      <div className="flex items-baseline justify-center gap-2 mb-1">
+                        <span className="text-lg text-neutral-400 line-through">30,000원</span>
+                        <span className="text-3xl font-bold text-neutral-900">12,900원</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="inline-block px-3 py-1 bg-red-500 text-white text-sm font-bold rounded-full">
+                          57% 할인
+                        </span>
+                        <p className="text-xs text-neutral-500 mt-2">장당 1,290원</p>
+                      </div>
+                    </div>
+
+                    <ul className="space-y-2.5 mb-5 text-sm">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">여러 추억을 하나의 감동적인 스토리로</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">감성 음악과 함께 1분 영상 제작</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">AI 화질 복원 및 자연스러운 컬러 추가</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">부모님이 가장 좋아하시는 구성</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">카카오톡으로 간편하게 전송</span>
+                      </li>
+                    </ul>
+
+                    <div className="space-y-2">
+                      <Button
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          // 예시 영상 보기 - 위로 스크롤
+                          document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" })
+                        }}
+                        className="w-full border-neutral-300 hover:bg-neutral-50"
+                      >
+                        예시 영상 보기
+                      </Button>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          scrollToDemo()
+                        }}
+                        className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
+                      >
+                        이 요금제로 시작하기
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 프리미엄 패키지 */}
+              <div
+                className={`bg-white rounded-2xl border-2 transition-all cursor-pointer ${
+                  selectedPlan === "premium" ? "border-neutral-900 shadow-md" : "border-neutral-200 hover:border-neutral-300"
+                }`}
+                onClick={() => {
+                  setSelectedPlan("premium")
+                  setExpandedPlan(expandedPlan === "premium" ? null : "premium")
+                }}
+              >
+                <div className="p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedPlan === "premium"
+                          ? "border-neutral-900 bg-neutral-900"
+                          : "border-neutral-300"
+                      }`}
+                    >
+                      {selectedPlan === "premium" && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg flex items-center gap-2">
+                        프리미엄 패키지
+                        <span className="text-base">💎</span>
+                      </h3>
+                      <p className="text-sm text-neutral-500">가장 큰 감동</p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-neutral-400 transition-transform ${
+                      expandedPlan === "premium" ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {expandedPlan === "premium" && (
+                  <div className="px-5 pb-5 pt-2 border-t border-neutral-100">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 mb-4 border border-purple-100">
+                      <div className="text-center mb-3">
+                        <div className="text-2xl font-bold mb-1">🎥 사진 20장 → 2분 영상</div>
+                      </div>
+                      <div className="flex items-baseline justify-center gap-2 mb-1">
+                        <span className="text-lg text-neutral-400 line-through">50,000원</span>
+                        <span className="text-3xl font-bold text-neutral-900">19,900원</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="inline-block px-3 py-1 bg-purple-600 text-white text-sm font-bold rounded-full">
+                          60% 할인
+                        </span>
+                        <p className="text-xs text-neutral-500 mt-2">장당 995원</p>
+                      </div>
+                    </div>
+
+                    <ul className="space-y-2.5 mb-5 text-sm">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">더 많은 추억, 더 긴 감동의 2분 영상</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">프리미엄 음악과 고급 편집</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">AI 화질 복원 및 자연스러운 컬러 추가</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">부모님께 가장 큰 감동 선물</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">장당 최저가 (995원)</span>
+                      </li>
+                    </ul>
+
+                    <div className="space-y-2">
+                      <Button
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth" })
+                        }}
+                        className="w-full border-neutral-300 hover:bg-neutral-50"
+                      >
+                        예시 영상 보기
+                      </Button>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          scrollToDemo()
+                        }}
+                        className="w-full bg-neutral-900 hover:bg-neutral-800 text-white"
+                      >
+                        이 요금제로 시작하기
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <p className="text-center text-xs text-neutral-500 mt-6">
+              * 출시 기념 특가는 조기 마감될 수 있습니다
+            </p>
           </div>
         </section>
 
