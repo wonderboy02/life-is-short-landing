@@ -5,10 +5,11 @@ import type React from "react"
 import { useState } from "react"
 import Script from "next/script"
 import { Button } from "@/components/ui/button"
-import { Upload, Play, ImageIcon, Palette, Video, MessageCircle } from "lucide-react"
+import { Upload, Play, ImageIcon, Palette, Video, MessageCircle, ChevronDown, Check } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import Marquee from "react-fast-marquee"
 
 export default function Home() {
   const [showUpload, setShowUpload] = useState(false)
@@ -17,6 +18,8 @@ export default function Home() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState("")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<"single" | "story" | "premium">("story")
+  const [expandedPlan, setExpandedPlan] = useState<"single" | "story" | "premium" | null>("story")
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -283,121 +286,99 @@ export default function Home() {
               <p className="text-lg text-neutral-600">실제 사용자분들이 대가 없이 남겨주신 피드백이에요.</p>
             </div>
 
-          <div className="relative">
-            <div className="flex gap-6 animate-scroll-reviews">
-              {[...Array(2)].map((_, setIndex) => (
-                <div key={setIndex} className="flex gap-6 flex-shrink-0">
-                  {/* Review 1 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      어머니가 정말 좋아하셨어요. 영상 보시면서 많이 우셨습니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">박*영 (43세, 여)</div>
-                  </div>
-
-                  {/* Review 2 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      아버지 젊으셨을 때 모습을 처음 봤어요. 가족들이 다 감동했습니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">김*수 (47세, 남)</div>
-                  </div>
-
-                  {/* Review 3 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
-                    <div className="flex gap-1 mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                          <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                        </svg>
-                      ))}
-                    </div>
-                    <p className="text-neutral-700 leading-relaxed mb-6">
-                      부모님 두 분 다 너무 좋아하셨어요. 감사합니다.
-                    </p>
-                    <div className="text-sm text-neutral-600">이*희 (51세, 여)</div>
-                  </div>
-
-              {/* Review 4 (originally labelled Review 2) */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-neutral-700 leading-relaxed mb-6">
-                  돌아가신 아버지의 청년 시절 사진을 보내드렸는데, 완성된 영상 보고 온 가족이 함께 울었습니다. 정말 감사드립니다.
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-neutral-200"></div>
-                  <div>
-                    <div className="font-semibold text-sm">이준호</div>
-                    <div className="text-xs text-neutral-500">부산</div>
-                  </div>
-                </div>
+          <Marquee gradient={false} speed={40} className="py-4">
+            {/* Review 1 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
               </div>
-
-                  {/* Review 5 */}
-                  <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg
-                      key={i}
-                      className="w-5 h-5 fill-yellow-400"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-neutral-700 leading-relaxed mb-6">
-                  아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
-                </p>
-                <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
-              </div>
-
-              {/* Review 6 (originally labelled Review 3) */}
-              <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[350px] flex-shrink-0">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-neutral-700 leading-relaxed mb-6">
-                  흑백 사진이 이렇게 생생하게 복원될 줄 몰랐어요. 부모님 결혼식 사진으로 만든 영상 정말 잘 받았습니다. 강력 추천합니다!
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-neutral-200"></div>
-                  <div>
-                    <div className="font-semibold text-sm">박서연</div>
-                    <div className="text-xs text-neutral-500">대구</div>
-                  </div>
-                </div>
-              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                어머니가 정말 좋아하셨어요. 영상 보시면서 많이 우셨습니다.
+              </p>
+              <div className="text-sm text-neutral-600">박*영 (43세, 여)</div>
             </div>
-          ))}
+
+            {/* Review 2 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                아버지 젊으셨을 때 모습을 처음 봤어요. 가족들이 다 감동했습니다.
+              </p>
+              <div className="text-sm text-neutral-600">김*수 (47세, 남)</div>
             </div>
+
+            {/* Review 3 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                부모님 두 분 다 너무 좋아하셨어요. 감사합니다.
+              </p>
+              <div className="text-sm text-neutral-600">이*희 (51세, 여)</div>
+            </div>
+
+            {/* Review 4 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                흑백 사진이었는데 색이 입혀지니 신기했어요. 어머니가 계속 보고 계세요.
+              </p>
+              <div className="text-sm text-neutral-600">최*민 (45세, 남)</div>
+            </div>
+
+            {/* Review 5 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
+              </p>
+              <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
+            </div>
+
+            {/* Review 6 */}
+            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-neutral-100 w-[280px] mx-3">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} className="w-5 h-5 fill-yellow-400" viewBox="0 0 20 20">
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                ))}
+              </div>
+              <p className="text-neutral-700 leading-relaxed mb-6">
+                결과물이 기대 이상이었어요. 부모님이 매우 만족하셨습니다.
+              </p>
+              <div className="text-sm text-neutral-600">윤*호 (44세, 남)</div>
+            </div>
+          </Marquee>
           </div>
-        </div>
-      </section>
+        </section>
 
       <section className="bg-neutral-50 py-16 md:py-24 border-y border-neutral-100">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -446,6 +427,11 @@ export default function Home() {
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
                       <h3 className="text-xl md:text-2xl font-bold font-display">AI를 활용해 사진을 최상의 품질로 복원해요</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">
+                        최첨단 AI를 활용해
+                        <br />
+                        사진을 최상의 품질로 복원해요
+                      </h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                       추억의 해상도는 생생해야 하는 법이에요. AI를 이용해 "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래 흐려진 부분 등을 복원하고, 사진의 화질을 올려요. 
                       </p>
@@ -488,9 +474,12 @@ export default function Home() {
                         <Video className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">영상 제작</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">복원된 사진을 가지고 영상화 작업을 거쳐요</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">
+                        복원된 사진을
+                        <br /> 
+                        첨단 AI 기술을 활용해 영상으로 만들어요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                      Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화 작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
+                        Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화 작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
                       </p>
                     </div>
                   </div>
@@ -506,7 +495,7 @@ export default function Home() {
                       </div>
                       <h3 className="text-xl md:text-2xl font-bold font-display">영상은 물론, 복원된 사진까지 함께 <br></br>원본 화질로 보내드려요.</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        하루 정도 소요되니 조금만 기다려주세요.<br></br> 완성된 영상을 카카오톡으로 받아보실 수 있습니다.
+                        하루 정도 소요되니 조금만 기다려주세요.<br></br> 완성된 영상과 함께 복원된 사진들도 원본 화질로 모두 보내드립니다.
                       </p>
                     </div>
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
@@ -528,16 +517,296 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-balance font-display">소중한 추억을 되살려보세요</h2>
-            <Button
-              size="lg"
-              onClick={scrollToDemo}
-              className="bg-neutral-900 hover:bg-neutral-800 text-white px-12 py-6 text-lg"
-            >
-              바로 제작하기
-            </Button>
+        {/* Pricing Section */}
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 bg-gradient-to-b from-white to-neutral-50">
+          <div className="max-w-2xl mx-auto">
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-full mb-4">
+                <span className="text-sm font-semibold text-red-600">🎉 출시 기념 특가</span>
+                <span className="text-xs text-red-500">최대 60% 할인</span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 font-display">소중한 추억을 되살려보세요</h2>
+            </div>
+
+            <div className="space-y-3">
+              {/* 단품 제작 */}
+              <div
+                className={`bg-white rounded-2xl border-2 transition-all cursor-pointer ${
+                  selectedPlan === "single" ? "border-neutral-900 shadow-md" : "border-neutral-200 hover:border-neutral-300"
+                }`}
+                onClick={() => {
+                  setSelectedPlan("single")
+                  setExpandedPlan(expandedPlan === "single" ? null : "single")
+                }}
+              >
+                <div className="p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedPlan === "single"
+                          ? "border-neutral-900 bg-neutral-900"
+                          : "border-neutral-300"
+                      }`}
+                    >
+                      {selectedPlan === "single" && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">단품 제작</h3>
+                      <p className="text-sm text-neutral-500">원하는 만큼만</p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-neutral-400 transition-transform ${
+                      expandedPlan === "single" ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {expandedPlan === "single" && (
+                  <div className="px-5 pb-5 pt-2 border-t border-neutral-100">
+                    <div className="mb-4">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <span className="text-sm text-neutral-400 line-through">3,000원</span>
+                        <span className="text-2xl font-bold text-neutral-900">1,500원</span>
+                        <span className="text-sm text-neutral-600">/장</span>
+                      </div>
+                      <span className="inline-block px-2 py-0.5 bg-red-50 text-red-600 text-xs font-medium rounded">
+                        50% 할인
+                      </span>
+                    </div>
+
+                    <ul className="space-y-2 mb-4 text-sm text-neutral-600">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span>사진 1장당 가격</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span>AI 화질 복원 및 컬러 추가</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span>고품질 이미지 전송</span>
+                      </li>
+                    </ul>
+
+                    <Button
+                      size="lg"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        scrollToDemo()
+                      }}
+                      className="w-full bg-neutral-900 hover:bg-neutral-800 text-white px-10 py-6 text-lg"
+                    >
+                      바로 제작하기
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* 청춘 스토리 (기본 선택 & 펼쳐짐) */}
+              <div
+                className={`bg-white rounded-2xl border-2 transition-all cursor-pointer relative overflow-visible ${
+                  selectedPlan === "story" ? "border-neutral-900 shadow-lg" : "border-neutral-200 hover:border-neutral-300"
+                }`}
+                onClick={() => {
+                  setSelectedPlan("story")
+                  setExpandedPlan(expandedPlan === "story" ? null : "story")
+                }}
+              >
+                {/* 인기 배지 */}
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                  <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                    ⭐ 가장 인기
+                  </div>
+                </div>
+
+                <div className="p-5 flex items-center justify-between pt-7">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedPlan === "story"
+                          ? "border-neutral-900 bg-neutral-900"
+                          : "border-neutral-300"
+                      }`}
+                    >
+                      {selectedPlan === "story" && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">다시 돌아온 청춘 스토리</h3>
+                      <p className="text-sm text-neutral-500">가장 많이 선택하는</p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-neutral-400 transition-transform ${
+                      expandedPlan === "story" ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {expandedPlan === "story" && (
+                  <div className="px-5 pb-5 pt-2 border-t border-neutral-100">
+                    <div className="bg-gradient-to-r from-neutral-50 to-neutral-100 rounded-xl p-4 mb-4">
+                      <div className="text-center mb-3">
+                        <div className="text-2xl font-bold mb-1">🎬 사진 10장 → 1분 영상</div>
+                      </div>
+                      <div className="flex items-baseline justify-center gap-2 mb-1">
+                        <span className="text-lg text-neutral-400 line-through">30,000원</span>
+                        <span className="text-3xl font-bold text-neutral-900">12,900원</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="inline-block px-3 py-1 bg-red-500 text-white text-sm font-bold rounded-full">
+                          57% 할인
+                        </span>
+                        <p className="text-xs text-neutral-500 mt-2">장당 1,290원</p>
+                      </div>
+                    </div>
+
+                    <ul className="space-y-2.5 mb-5 text-sm">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">여러 추억을 하나의 감동적인 스토리로</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">감성 음악과 함께 1분 영상 제작</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">AI 화질 복원 및 자연스러운 컬러 추가</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">부모님이 가장 좋아하시는 구성</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">카카오톡으로 간편하게 전송</span>
+                      </li>
+                    </ul>
+
+                    {/* 영상 미리보기 */}
+                    <div className="mb-5 rounded-xl overflow-hidden bg-neutral-900">
+                      <video
+                        src="/hero_video_mq.mp4"
+                        controls
+                        preload="metadata"
+                        poster="/hero_video_poster.jpg"
+                        playsInline
+                        className="w-full"
+                        style={{ maxHeight: '500px' }}
+                      />
+                    </div>
+
+                    <Button
+                      size="lg"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        scrollToDemo()
+                      }}
+                      className="w-full bg-neutral-900 hover:bg-neutral-800 text-white px-10 py-6 text-lg"
+                    >
+                      바로 제작하기
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* 프리미엄 패키지 */}
+              <div
+                className={`bg-white rounded-2xl border-2 transition-all cursor-pointer ${
+                  selectedPlan === "premium" ? "border-neutral-900 shadow-md" : "border-neutral-200 hover:border-neutral-300"
+                }`}
+                onClick={() => {
+                  setSelectedPlan("premium")
+                  setExpandedPlan(expandedPlan === "premium" ? null : "premium")
+                }}
+              >
+                <div className="p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                        selectedPlan === "premium"
+                          ? "border-neutral-900 bg-neutral-900"
+                          : "border-neutral-300"
+                      }`}
+                    >
+                      {selectedPlan === "premium" && <Check className="w-4 h-4 text-white" />}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg flex items-center gap-2">
+                        프리미엄 패키지
+                        <span className="text-base">💎</span>
+                      </h3>
+                      <p className="text-sm text-neutral-500">가장 큰 감동</p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-neutral-400 transition-transform ${
+                      expandedPlan === "premium" ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+
+                {expandedPlan === "premium" && (
+                  <div className="px-5 pb-5 pt-2 border-t border-neutral-100">
+                    <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 mb-4 border border-purple-100">
+                      <div className="text-center mb-3">
+                        <div className="text-2xl font-bold mb-1">🎥 사진 20장 → 2분 영상</div>
+                      </div>
+                      <div className="flex items-baseline justify-center gap-2 mb-1">
+                        <span className="text-lg text-neutral-400 line-through">50,000원</span>
+                        <span className="text-3xl font-bold text-neutral-900">19,900원</span>
+                      </div>
+                      <div className="text-center">
+                        <span className="inline-block px-3 py-1 bg-purple-600 text-white text-sm font-bold rounded-full">
+                          60% 할인
+                        </span>
+                        <p className="text-xs text-neutral-500 mt-2">장당 995원</p>
+                      </div>
+                    </div>
+
+                    <ul className="space-y-2.5 mb-5 text-sm">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">더 많은 추억, 더 긴 감동의 2분 영상</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">프리미엄 음악과 고급 편집</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">AI 화질 복원 및 자연스러운 컬러 추가</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">부모님께 가장 큰 감동 선물</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                        <span className="text-neutral-700">장당 최저가 (995원)</span>
+                      </li>
+                    </ul>
+
+                    <Button
+                      size="lg"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        scrollToDemo()
+                      }}
+                      className="w-full bg-neutral-900 hover:bg-neutral-800 text-white px-10 py-6 text-lg"
+                    >
+                      바로 제작하기
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <p className="text-center text-xs text-neutral-500 mt-6">
+              * 출시 기념 특가는 조기 마감될 수 있습니다
+            </p>
           </div>
         </section>
       </main>
