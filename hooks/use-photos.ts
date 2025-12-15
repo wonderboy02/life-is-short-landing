@@ -1,15 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { PhotoWithUrl, PhotoListResponse } from '@/lib/supabase/types';
 
-export function usePhotos(groupId: string) {
-  const [photos, setPhotos] = useState<PhotoWithUrl[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export function usePhotos(groupId: string, initialPhotos?: PhotoWithUrl[]) {
+  const [photos, setPhotos] = useState<PhotoWithUrl[]>(initialPhotos || []);
+  const [isLoading, setIsLoading] = useState(!initialPhotos); // initialPhotos가 있으면 로딩 스킵
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPhotos = useCallback(async () => {
+  const fetchPhotos = useCallback(async (isRefetch = false) => {
     if (!groupId) return;
 
-    setIsLoading(true);
+    // 초기 로드일 때만 isLoading을 true로 설정
+    if (!isRefetch) {
+      setIsLoading(true);
+    }
     setError(null);
 
     try {
@@ -27,18 +30,27 @@ export function usePhotos(groupId: string) {
       setError(message);
       console.error('사진 목록 조회 오류:', err);
     } finally {
-      setIsLoading(false);
+      if (!isRefetch) {
+        setIsLoading(false);
+      }
     }
   }, [groupId]);
 
   useEffect(() => {
-    fetchPhotos();
+    // initialPhotos가 있으면 초기 fetch 스킵
+    if (!initialPhotos) {
+      fetchPhotos(false);
+    }
+  }, [fetchPhotos, initialPhotos]);
+
+  const refetch = useCallback(() => {
+    return fetchPhotos(true);
   }, [fetchPhotos]);
 
   return {
     photos,
     isLoading,
     error,
-    refetch: fetchPhotos,
+    refetch,
   };
 }

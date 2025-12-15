@@ -209,3 +209,78 @@
 .animate-delay-3500 {
   animation-delay: 3.5s;
 }
+
+/* Sonner Toast 커스터마이징 - 모바일 최적화 무채색 디자인 */
+/* Toaster 컨테이너 - 중앙 정렬 강제 */
+[data-sonner-toaster] {
+  top: 80px !important; /* 헤더(64px) + 여백(16px) */
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  padding: 0 !important;
+}
+
+/* 개별 토스트 - 중앙 정렬 및 너비 제한 */
+[data-sonner-toast] {
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  margin-left: 16px !important;
+  margin-right: 16px !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+/* 토스트 아이콘 숨기기 (무채색 디자인) */
+[data-sonner-toast] [data-icon] {
+  display: none !important;
+}
+
+/* 제목 스타일 */
+.sonner-title-custom {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: rgb(64 64 64) !important;
+  line-height: 1.5 !important;
+  white-space: pre-line !important; /* 줄바꿈 지원 */
+}
+
+/* 닫기 버튼 - 오른쪽 고정 */
+[data-sonner-toast] button[data-button],
+[data-sonner-toast] button[data-close-button],
+[data-sonner-toast] .sonner-close-custom {
+  position: absolute !important;
+  top: 50% !important;
+  right: 12px !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  border: none !important;
+  color: rgb(163 163 163) !important;
+  padding: 4px !important;
+  border-radius: 4px !important;
+  transition: all 0.15s !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+}
+
+[data-sonner-toast] button[data-button]:hover,
+[data-sonner-toast] button[data-close-button]:hover,
+[data-sonner-toast] .sonner-close-custom:hover {
+  background: rgb(229 229 229) !important;
+  color: rgb(64 64 64) !important;
+}
+
+[data-sonner-toast] button[data-button] svg,
+[data-sonner-toast] button[data-close-button] svg,
+[data-sonner-toast] .sonner-close-custom svg {
+  width: 14px !important;
+  height: 14px !important;
+}

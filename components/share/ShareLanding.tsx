@@ -22,16 +22,16 @@ export default function ShareLanding({
   onAddPhotos,
 }: ShareLandingProps) {
   return (
-    <section className="min-h-[100dvh] flex flex-col justify-between bg-white py-12 px-4">
-      <div className="flex-1 flex items-center justify-center">
-        <div className="max-w-lg mx-auto w-full space-y-10">
+    <section className="flex min-h-[100dvh] flex-col justify-between bg-white px-4 py-12">
+      <div className="flex flex-1 items-center justify-center">
+        <div className="mx-auto w-full max-w-lg space-y-10">
           {/* 메인 메시지 */}
-          <div className="text-center space-y-6">
+          <div className="space-y-6 text-center">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold font-display leading-tight text-neutral-900">
-                {creatorNickname}님이 모으는
+              <h1 className="font-display text-4xl leading-tight font-bold text-neutral-900">
+                {creatorNickname}님과 모으는
               </h1>
-              <p className="text-2xl text-neutral-600 leading-relaxed">
+              <p className="text-2xl leading-relaxed text-neutral-600">
                 부모님의 청춘,
                 <br />
                 우리의 이야기
@@ -40,8 +40,9 @@ export default function ShareLanding({
 
             <div className="py-4">
               <p className="text-lg font-medium text-neutral-800">{groupName}</p>
-              <p className="text-sm text-neutral-500 mt-2">
-                영상으로 남길 <span className="font-semibold text-neutral-700">{photoCount}개</span>의 순간
+              <p className="mt-2 text-sm text-neutral-500">
+                영상으로 남길 <span className="font-semibold text-neutral-700">{photoCount}개</span>
+                의 순간
               </p>
             </div>
           </div>
@@ -53,19 +54,17 @@ export default function ShareLanding({
                 {recentPhotos.slice(0, 6).map((photo) => (
                   <div
                     key={photo.id}
-                    className="aspect-square rounded-xl overflow-hidden bg-neutral-100"
+                    className="aspect-square overflow-hidden rounded-xl bg-neutral-100"
                   >
                     <img
                       src={photo.url}
                       alt={photo.file_name}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-center text-neutral-400">
-                함께 모은 소중한 순간들
-              </p>
+              <p className="text-center text-xs text-neutral-400">함께 모은 소중한 순간들</p>
             </div>
           )}
 
@@ -74,7 +73,7 @@ export default function ShareLanding({
             <Button
               onClick={onAddPhotos}
               size="lg"
-              className="w-full bg-neutral-900 hover:bg-neutral-800 h-14 text-base font-semibold rounded-xl shadow-sm"
+              className="h-14 w-full rounded-xl bg-neutral-900 text-base font-semibold shadow-sm hover:bg-neutral-800"
             >
               옛 사진 추가하기
             </Button>
@@ -83,7 +82,7 @@ export default function ShareLanding({
                 onClick={onViewPhotos}
                 size="lg"
                 variant="outline"
-                className="w-full border-neutral-300 hover:bg-neutral-50 h-14 text-base font-medium rounded-xl"
+                className="h-14 w-full rounded-xl border-neutral-300 text-base font-medium hover:bg-neutral-50"
               >
                 모든 사진 보기 ({photoCount})
               </Button>
@@ -94,11 +93,11 @@ export default function ShareLanding({
           <div className="flex justify-center pt-6">
             <button
               onClick={onAddPhotos}
-              className="text-neutral-400 hover:text-neutral-600 transition-colors flex flex-col items-center gap-1"
+              className="flex flex-col items-center gap-1 text-neutral-400 transition-colors hover:text-neutral-600"
               aria-label="아래로 스크롤"
             >
               <span className="text-xs">아래로</span>
-              <ChevronDown className="w-5 h-5 animate-bounce" />
+              <ChevronDown className="h-5 w-5 animate-bounce" />
             </button>
           </div>
         </div>
