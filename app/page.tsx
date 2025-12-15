@@ -29,6 +29,30 @@ export default function Home() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'single' | 'story' | 'premium'>('story');
   const [expandedPlan, setExpandedPlan] = useState<'single' | 'story' | 'premium' | null>('story');
+"use client"
+
+import type React from "react"
+
+import { useState } from "react"
+import Script from "next/script"
+import { Button } from "@/components/ui/button"
+import { Upload, Play, ImageIcon, Palette, Video, MessageCircle, ChevronDown, Check } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import Marquee from "react-fast-marquee"
+import CreateGroupDialog from "@/components/landing/CreateGroupDialog"
+
+export default function Home() {
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [showUpload, setShowUpload] = useState(false)
+  const [uploadedImages, setUploadedImages] = useState<string[]>([])
+  const [showForm, setShowForm] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [phoneNumber, setPhoneNumber] = useState("")
+  const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<"single" | "story" | "premium">("story")
+  const [expandedPlan, setExpandedPlan] = useState<"single" | "story" | "premium" | null>("story")
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -896,6 +920,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* 그룹 생성 다이얼로그 */}
+      <CreateGroupDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   );
 }
