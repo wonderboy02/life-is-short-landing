@@ -601,7 +601,7 @@ export default function Home() {
                     <ul className="mb-4 space-y-2 text-sm text-neutral-600">
                       <li className="flex items-start gap-2">
                         <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span>사진 1장당 가격</span>
+                        <span>사진 1장당 최대 8초로 영상화</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
