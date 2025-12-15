@@ -1,37 +1,46 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { flushSync } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Upload, X, Loader2, Edit2 } from 'lucide-react';
+import { Upload, X, Loader2, Edit2, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
 import UploaderDialog from './UploaderDialog';
 
+type UploadStatus = 'pending' | 'uploading' | 'success' | 'failed';
+
 interface FileWithDescription {
+  id: string; // 고유 ID
   file: File;
   description: string;
   previewUrl: string;
+  uploadStatus: UploadStatus;
+  error?: string;
 }
 
 interface PhotoUploadProps {
   groupId: string;
   token: string;
   onUploadSuccess?: () => void;
+  onPhotoUploaded?: () => void; // 개별 사진 완료 시 호출
 }
 
 export default function PhotoUpload({
   groupId,
   token,
   onUploadSuccess,
+  onPhotoUploaded,
 }: PhotoUploadProps) {
   const [uploaderNickname, setUploaderNickname] = useState('');
   const [showNicknameDialog, setShowNicknameDialog] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<FileWithDescription[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const firstSuccessTriggeredRef = useRef(false);
 
   // 그룹별 localStorage 키
   const nicknameKey = `photo-uploader-nickname-${groupId}`;
@@ -82,9 +91,11 @@ export default function PhotoUpload({
     });
 
     const filesWithDescription = validFiles.map((file) => ({
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // 고유 ID 생성
       file,
       description: '',
       previewUrl: URL.createObjectURL(file), // 미리보기 URL 생성
+      uploadStatus: 'pending' as UploadStatus,
     }));
 
     setSelectedFiles((prev) => [...prev, ...filesWithDescription]);
@@ -95,19 +106,21 @@ export default function PhotoUpload({
     }
   };
 
-  const handleRemoveFile = (index: number) => {
+  const handleRemoveFile = (id: string) => {
     setSelectedFiles((prev) => {
-      const fileToRemove = prev[index];
-      // 메모리 누수 방지: 미리보기 URL 해제
-      URL.revokeObjectURL(fileToRemove.previewUrl);
-      return prev.filter((_, i) => i !== index);
+      const fileToRemove = prev.find((f) => f.id === id);
+      if (fileToRemove) {
+        // 메모리 누수 방지: 미리보기 URL 해제
+        URL.revokeObjectURL(fileToRemove.previewUrl);
+      }
+      return prev.filter((f) => f.id !== id);
     });
   };
 
-  const handleDescriptionChange = (index: number, description: string) => {
+  const handleDescriptionChange = (id: string, description: string) => {
     setSelectedFiles((prev) =>
-      prev.map((item, i) =>
-        i === index ? { ...item, description } : item
+      prev.map((item) =>
+        item.id === id ? { ...item, description } : item
       )
     );
   };
@@ -124,12 +137,22 @@ export default function PhotoUpload({
       return;
     }
 
-    setIsUploading(true);
-    let successCount = 0;
+    // flushSync: 상태 업데이트를 즉시 DOM에 반영
+    flushSync(() => {
+      setIsUploading(true);
+      setSelectedFiles((prev) =>
+        prev.map((f) => ({ ...f, uploadStatus: 'uploading' as UploadStatus }))
+      );
+    });
+
+    // 업로드 시작 시 ref 초기화
+    firstSuccessTriggeredRef.current = false;
 
     try {
-      // 각 파일 업로드
-      for (const { file, description } of selectedFiles) {
+      // 병렬 업로드 - 각 파일을 동시에 처리
+      const uploadPromises = selectedFiles.map(async (item) => {
+        const { id, file, description } = item;
+
         const formData = new FormData();
         formData.append('file', file);
         formData.append('groupId', groupId);
@@ -150,20 +173,76 @@ export default function PhotoUpload({
           const result = await response.json();
 
           if (result.success) {
-            successCount++;
+            // 성공 상태로 변경
+            setSelectedFiles((prev) =>
+              prev.map((f) =>
+                f.id === id ? { ...f, uploadStatus: 'success' as UploadStatus } : f
+              )
+            );
+
+            // 첫 번째 성공 시 콜백 호출 (스크롤 + refetch)
+            if (!firstSuccessTriggeredRef.current) {
+              firstSuccessTriggeredRef.current = true;
+              onPhotoUploaded?.();
+            }
+
+            return { success: true, fileName: file.name };
           } else {
-            toast.error(`${file.name}: ${result.error}`);
+            // 실패 상태로 변경
+            setSelectedFiles((prev) =>
+              prev.map((f) =>
+                f.id === id
+                  ? { ...f, uploadStatus: 'failed' as UploadStatus, error: result.error }
+                  : f
+              )
+            );
+            return { success: false, fileName: file.name, error: result.error };
           }
         } catch (error) {
           console.error(`${file.name} 업로드 오류:`, error);
-          toast.error(`${file.name}: 업로드 실패`);
+          // 실패 상태로 변경
+          setSelectedFiles((prev) =>
+            prev.map((f) =>
+              f.id === id
+                ? { ...f, uploadStatus: 'failed' as UploadStatus, error: '업로드 실패' }
+                : f
+            )
+          );
+          return { success: false, fileName: file.name, error: '업로드 실패' };
         }
-      }
+      });
+
+      // 모든 업로드 완료 대기
+      const results = await Promise.allSettled(uploadPromises);
+
+      // 결과 집계
+      const successCount = results.filter(
+        (r) => r.status === 'fulfilled' && r.value.success
+      ).length;
+
+      const failedResults = results
+        .filter((r) => r.status === 'fulfilled' && !r.value.success)
+        .map((r) => (r.status === 'fulfilled' ? r.value : null));
+
+      // 실패한 항목 토스트 표시
+      failedResults.forEach((result) => {
+        if (result) {
+          toast.error(`${result.fileName}: ${result.error || '업로드 실패'}`);
+        }
+      });
 
       if (successCount > 0) {
         toast.success(`${successCount}개의 추억이 저장되었습니다 ✨`);
-        setSelectedFiles([]);
+
+        // 성공한 파일만 목록에서 제거
+        setSelectedFiles((prev) => prev.filter((f) => f.uploadStatus !== 'success'));
+
+        // 최종 refetch
         onUploadSuccess?.();
+      }
+
+      if (successCount === 0 && failedResults.length > 0) {
+        toast.error('모든 사진 업로드에 실패했습니다');
       }
     } finally {
       setIsUploading(false);
@@ -237,20 +316,44 @@ export default function PhotoUpload({
             </div>
 
             <div className="max-h-[600px] overflow-y-auto space-y-4 px-1">
-              {selectedFiles.map((item, index) => (
+              {selectedFiles.map((item) => (
                 <div
-                  key={`${item.file.name}-${index}`}
+                  key={item.id}
                   className="bg-white rounded-xl overflow-hidden border border-neutral-200 hover:border-neutral-300 transition-colors"
                 >
-                  {/* 이미지 미리보기 + 삭제 버튼 */}
+                  {/* 이미지 미리보기 + 상태 + 삭제 버튼 */}
                   <div className="relative aspect-video bg-neutral-100">
                     <img
                       src={item.previewUrl}
                       alt={item.file.name}
                       className="w-full h-full object-contain"
                     />
+
+                    {/* 상태 뱃지 */}
+                    <div className="absolute top-3 left-3">
+                      {item.uploadStatus === 'uploading' && (
+                        <div className="flex items-center gap-1.5 bg-blue-500/90 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          업로드 중
+                        </div>
+                      )}
+                      {item.uploadStatus === 'success' && (
+                        <div className="flex items-center gap-1.5 bg-green-500/90 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          완료
+                        </div>
+                      )}
+                      {item.uploadStatus === 'failed' && (
+                        <div className="flex items-center gap-1.5 bg-red-500/90 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">
+                          <XCircle className="w-3.5 h-3.5" />
+                          실패
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 삭제 버튼 */}
                     <button
-                      onClick={() => handleRemoveFile(index)}
+                      onClick={() => handleRemoveFile(item.id)}
                       disabled={isUploading}
                       className="absolute top-3 right-3 w-9 h-9 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm disabled:opacity-50"
                       aria-label="사진 제거"
@@ -265,7 +368,7 @@ export default function PhotoUpload({
                       placeholder="이 사진의 이야기를 들려주세요... (선택)"
                       value={item.description}
                       onChange={(e) =>
-                        handleDescriptionChange(index, e.target.value)
+                        handleDescriptionChange(item.id, e.target.value)
                       }
                       disabled={isUploading}
                       className="text-sm resize-none border-neutral-200 focus:border-neutral-400 rounded-lg"

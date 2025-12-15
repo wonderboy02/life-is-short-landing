@@ -63,12 +63,6 @@ export default function Home() {
   };
 
   const scrollToDemo = () => {
-    // setShowUpload(true);
-    // setTimeout(() => {
-    //   document
-    //     .getElementById('demo-section')
-    //     ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    // }, 100);
     setDialogOpen(true);
   };
 
@@ -91,7 +85,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="pt-16">
         {/* Hero + Demo Section */}
-        <section className="container mx-auto px-4 py-12 sm:px-6 md:py-20 lg:px-8">
+        <section className="container mx-auto px-4 py-6 sm:px-6 md:py-20 lg:px-8">
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 grid items-center gap-8 md:mb-16 md:grid-cols-2 md:gap-30">
               {/* Left: Visual Placeholder */}
@@ -111,13 +105,13 @@ export default function Home() {
               {/* Right: Text Content */}
               <div className="order-1 space-y-6 md:order-2">
                 <h1 className="font-display text-4xl leading-tight font-bold tracking-tight sm:text-5xl md:text-6xl">
-                  <span className="animate-fadeInUp animate-delay-1500 block">당신의 손끝에서</span>
-                  <span className="animate-fadeInUp animate-delay-2000 block">다시 빛나는</span>
-                  <span className="animate-fadeInUp animate-delay-2500 block">
+                  <span className="animate-fadeInUp animate-delay-1000 block">당신의 손끝에서</span>
+                  <span className="animate-fadeInUp animate-delay-1500 block">다시 빛나는</span>
+                  <span className="animate-fadeInUp animate-delay-2000 block">
                     부모님의 찬란한 청춘
                   </span>
                 </h1>
-                <p className="animate-fadeInUp animate-delay-3000 text-lg text-pretty text-neutral-600 md:text-2xl">
+                <p className="animate-fadeInUp animate-delay-2500 text-lg text-pretty text-neutral-600 md:text-2xl">
                   우리가 그러하듯, <br></br>부모님들께도 소중한 젊음이 있었습니다. <br></br>
                   이제는 사진 속에서 그 젊음을 꺼내어 선물해봅시다.
                 </p>
@@ -125,269 +119,174 @@ export default function Home() {
                   <Button
                     size="lg"
                     onClick={scrollToDemo}
-                    className="animate-fadeInUp animate-delay-3500 bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
+                    className="animate-fadeInUp animate-delay-3000 bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
                   >
                     바로 제작하기
                   </Button>
                 ) : null}
               </div>
             </div>
+          </div>
+        </section>
 
-            <div id="demo-section">
-              {showUpload && (
-                <div className="mb-12 md:mb-16">
-                  <div className="rounded-2xl border border-neutral-100 bg-neutral-50 p-6 sm:p-8 md:p-12">
-                    {uploadedImages.length === 0 ? (
-                      // Upload State
-                      <div className="flex aspect-[4/3] flex-col items-center justify-center gap-6 md:aspect-video">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-neutral-900">
-                          <Upload className="h-7 w-7 text-white" />
-                        </div>
-                        <div className="text-center">
-                          <h3 className="font-display mb-2 text-lg font-semibold md:text-4xl">
-                            소중한 추억을 업로드해주세요
-                          </h3>
-                          <p className="mb-6 text-sm text-neutral-500 md:text-lg">
-                            초점이 잘 맞는, 정면에서 찍은 사진이 가장 좋아요.
-                            <br></br>JPG, PNG 형식을 지원해요.
-                          </p>
-                          <label htmlFor="photo-upload" className="inline-block">
-                            <span className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-neutral-900 px-8 text-sm font-medium text-white ring-offset-white transition-colors hover:bg-neutral-700 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
-                              사진 전달하기
-                            </span>
-                          </label>
-                          <input
-                            id="photo-upload"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleImageUpload}
-                            className="hidden"
-                          />
-                        </div>
-                      </div>
-                    ) : !isSubmitted ? (
-                      <div className="space-y-6">
-                        <div className="grid grid-cols-3 gap-4">
-                          {uploadedImages.map((image, index) => (
-                            <div
-                              key={index}
-                              className="relative aspect-square overflow-visible rounded-xl bg-neutral-200"
-                            >
-                              <img
-                                src={image}
-                                alt={`Uploaded ${index + 1}`}
-                                className="h-full w-full rounded-xl object-cover"
-                              />
-                              <button
-                                onClick={() => handleRemoveImage(index)}
-                                className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-black text-lg font-light text-white shadow-lg hover:bg-neutral-800"
-                                type="button"
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="text-center">
-                          <label htmlFor="photo-upload-more" className="inline-block">
-                            <span className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-neutral-200 px-6 text-sm font-medium text-neutral-900 ring-offset-white transition-colors hover:bg-neutral-300 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
-                              + 사진 추가
-                            </span>
-                          </label>
-                          <input
-                            id="photo-upload-more"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleImageUpload}
-                            className="hidden"
-                          />
-                        </div>
-
-                        {showForm && (
-                          <form onSubmit={handleSubmit} className="space-y-6 pt-4">
-                            <div className="space-y-4">
-                              <div className="space-y-2">
-                                <Label htmlFor="phone" className="text-base">
-                                  전화번호
-                                </Label>
-                                <Input
-                                  id="phone"
-                                  type="tel"
-                                  placeholder="010-0000-0000"
-                                  value={phoneNumber}
-                                  onChange={(e) => setPhoneNumber(e.target.value)}
-                                  required
-                                  className="h-12 text-base"
-                                />
-                              </div>
-
-                              <div className="flex items-start gap-3 pt-2">
-                                <Checkbox
-                                  id="terms"
-                                  checked={agreedToTerms}
-                                  onCheckedChange={(checked) =>
-                                    setAgreedToTerms(checked as boolean)
-                                  }
-                                  required
-                                  className="mt-1"
-                                />
-                                <Label
-                                  htmlFor="terms"
-                                  className="cursor-pointer text-sm leading-relaxed text-neutral-600"
-                                >
-                                  개인정보 수집 및 이용에 동의합니다. 제공된 정보는 영상 제작 및
-                                  전송 목적으로만 사용됩니다.
-                                </Label>
-                              </div>
-                            </div>
-
-                            <Button
-                              type="submit"
-                              disabled={!phoneNumber || !agreedToTerms}
-                              className="h-12 w-full bg-neutral-900 text-base text-white hover:bg-neutral-800 disabled:opacity-50"
-                            >
-                              제출하기
-                            </Button>
-                          </form>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="flex aspect-[4/3] flex-col items-center justify-center gap-6 text-center md:aspect-video">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                          <MessageCircle className="h-7 w-7 text-green-700" />
-                        </div>
-                        <div>
-                          <h3 className="font-display mb-3 text-xl font-semibold md:text-2xl">
-                            제출 완료!
-                          </h3>
-                          <p className="mx-auto max-w-md leading-relaxed text-neutral-600">
-                            보내주신 소중한 추억, 저희 팀도 조심스럽게 다룰게요.
-                            <br />곧 카카오톡을 통해 연락드리겠습니다!
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+        {/* Service Description Section */}
+        <section className="bg-neutral-100 py-16 md:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl">
+              <h2 className="font-display mb-8 text-center text-3xl font-bold text-neutral-900 md:mb-12 md:text-4xl">
+                저희의 서비스는,
+              </h2>
+              <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
+                <div className="space-y-6">
+                  <p className="text-lg leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed">
+                    빛나는 청춘을 살아내신 부모님들의 옛 사진들을 <span> </span>
+                    <br className="hidden md:block" />
+                    최신 AI 기술을 통해
+                    <span className="font-semibold text-neutral-900"> 움직이는 영상</span>으로
+                    제작해드리는 서비스입니다.
+                  </p>
+                  <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
+                    기술의 한계로 인해{' '}
+                    <span className="font-semibold text-neutral-900">
+                      사진으로만 추억을 남길 수 있던
+                    </span>{' '}
+                    부모님들께,
+                    <br className="hidden md:block" />
+                    아름다웠던 삶의 궤적에 빛을 더해 선물해보세요.
+                  </p>
+                  <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
+                    뜻깊은 부모님의 <span className="font-semibold text-neutral-900">생신</span>에,{' '}
+                    <br></br>
+                    특별한{' '}
+                    <span className="font-semibold text-neutral-900">
+                      환갑, 칠순, 팔순 잔치
+                    </span>에, <br></br>
+                    부모님 두 분의{' '}
+                    <span className="font-semibold text-neutral-900">결혼기념일</span>에, <br></br>
+                    가족 모두 모인 <span> </span>
+                    <span className="font-semibold text-neutral-900">
+                      어버이날과 추석, 신년
+                    </span>에 <br></br>그 어느 순간이라도 감동을 선물해보세요
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </section>
 
         {/* Reviews Section */}
-        <section className="overflow-hidden py-16 md:py-24">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mb-12 text-center md:mb-16">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-4 py-2">
-                <span className="text-3xl font-bold text-neutral-900">1,247</span>
-                <span className="text-neutral-600">명의 사용자</span>
+        {process.env.NEXT_PUBLIC_IS_BETA_TEST !== 'true' && (
+          <section className="overflow-hidden py-16 md:py-24">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="mb-12 text-center md:mb-16">
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-4 py-2">
+                  <span className="text-3xl font-bold text-neutral-900">1,247</span>
+                  <span className="text-neutral-600">명의 사용자</span>
+                </div>
+                <h2 className="font-display mb-4 text-3xl font-bold md:text-4xl">
+                  직접 감동을 선물해본 <br className="inline md:hidden"></br> 이들의 경험담
+                </h2>
+                <p className="text-lg text-neutral-600">
+                  실제 사용자분들이 대가 없이 남겨주신 피드백이에요.
+                </p>
               </div>
-              <h2 className="font-display mb-4 text-3xl font-bold md:text-4xl">
-                직접 감동을 선물해본 <br className="inline md:hidden"></br> 이들의 경험담
-              </h2>
-              <p className="text-lg text-neutral-600">
-                실제 사용자분들이 대가 없이 남겨주신 피드백이에요.
-              </p>
+
+              <Marquee gradient={false} speed={40} className="py-4">
+                {/* Review 1 */}
+                <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
+                  <div className="mb-4 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="mb-6 leading-relaxed text-neutral-700">
+                    어머니가 정말 좋아하셨어요. 영상 보시면서 많이 우셨습니다.
+                  </p>
+                  <div className="text-sm text-neutral-600">박*영 (43세, 여)</div>
+                </div>
+
+                {/* Review 2 */}
+                <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
+                  <div className="mb-4 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="mb-6 leading-relaxed text-neutral-700">
+                    아버지 젊으셨을 때 모습을 처음 봤어요. 가족들이 다 감동했습니다.
+                  </p>
+                  <div className="text-sm text-neutral-600">김*수 (47세, 남)</div>
+                </div>
+
+                {/* Review 3 */}
+                <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
+                  <div className="mb-4 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="mb-6 leading-relaxed text-neutral-700">
+                    부모님 두 분 다 너무 좋아하셨어요. 감사합니다.
+                  </p>
+                  <div className="text-sm text-neutral-600">이*희 (51세, 여)</div>
+                </div>
+
+                {/* Review 4 */}
+                <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
+                  <div className="mb-4 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="mb-6 leading-relaxed text-neutral-700">
+                    흑백 사진이었는데 색이 입혀지니 신기했어요. 어머니가 계속 보고 계세요.
+                  </p>
+                  <div className="text-sm text-neutral-600">최*민 (45세, 남)</div>
+                </div>
+
+                {/* Review 5 */}
+                <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
+                  <div className="mb-4 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="mb-6 leading-relaxed text-neutral-700">
+                    아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
+                  </p>
+                  <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
+                </div>
+
+                {/* Review 6 */}
+                <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
+                  <div className="mb-4 flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
+                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p className="mb-6 leading-relaxed text-neutral-700">
+                    결과물이 기대 이상이었어요. 부모님이 매우 만족하셨습니다.
+                  </p>
+                  <div className="text-sm text-neutral-600">윤*호 (44세, 남)</div>
+                </div>
+              </Marquee>
             </div>
+          </section>
+        )}
 
-            <Marquee gradient={false} speed={40} className="py-4">
-              {/* Review 1 */}
-              <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
-                <div className="mb-4 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="mb-6 leading-relaxed text-neutral-700">
-                  어머니가 정말 좋아하셨어요. 영상 보시면서 많이 우셨습니다.
-                </p>
-                <div className="text-sm text-neutral-600">박*영 (43세, 여)</div>
-              </div>
-
-              {/* Review 2 */}
-              <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
-                <div className="mb-4 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="mb-6 leading-relaxed text-neutral-700">
-                  아버지 젊으셨을 때 모습을 처음 봤어요. 가족들이 다 감동했습니다.
-                </p>
-                <div className="text-sm text-neutral-600">김*수 (47세, 남)</div>
-              </div>
-
-              {/* Review 3 */}
-              <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
-                <div className="mb-4 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="mb-6 leading-relaxed text-neutral-700">
-                  부모님 두 분 다 너무 좋아하셨어요. 감사합니다.
-                </p>
-                <div className="text-sm text-neutral-600">이*희 (51세, 여)</div>
-              </div>
-
-              {/* Review 4 */}
-              <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
-                <div className="mb-4 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="mb-6 leading-relaxed text-neutral-700">
-                  흑백 사진이었는데 색이 입혀지니 신기했어요. 어머니가 계속 보고 계세요.
-                </p>
-                <div className="text-sm text-neutral-600">최*민 (45세, 남)</div>
-              </div>
-
-              {/* Review 5 */}
-              <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
-                <div className="mb-4 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="mb-6 leading-relaxed text-neutral-700">
-                  아버지 생신 선물로 드렸는데 정말 좋아하셨습니다.
-                </p>
-                <div className="text-sm text-neutral-600">정*아 (49세, 여)</div>
-              </div>
-
-              {/* Review 6 */}
-              <div className="mx-3 w-[280px] rounded-2xl border border-neutral-100 bg-white p-6 shadow-sm md:p-8">
-                <div className="mb-4 flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20">
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="mb-6 leading-relaxed text-neutral-700">
-                  결과물이 기대 이상이었어요. 부모님이 매우 만족하셨습니다.
-                </p>
-                <div className="text-sm text-neutral-600">윤*호 (44세, 남)</div>
-              </div>
-            </Marquee>
-          </div>
-        </section>
-
-        <section className="border-y border-neutral-100 bg-neutral-50 py-16 md:py-24">
+        <section className="border-y border-neutral-100 bg-white py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-6xl">
               <div className="mb-12 text-center md:mb-20">
@@ -542,159 +441,249 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Pricing Section */}
-        <section className="container mx-auto bg-gradient-to-b from-white to-neutral-50 px-4 py-16 sm:px-6 md:py-24 lg:px-8">
-          <div className="mx-auto max-w-2xl">
-            <div className="mb-12 text-center">
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2">
-                <span className="text-sm font-semibold text-red-600">출시 기념 특가</span>
-                <span className="text-xs text-red-500">최대 60% 할인</span>
+        {/* Beta Test CTA Section */}
+        {process.env.NEXT_PUBLIC_IS_BETA_TEST === 'true' && (
+          <section className="container mx-auto px-4 py-20 sm:px-6 md:py-32 lg:px-8">
+            <div className="mx-auto max-w-2xl">
+              {/* 얼리버드 배지 */}
+              <div className="mb-10 flex justify-center">
+                <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-5 py-2.5">
+                  <span className="text-xl">✨</span>
+                  <span className="text-sm font-semibold text-neutral-700">
+                    얼리 테스터 모집 중
+                  </span>
+                </div>
               </div>
-              <h2 className="font-display mb-3 text-3xl font-bold md:text-4xl">
-                소중한 추억을 되살려보세요
-              </h2>
-            </div>
 
-            <div className="space-y-3">
-              {/* 단품 제작 */}
-              <div
-                className={`cursor-pointer rounded-2xl border-2 bg-white transition-all ${
-                  selectedPlan === 'single'
-                    ? 'border-neutral-900 shadow-md'
-                    : 'border-neutral-200 hover:border-neutral-300'
-                }`}
-                onClick={() => {
-                  setSelectedPlan('single');
-                  setExpandedPlan(expandedPlan === 'single' ? null : 'single');
-                }}
-              >
-                <div className="flex items-center justify-between p-5">
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
-                        selectedPlan === 'single'
-                          ? 'border-neutral-900 bg-neutral-900'
-                          : 'border-neutral-300'
-                      }`}
-                    >
-                      {selectedPlan === 'single' && <Check className="h-4 w-4 text-white" />}
+              {/* 메인 카피 */}
+              <h2 className="font-display mb-4 text-center text-3xl leading-tight font-bold tracking-tight text-neutral-900 md:text-5xl">
+                세상 어디에도 없던
+                <br />
+                특별한 경험을 무료로
+              </h2>
+
+              {/* 서브 카피 */}
+              <p className="mb-10 text-center text-base leading-relaxed text-neutral-600 md:text-lg">
+                부모님의 청춘을 되살리는 유일한 서비스.
+                <br className="md:hidden" /> 지금 베타 테스터로 먼저 경험하세요.
+              </p>
+
+              {/* 가격 카드 */}
+              <div className="mb-5 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-10">
+                {/* 가격 비교 */}
+                <div className="mb-6">
+                  <div className="mb-5 flex items-center justify-center gap-3">
+                    <div className="text-center">
+                      <p className="mb-1 text-xs font-medium text-neutral-500">정가</p>
+                      <p className="text-2xl font-bold text-neutral-400 line-through md:text-3xl">
+                        25,000원
+                      </p>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold">단품 제작</h3>
-                      <p className="text-sm text-neutral-500">원하는 만큼만</p>
+                    <div className="text-2xl font-bold text-neutral-300 md:text-3xl">→</div>
+                    <div className="text-center">
+                      <p className="mb-1 text-xs font-medium text-neutral-500">베타 테스터</p>
+                      <p className="text-4xl font-bold text-neutral-900 md:text-5xl">0원</p>
                     </div>
                   </div>
-                  <ChevronDown
-                    className={`h-5 w-5 text-neutral-400 transition-transform ${
-                      expandedPlan === 'single' ? 'rotate-180' : ''
-                    }`}
-                  />
-                </div>
 
-                {expandedPlan === 'single' && (
-                  <div className="border-t border-neutral-100 px-5 pt-2 pb-5">
-                    <div className="mb-4">
-                      <div className="mb-1 flex items-baseline gap-2">
-                        <span className="text-sm text-neutral-400 line-through">3,000원</span>
-                        <span className="text-2xl font-bold text-neutral-900">1,500원</span>
-                        <span className="text-sm text-neutral-600">/장</span>
-                      </div>
-                      <span className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
-                        50% 할인
-                      </span>
-                    </div>
-
-                    <ul className="mb-4 space-y-2 text-sm text-neutral-600">
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span>사진 1장당 가격</span>
+                  <div className="rounded-xl bg-neutral-50 p-5">
+                    <p className="mb-3 text-center text-sm font-semibold text-neutral-700">
+                      포함된 서비스
+                    </p>
+                    <ul className="space-y-2.5 text-sm text-neutral-600">
+                      <li className="flex items-start gap-2.5">
+                        <span className="mt-0.5 text-neutral-900">•</span>
+                        <span>사진 10장까지 완전 무료 제작</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span>AI 화질 복원 및 컬러 추가</span>
+                      <li className="flex items-start gap-2.5">
+                        <span className="mt-0.5 text-neutral-900">•</span>
+                        <span>AI 화질 복원 & 컬러라이제이션</span>
                       </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span>고품질 이미지 전송</span>
+                      <li className="flex items-start gap-2.5">
+                        <span className="mt-0.5 text-neutral-900">•</span>
+                        <span>감성 영상 제작 및 카카오톡 전송</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="mt-0.5 text-neutral-900">•</span>
+                        <span>결제 정보 입력 없이 바로 체험</span>
                       </li>
                     </ul>
-
-                    <Button
-                      size="lg"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        scrollToDemo();
-                      }}
-                      className="w-full bg-neutral-900 px-10 py-6 text-lg text-white hover:bg-neutral-800"
-                    >
-                      바로 제작하기
-                    </Button>
                   </div>
-                )}
+                </div>
               </div>
 
-              {/* 청춘 스토리 (기본 선택 & 펼쳐짐) */}
-              <div
-                className={`relative cursor-pointer overflow-visible rounded-2xl border-2 bg-white transition-all ${
-                  selectedPlan === 'story'
-                    ? 'border-neutral-900 shadow-lg'
-                    : 'border-neutral-200 hover:border-neutral-300'
-                }`}
-                onClick={() => {
-                  setSelectedPlan('story');
-                  setExpandedPlan(expandedPlan === 'story' ? null : 'story');
-                }}
-              >
-                {/* 인기 배지 */}
-                <div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2">
-                  <div className="flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-4 py-1 text-xs font-bold text-red-600 shadow-lg">
-                    가장 인기
-                  </div>
-                </div>
+              {/* CTA 버튼 */}
+              <div className="space-y-4">
+                <Button
+                  size="lg"
+                  onClick={scrollToDemo}
+                  className="h-14 w-full rounded-xl bg-neutral-900 text-lg font-semibold text-white transition-all hover:bg-neutral-800 md:h-16 md:text-xl"
+                >
+                  지금 무료로 만들어보기
+                </Button>
 
-                <div className="flex items-center justify-between p-5 pt-7">
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
-                        selectedPlan === 'story'
-                          ? 'border-neutral-900 bg-neutral-900'
-                          : 'border-neutral-300'
+                <p className="text-center text-sm text-neutral-500">
+                  베타 기간 종료 시 유료로 전환됩니다
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Pricing Section */}
+        {process.env.NEXT_PUBLIC_IS_BETA_TEST !== 'true' && (
+          <section className="container mx-auto bg-gradient-to-b from-white to-neutral-50 px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+            <div className="mx-auto max-w-2xl">
+              <div className="mb-12 text-center">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2">
+                  <span className="text-sm font-semibold text-red-600">출시 기념 특가</span>
+                  <span className="text-xs text-red-500">최대 60% 할인</span>
+                </div>
+                <h2 className="font-display mb-3 text-3xl font-bold md:text-4xl">
+                  소중한 추억을 되살려보세요
+                </h2>
+              </div>
+
+              <div className="space-y-3">
+                {/* 단품 제작 */}
+                <div
+                  className={`cursor-pointer rounded-2xl border-2 bg-white transition-all ${
+                    selectedPlan === 'single'
+                      ? 'border-neutral-900 shadow-md'
+                      : 'border-neutral-200 hover:border-neutral-300'
+                  }`}
+                  onClick={() => {
+                    setSelectedPlan('single');
+                    setExpandedPlan(expandedPlan === 'single' ? null : 'single');
+                  }}
+                >
+                  <div className="flex items-center justify-between p-5">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
+                          selectedPlan === 'single'
+                            ? 'border-neutral-900 bg-neutral-900'
+                            : 'border-neutral-300'
+                        }`}
+                      >
+                        {selectedPlan === 'single' && <Check className="h-4 w-4 text-white" />}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold">단품 제작</h3>
+                        <p className="text-sm text-neutral-500">원하는 만큼만</p>
+                      </div>
+                    </div>
+                    <ChevronDown
+                      className={`h-5 w-5 text-neutral-400 transition-transform ${
+                        expandedPlan === 'single' ? 'rotate-180' : ''
                       }`}
-                    >
-                      {selectedPlan === 'story' && <Check className="h-4 w-4 text-white" />}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold">다시 돌아온 청춘 스토리</h3>
-                      <p className="text-sm text-neutral-500">가장 많이 선택하는</p>
-                    </div>
+                    />
                   </div>
-                  <ChevronDown
-                    className={`h-5 w-5 text-neutral-400 transition-transform ${
-                      expandedPlan === 'story' ? 'rotate-180' : ''
-                    }`}
-                  />
+
+                  {expandedPlan === 'single' && (
+                    <div className="border-t border-neutral-100 px-5 pt-2 pb-5">
+                      <div className="mb-4">
+                        <div className="mb-1 flex items-baseline gap-2">
+                          <span className="text-sm text-neutral-400 line-through">3,000원</span>
+                          <span className="text-2xl font-bold text-neutral-900">1,500원</span>
+                          <span className="text-sm text-neutral-600">/장</span>
+                        </div>
+                        <span className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
+                          50% 할인
+                        </span>
+                      </div>
+
+                      <ul className="mb-4 space-y-2 text-sm text-neutral-600">
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span>사진 1장당 최대 8초로 영상화</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span>AI 화질 복원 및 컬러 추가</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span>고품질 이미지 전송</span>
+                        </li>
+                      </ul>
+
+                      <Button
+                        size="lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          scrollToDemo();
+                        }}
+                        className="w-full bg-neutral-900 px-10 py-6 text-lg text-white hover:bg-neutral-800"
+                      >
+                        바로 제작하기
+                      </Button>
+                    </div>
+                  )}
                 </div>
 
-                {expandedPlan === 'story' && (
-                  <div className="border-t border-neutral-100 px-5 pt-2 pb-5">
-                    <div className="mb-4 rounded-xl p-4">
-                      <div className="mb-3 text-center">
-                        <div className="mb-1 text-2xl font-bold">🎬 사진 10장 → 1분 영상</div>
+                {/* 청춘 스토리 (기본 선택 & 펼쳐짐) */}
+                <div
+                  className={`relative cursor-pointer overflow-visible rounded-2xl border-2 bg-white transition-all ${
+                    selectedPlan === 'story'
+                      ? 'border-neutral-900 shadow-lg'
+                      : 'border-neutral-200 hover:border-neutral-300'
+                  }`}
+                  onClick={() => {
+                    setSelectedPlan('story');
+                    setExpandedPlan(expandedPlan === 'story' ? null : 'story');
+                  }}
+                >
+                  {/* 인기 배지 */}
+                  <div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2">
+                    <div className="flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-4 py-1 text-xs font-bold text-red-600 shadow-lg">
+                      가장 인기
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-5 pt-7">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
+                          selectedPlan === 'story'
+                            ? 'border-neutral-900 bg-neutral-900'
+                            : 'border-neutral-300'
+                        }`}
+                      >
+                        {selectedPlan === 'story' && <Check className="h-4 w-4 text-white" />}
                       </div>
-                      <div className="mb-1 flex items-baseline justify-center gap-2">
-                        <span className="text-lg text-neutral-400 line-through">30,000원</span>
-                        <span className="text-3xl font-bold text-neutral-900">12,900원</span>
-                      </div>
-                      <div className="text-center">
-                        <span className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
-                          57% 할인
-                        </span>
-                        <p className="mt-2 text-xs text-neutral-500">장당 1,290원</p>
+                      <div>
+                        <h3 className="text-lg font-semibold">다시 돌아온 청춘 스토리</h3>
+                        <p className="text-sm text-neutral-500">가장 많이 선택하는</p>
                       </div>
                     </div>
+                    <ChevronDown
+                      className={`h-5 w-5 text-neutral-400 transition-transform ${
+                        expandedPlan === 'story' ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </div>
 
-                    {/* 차별화 포인트 */}
-                    {/* <div className="mb-5 rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50 to-orange-50 p-4">
+                  {expandedPlan === 'story' && (
+                    <div className="border-t border-neutral-100 px-5 pt-2 pb-5">
+                      <div className="mb-4 rounded-xl p-4">
+                        <div className="mb-3 text-center">
+                          <div className="mb-1 text-2xl font-bold">🎬 사진 10장 → 1분 영상</div>
+                        </div>
+                        <div className="mb-1 flex items-baseline justify-center gap-2">
+                          <span className="text-lg text-neutral-400 line-through">30,000원</span>
+                          <span className="text-3xl font-bold text-neutral-900">12,900원</span>
+                        </div>
+                        <div className="text-center">
+                          <span className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
+                            57% 할인
+                          </span>
+                          <p className="mt-2 text-xs text-neutral-500">장당 1,290원</p>
+                        </div>
+                      </div>
+
+                      {/* 차별화 포인트 */}
+                      {/* <div className="mb-5 rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50 to-orange-50 p-4">
                       <div className="text-center">
                         <div className="mb-2 text-lg font-bold text-neutral-900">
                           🎬 이제까지 없던 새로운 방식
@@ -709,160 +698,221 @@ export default function Home() {
                       </div>
                     </div> */}
 
-                    {/* 영상 미리보기 */}
-                    <div className="mb-5 overflow-hidden rounded-xl bg-neutral-900">
-                      <video
-                        src="/story_video.mp4"
-                        controls
-                        preload="metadata"
-                        poster="/story_video_poster.jpg"
-                        playsInline
-                        className="w-full"
-                        style={{ maxHeight: '500px' }}
-                      />
-                    </div>
+                      {/* 영상 미리보기 */}
+                      <div className="mb-5 overflow-hidden rounded-xl bg-neutral-900">
+                        <video
+                          src="/story_video.mp4"
+                          controls
+                          preload="metadata"
+                          poster="/story_video_poster.jpg"
+                          playsInline
+                          className="w-full"
+                          style={{ maxHeight: '500px' }}
+                        />
+                      </div>
 
-                    <ul className="mb-5 space-y-2.5 text-sm">
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">
-                          여러 추억을 하나의 감동적인 스토리로
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">감성 음악과 함께 1분 영상 제작</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">
-                          AI 화질 복원 및 자연스러운 컬러 추가
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">부모님이 가장 좋아하시는 구성</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">카카오톡으로 간편하게 전송</span>
-                      </li>
-                    </ul>
+                      <ul className="mb-5 space-y-2.5 text-sm">
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">
+                            여러 추억을 하나의 감동적인 스토리로
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">감성 음악과 함께 1분 영상 제작</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">
+                            AI 화질 복원 및 자연스러운 컬러 추가
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">부모님이 가장 좋아하시는 구성</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">카카오톡으로 간편하게 전송</span>
+                        </li>
+                      </ul>
 
-                    <Button
-                      size="lg"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        scrollToDemo();
-                      }}
-                      className="w-full bg-neutral-900 px-10 py-6 text-lg text-white hover:bg-neutral-800"
-                    >
-                      바로 제작하기
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              {/* 프리미엄 패키지 */}
-              <div
-                className={`cursor-pointer rounded-2xl border-2 bg-white transition-all ${
-                  selectedPlan === 'premium'
-                    ? 'border-neutral-900 shadow-md'
-                    : 'border-neutral-200 hover:border-neutral-300'
-                }`}
-                onClick={() => {
-                  setSelectedPlan('premium');
-                  setExpandedPlan(expandedPlan === 'premium' ? null : 'premium');
-                }}
-              >
-                <div className="flex items-center justify-between p-5">
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
-                        selectedPlan === 'premium'
-                          ? 'border-neutral-900 bg-neutral-900'
-                          : 'border-neutral-300'
-                      }`}
-                    >
-                      {selectedPlan === 'premium' && <Check className="h-4 w-4 text-white" />}
+                      <Button
+                        size="lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          scrollToDemo();
+                        }}
+                        className="w-full bg-neutral-900 px-10 py-6 text-lg text-white hover:bg-neutral-800"
+                      >
+                        바로 제작하기
+                      </Button>
                     </div>
-                    <div>
-                      <h3 className="flex items-center gap-2 text-lg font-semibold">
-                        프리미엄 패키지
-                      </h3>
-                      <p className="text-sm text-neutral-500">가장 큰 감동</p>
-                    </div>
-                  </div>
-                  <ChevronDown
-                    className={`h-5 w-5 text-neutral-400 transition-transform ${
-                      expandedPlan === 'premium' ? 'rotate-180' : ''
-                    }`}
-                  />
+                  )}
                 </div>
 
-                {expandedPlan === 'premium' && (
-                  <div className="border-t border-neutral-100 px-5 pt-2 pb-5">
-                    <div className="mb-4 rounded-xl p-4">
-                      <div className="mb-3 text-center">
-                        <div className="mb-1 text-2xl font-bold">🎥 사진 20장 → 2분 영상</div>
+                {/* 프리미엄 패키지 */}
+                <div
+                  className={`cursor-pointer rounded-2xl border-2 bg-white transition-all ${
+                    selectedPlan === 'premium'
+                      ? 'border-neutral-900 shadow-md'
+                      : 'border-neutral-200 hover:border-neutral-300'
+                  }`}
+                  onClick={() => {
+                    setSelectedPlan('premium');
+                    setExpandedPlan(expandedPlan === 'premium' ? null : 'premium');
+                  }}
+                >
+                  <div className="flex items-center justify-between p-5">
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
+                          selectedPlan === 'premium'
+                            ? 'border-neutral-900 bg-neutral-900'
+                            : 'border-neutral-300'
+                        }`}
+                      >
+                        {selectedPlan === 'premium' && <Check className="h-4 w-4 text-white" />}
                       </div>
-                      <div className="mb-1 flex items-baseline justify-center gap-2">
-                        <span className="text-lg text-neutral-400 line-through">50,000원</span>
-                        <span className="text-3xl font-bold text-neutral-900">19,900원</span>
-                      </div>
-                      <div className="text-center">
-                        <span className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
-                          60% 할인
-                        </span>
-                        <p className="mt-2 text-xs text-neutral-500">장당 995원</p>
+                      <div>
+                        <h3 className="flex items-center gap-2 text-lg font-semibold">
+                          프리미엄 패키지
+                        </h3>
+                        <p className="text-sm text-neutral-500">가장 큰 감동</p>
                       </div>
                     </div>
-
-                    <ul className="mb-5 space-y-2.5 text-sm">
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">
-                          더 많은 추억, 더 긴 감동의 2분 영상
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">프리미엄 음악과 고급 편집</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">
-                          AI 화질 복원 및 자연스러운 컬러 추가
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">부모님께 가장 큰 감동 선물</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span className="text-neutral-700">장당 최저가 (995원)</span>
-                      </li>
-                    </ul>
-
-                    <Button
-                      size="lg"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        scrollToDemo();
-                      }}
-                      className="w-full bg-neutral-900 px-10 py-6 text-lg text-white hover:bg-neutral-800"
-                    >
-                      바로 제작하기
-                    </Button>
+                    <ChevronDown
+                      className={`h-5 w-5 text-neutral-400 transition-transform ${
+                        expandedPlan === 'premium' ? 'rotate-180' : ''
+                      }`}
+                    />
                   </div>
-                )}
+
+                  {expandedPlan === 'premium' && (
+                    <div className="border-t border-neutral-100 px-5 pt-2 pb-5">
+                      <div className="mb-4 rounded-xl p-4">
+                        <div className="mb-3 text-center">
+                          <div className="mb-1 text-2xl font-bold">🎥 사진 20장 → 2분 영상</div>
+                        </div>
+                        <div className="mb-1 flex items-baseline justify-center gap-2">
+                          <span className="text-lg text-neutral-400 line-through">50,000원</span>
+                          <span className="text-3xl font-bold text-neutral-900">19,900원</span>
+                        </div>
+                        <div className="text-center">
+                          <span className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
+                            60% 할인
+                          </span>
+                          <p className="mt-2 text-xs text-neutral-500">장당 995원</p>
+                        </div>
+                      </div>
+
+                      <ul className="mb-5 space-y-2.5 text-sm">
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">
+                            더 많은 추억, 더 긴 감동의 2분 영상
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">프리미엄 음악과 고급 편집</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">
+                            AI 화질 복원 및 자연스러운 컬러 추가
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">부모님께 가장 큰 감동 선물</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span className="text-neutral-700">장당 최저가 (995원)</span>
+                        </li>
+                      </ul>
+
+                      <Button
+                        size="lg"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          scrollToDemo();
+                        }}
+                        className="w-full bg-neutral-900 px-10 py-6 text-lg text-white hover:bg-neutral-800"
+                      >
+                        바로 제작하기
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <p className="mt-6 text-center text-xs text-neutral-500">
+                * 출시 기념 특가는 조기 마감될 수 있습니다
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* Brand Story Section */}
+        <section className="border-y border-neutral-100 bg-neutral-50 py-16 md:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl">
+              <div className="mb-8 text-center md:mb-12">
+                <h2 className="font-display lack-600 mb-6 border-b border-b-5 border-dotted pb-10 text-3xl leading-tight font-bold md:text-4xl">
+                  Life Is Short's <span className="text-xl">Brand Story</span>
+                </h2>
+              </div>
+
+              <div className="mx-7 space-y-1 text-base leading-relaxed text-neutral-700 md:text-lg md:leading-relaxed">
+                <p>
+                  안녕하세요. <br></br>Life is Short 서비스를 공동으로 기획하고 운영 중인
+                  김태양이라고 합니다.
+                </p>
+                <br></br>
+                <p>
+                  저희 서비스를 재밌게 보셨나요? 어쩌면 조금은 생소하게도, 조금은 놀랍게도 느껴졌을
+                  것 같습니다. 저희가 숨결을 불어넣은 영상들은 여태껏 많은 고객님들에게 감동을
+                  선물했습니다. 그게 저희 팀의 커다란 자부심 중 하나이기도 하고요.
+                </p>
+                <br></br>
+                <p>
+                  이 서비스가 어쩌다가 세상에 태어났을까요?
+                  <p className="font-semibold text-neutral-900">
+                    사실, 저희 어머니께서 참 좋아하시더라고요.
+                  </p>
+                </p>
+                <br></br>
+                <p>
+                  어머니와 함께 핸드폰 갤러리를 돌아보던 어느 주말, 어머니께서 말씀하셨습니다.
+                  <p className="text-neutral-600 italic">
+                    "아 이때 영상이 있었으면 참 좋았을 텐데."
+                  </p>
+                </p>
+                <br></br>
+                <p>
+                  그때 저는 제가 능숙하게 다룰 줄 아는 인공지능을 이용해보기로 마음 먹었습니다. 한두
+                  시간 정도 여러 차례 영상화 작업을 시도해본 뒤, 어머니께 보여드렸습니다. 제가
+                  평소에 장난기가 많아서, 다소 장난스럽게 영상을 만들었었죠. 그렇게 완성된 영상이
+                  바로 지금 옆에서 여러분께서 보고 계신 영상입니다. 어머니께서 놀라시면서도 아주
+                  기뻐하셨습니다. 몇 번씩이고 영상을 돌려보시더라고요.
+                </p>
+                <br></br>
+                <p>
+                  <p className="font-semibold text-neutral-900">"이거다" 싶었습니다.</p>제 부모님
+                  뿐만 아니라 다른 사람들에게도 가치를, 만족을 줄 수 있는 방법. 저는 곧바로 팀원과
+                  함께 서비스를 기획했고, 끝내 이렇게 여러분들께 인사드리고 있습니다.{' '}
+                </p>
+                <br></br>
+                <p>
+                  가족분들과 한 번 더 웃고, 한 번 더 포옹하고, 한 번 더 행복할 수 있는 계기가
+                  되었으면 좋겠습니다. 오늘도, 내일도 행복하시기를 바랍니다.
+                </p>
+                <p className="mt-8 text-right font-medium text-neutral-800">김태양 올림</p>
               </div>
             </div>
-
-            <p className="mt-6 text-center text-xs text-neutral-500">
-              * 출시 기념 특가는 조기 마감될 수 있습니다
-            </p>
           </div>
         </section>
       </main>
