@@ -10,8 +10,10 @@ import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import Marquee from "react-fast-marquee"
+import CreateGroupDialog from "@/components/landing/CreateGroupDialog"
 
 export default function Home() {
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [showForm, setShowForm] = useState(false)
@@ -51,10 +53,7 @@ export default function Home() {
   }
 
   const scrollToDemo = () => {
-    setShowUpload(true)
-    setTimeout(() => {
-      document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth", block: "center" })
-    }, 100)
+    setDialogOpen(true)
   }
 
   return (
@@ -857,6 +856,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* 그룹 생성 다이얼로그 */}
+      <CreateGroupDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   )
 }
