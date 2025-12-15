@@ -122,7 +122,7 @@ export default function Home() {
                   <Button
                     size="lg"
                     onClick={scrollToDemo}
-                    className="bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
+                    className="animate-fadeInUp animate-delay-3500 bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
                   >
                     바로 제작하기
                   </Button>
@@ -141,15 +141,15 @@ export default function Home() {
                           <Upload className="h-7 w-7 text-white" />
                         </div>
                         <div className="text-center">
-                          <h3 className="font-display mb-2 text-lg font-semibold md:text-xl">
+                          <h3 className="font-display mb-2 text-lg font-semibold md:text-4xl">
                             소중한 추억을 업로드해주세요
                           </h3>
-                          <p className="mb-6 text-sm text-neutral-500">
+                          <p className="mb-6 text-sm text-neutral-500 md:text-lg">
                             초점이 잘 맞는, 정면에서 찍은 사진이 가장 좋아요.
                             <br></br>JPG, PNG 형식을 지원해요.
                           </p>
                           <label htmlFor="photo-upload" className="inline-block">
-                            <span className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-neutral-900 px-8 text-sm font-medium text-white ring-offset-white transition-colors hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
+                            <span className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-neutral-900 px-8 text-sm font-medium text-white ring-offset-white transition-colors hover:bg-neutral-700 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
                               사진 전달하기
                             </span>
                           </label>
@@ -391,7 +391,7 @@ export default function Home() {
                 <h2 className="font-display mb-4 text-3xl font-bold md:text-5xl">
                   저희는 이렇게 추억을 되살려 드려요
                 </h2>
-                <p className="text-lg text-neutral-600">
+                <p className="text-xl text-neutral-600">
                   추억이 온전히 되살아날 수 있도록, <br></br>저희 팀의 기술을 최대한 활용하고
                   있어요.
                 </p>
@@ -399,7 +399,7 @@ export default function Home() {
 
               <div className="space-y-8 md:space-y-12">
                 {/* Step 1 */}
-                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-10">
+                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="relative mx-auto w-48 md:mx-0 md:w-64">
                       <div className="aspect-[2/3] overflow-hidden rounded-xl shadow-md">
@@ -419,35 +419,38 @@ export default function Home() {
                         <ImageIcon className="h-4 w-4 text-neutral-700" />
                         <span className="text-sm font-medium">사진 준비</span>
                       </div>
-                      <h3 className="font-display text-2xl font-bold md:text-4xl">
+                      <h3 className="font-display text-xl font-bold md:text-4xl">
                         소중한 사진을 받아 검수해요
                       </h3>
-                      <p className="text-base leading-relaxed text-neutral-600">
-                        추억이 담긴 옛날 사진들은 찢어지거나, 훼손되거나, 빛바랜 경우가 많아요.
-                        하지만 걱정하지 마세요. 그런 사진들도 휴대폰 카메라로 찍어서 보내주시면
-                        저희가 검수를 도와드려요.
+                      <p className="text-base text-xl leading-relaxed text-neutral-600">
+                        추억이 담긴 사진들은 훼손되거나, 빛바랜 경우가 많아요.
+                        <br></br>
+                        하지만 걱정하지 마세요.
+                        <br></br>그런 사진들도 휴대폰 카메라로 찍어서 보내주시면 저희가 검수를
+                        도와드려요.
                       </p>
                     </div>
                   </div>
                 </div>
 
                 {/* Step 2 */}
-                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-10">
+                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="order-2 space-y-3 text-center md:order-1 md:text-left">
                       <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1.5">
                         <Palette className="h-4 w-4 text-neutral-700" />
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
-                      <h3 className="font-display text-xl font-bold md:text-2xl">
+                      <h3 className="font-display text-xl font-bold md:text-4xl">
                         최신 AI를 활용해
                         <br />
                         사진을 최상의 품질로 복원해요
                       </h3>
-                      <p className="text-base leading-relaxed text-neutral-600">
-                        추억의 해상도는 생생해야 하는 법이에요. Google의 Nano banana Pro AI를 이용해
-                        "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래
-                        흐려진 부분 등을 복원하고, 사진의 화질을 올려요.
+                      <p className="text-base text-lg leading-relaxed text-neutral-600 md:text-xl">
+                        추억의 해상도는 생생해야 하는 법이에요.
+                        <br></br>Google의 Nano banana Pro AI를 이용해 <br></br>"업스케일링"이라는
+                        과정을 거쳐요. <br></br>사진의 찢어져 사라진 부분, 흐려진 부분 등을
+                        복원하고, 사진의 화질을 올려요.
                       </p>
                     </div>
                     <div className="relative order-1 mx-auto w-48 md:order-2 md:mx-0 md:ml-auto md:w-64">
@@ -466,7 +469,7 @@ export default function Home() {
                 </div>
 
                 {/* Step 3 */}
-                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-10">
+                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="relative mx-auto w-48 md:mx-0 md:w-64">
                       <div className="aspect-[2/3] overflow-hidden rounded-xl shadow-md">
@@ -488,12 +491,12 @@ export default function Home() {
                         <Video className="h-4 w-4 text-neutral-700" />
                         <span className="text-sm font-medium">영상 제작</span>
                       </div>
-                      <h3 className="font-display text-xl font-bold md:text-2xl">
-                        복원된 사진을
+                      <h3 className="font-display text-xl font-bold md:text-4xl">
+                        첨단 AI 기술을 활용해
                         <br />
-                        첨단 AI 기술을 활용해 영상으로 만들어요
+                        복원된 사진을 영상으로 바꿔요
                       </h3>
-                      <p className="text-base leading-relaxed text-neutral-600">
+                      <p className="text-base leading-relaxed text-neutral-600 md:text-xl">
                         Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화
                         작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
                       </p>
@@ -502,19 +505,19 @@ export default function Home() {
                 </div>
 
                 {/* Step 4 */}
-                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-10">
+                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="order-2 space-y-3 text-center md:order-1 md:text-left">
                       <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1.5">
                         <MessageCircle className="h-4 w-4 text-neutral-700" />
                         <span className="text-sm font-medium">카카오톡 전송</span>
                       </div>
-                      <h3 className="font-display text-xl font-bold md:text-2xl">
-                        영상은 물론, 복원된 사진까지 함께 <br></br>원본 화질로 보내드려요.
+                      <h3 className="font-display text-xl font-bold md:text-4xl">
+                        영상은 물론, 복원된 사진까지 <br></br>원본 화질로 함께 보내드려요
                       </h3>
-                      <p className="text-base leading-relaxed text-neutral-600">
+                      <p className="text-base leading-relaxed text-neutral-600 md:text-xl">
                         하루 정도 소요되니 조금만 기다려주세요.<br></br> 완성된 영상과 함께 복원된
-                        사진들도 원본 화질로 모두 보내드립니다.
+                        사진들도 <br></br> 원본 화질로 모두 보내드립니다.
                       </p>
                     </div>
                     <div className="relative order-1 mx-auto w-48 md:order-2 md:mx-0 md:ml-auto md:w-64">
@@ -541,7 +544,7 @@ export default function Home() {
           <div className="mx-auto max-w-2xl">
             <div className="mb-12 text-center">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2">
-                <span className="text-sm font-semibold text-red-600">🎉 출시 기념 특가</span>
+                <span className="text-sm font-semibold text-red-600">출시 기념 특가</span>
                 <span className="text-xs text-red-500">최대 60% 할인</span>
               </div>
               <h2 className="font-display mb-3 text-3xl font-bold md:text-4xl">
@@ -642,7 +645,7 @@ export default function Home() {
                 {/* 인기 배지 */}
                 <div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2">
                   <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-1 text-xs font-bold text-white shadow-lg">
-                    ⭐ 가장 인기
+                    가장 인기
                   </div>
                 </div>
 
@@ -688,7 +691,7 @@ export default function Home() {
                     </div>
 
                     {/* 차별화 포인트 */}
-                    <div className="mb-5 rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50 to-orange-50 p-4">
+                    {/* <div className="mb-5 rounded-xl border border-amber-100 bg-gradient-to-br from-amber-50 to-orange-50 p-4">
                       <div className="text-center">
                         <div className="mb-2 text-lg font-bold text-neutral-900">
                           🎬 이제까지 없던 새로운 방식
@@ -701,7 +704,7 @@ export default function Home() {
                           추억이 눈앞에 돌아옵니다.
                         </p>
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* 영상 미리보기 */}
                     <div className="mb-5 overflow-hidden rounded-xl bg-neutral-900">
