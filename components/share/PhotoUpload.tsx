@@ -41,9 +41,9 @@ export default function PhotoUpload({
     const savedNickname = localStorage.getItem(nicknameKey);
     if (savedNickname) {
       setUploaderNickname(savedNickname);
-    } else {
-      setShowNicknameDialog(true);
     }
+    // 닉네임이 없어도 바로 다이얼로그를 표시하지 않음
+    // 사진 업로드 시도할 때 체크하여 표시함
   }, [nicknameKey]);
 
   // cleanup: 컴포넌트 언마운트 시 미리보기 URL 해제
@@ -196,7 +196,7 @@ export default function PhotoUpload({
             <div className="border-2 border-dashed border-neutral-300 rounded-xl p-6 text-center hover:border-neutral-400 transition-colors">
               <Upload className="w-10 h-10 text-neutral-400 mx-auto mb-2" />
               <p className="text-sm text-neutral-600 mb-1">
-                사진을 선택하거나 드래그하세요
+                사진을 업로드하세요
               </p>
               <p className="text-xs text-neutral-500">
                 JPG, PNG, WebP (최대 10MB)

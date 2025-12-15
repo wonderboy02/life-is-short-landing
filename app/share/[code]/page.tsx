@@ -52,7 +52,7 @@ export default async function SharePage({ params }: Props) {
               <h1 className="text-xl sm:text-2xl font-bold font-display text-neutral-900">
                 {groupData.groupName}
               </h1>
-              <p className="text-sm text-neutral-500">사진 공유 그룹</p>
+              <p className="text-sm text-neutral-500">추억 앨범</p>
             </div>
             <ShareUrlButton url={shareUrl} />
           </div>
