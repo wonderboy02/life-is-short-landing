@@ -172,14 +172,14 @@ export default function PhotoUpload({
 
   return (
     <>
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="space-y-8">
         {/* 헤더 */}
         <div className="text-center space-y-3">
           <h2 className="text-3xl font-bold font-display text-neutral-900">
-            소중한 순간 남기기
+            나도 소중한 사진이 있다면?
           </h2>
           <p className="text-base text-neutral-600 leading-relaxed">
-            옛날 사진 속 잊혀진 이야기를 함께 나눠주세요
+            당신의 추억도 함께 모아주세요
           </p>
           {uploaderNickname && (
             <Button
@@ -196,7 +196,7 @@ export default function PhotoUpload({
 
         {/* 파일 선택 */}
         <div>
-          <Label htmlFor="photo-upload" className="cursor-pointer">
+          <label htmlFor="photo-upload" className="block cursor-pointer">
             <div className="relative bg-gradient-to-br from-neutral-50 to-neutral-100/50 border-2 border-dashed border-neutral-300 rounded-2xl p-12 text-center hover:border-neutral-400 hover:from-neutral-100/80 hover:to-neutral-50 transition-all duration-300 group">
               <div className="absolute inset-0 bg-neutral-900/0 group-hover:bg-neutral-900/[0.02] rounded-2xl transition-colors duration-300" />
               <div className="relative">
@@ -211,7 +211,7 @@ export default function PhotoUpload({
                 </p>
               </div>
             </div>
-          </Label>
+          </label>
           <Input
             id="photo-upload"
             ref={fileInputRef}
