@@ -7,8 +7,8 @@ export const metadata: Metadata = {
   description: "AI가 오래된 사진에 생명을 불어넣습니다",
   generator: "v0.app",
   icons: {
-    icon: "/favicon/favicon_v4.svg",
-    apple: "/favicon/favicon_v4.svg",
+    icon: "/favicon/icon.png",
+    apple: "/favicon/apple-icon.png",
   },
 }
 

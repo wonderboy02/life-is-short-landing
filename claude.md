@@ -76,6 +76,26 @@ life_is_short_landing/
 
 ## Supabase 타입 관리
 
+### ⚠️ AI 필독: 데이터베이스 스키마 변경 시 필수 작업
+**Supabase 데이터베이스 스키마(테이블, 컬럼, Enum 등)를 변경한 경우 반드시 다음 명령어를 실행해야 합니다:**
+
+```bash
+npm run gen:types
+```
+
+**실행해야 하는 경우:**
+- Supabase에서 테이블 추가/삭제/수정
+- 테이블 컬럼 추가/삭제/변경
+- Enum 타입 추가/수정
+- 관계(Foreign Key) 추가/변경
+- SQL 마이그레이션 실행 후
+
+**실행 방법:**
+1. Supabase 스키마 변경 작업 완료
+2. `npm run gen:types` 실행
+3. `lib/supabase/database.ts` 파일이 자동으로 업데이트됨
+4. 변경사항 확인 후 커밋
+
 ### 자동 생성된 데이터베이스 타입
 - **파일**: `lib/supabase/database.ts`
 - **생성 명령어**: `npm run gen:types`
@@ -91,10 +111,13 @@ life_is_short_landing/
   // Insert/Update 타입 사용
   type PhotoInsert = Database['public']['Tables']['photos']['Insert']
   type PhotoUpdate = Database['public']['Tables']['photos']['Update']
+
+  // Enum 타입 사용
+  type ProcessingStatus = Database['public']['Enums']['processing_status']
   ```
 - **주의사항**:
-  - 데이터베이스 스키마 변경 시 `npm run gen:types` 실행하여 타입 동기화
   - 이 파일은 자동 생성되므로 직접 수정하지 말 것
+  - Git에 커밋하여 팀원들과 타입 동기화
 
 ### 수동 관리 타입
 - **파일**: `lib/supabase/types.ts`
@@ -102,3 +125,4 @@ life_is_short_landing/
 - **포함 내용**:
   - API 응답 타입 (ApiResponse, GroupCreateResponse 등)
   - 확장된 엔티티 타입 (PhotoWithUrl 등)
+- **수정 가능**: 이 파일은 필요에 따라 직접 수정 가능

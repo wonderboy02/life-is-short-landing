@@ -5,6 +5,7 @@ export interface Group {
   name: string;
   password_hash: string;
   share_code: string;
+  creator_nickname: string;
   created_at: string;
   updated_at: string;
 }
@@ -37,6 +38,14 @@ export interface GroupCreateResponse {
   shareCode: string;
   groupId: string;
   groupName: string;
+  creatorNickname: string;
+}
+
+export interface GroupVerifyResponse {
+  groupId: string;
+  groupName: string;
+  creatorNickname: string;
+  token: string;
 }
 
 export interface PhotoUploadResponse {
