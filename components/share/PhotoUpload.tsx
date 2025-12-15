@@ -1,12 +1,19 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Upload, X, Loader2 } from 'lucide-react';
+import { Upload, X, Loader2, Edit2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
+import UploaderDialog from './UploaderDialog';
+
+interface FileWithDescription {
+  file: File;
+  description: string;
+}
 
 interface PhotoUploadProps {
   groupId: string;
@@ -14,18 +21,38 @@ interface PhotoUploadProps {
   onUploadSuccess?: () => void;
 }
 
+const NICKNAME_STORAGE_KEY = 'photo-uploader-nickname';
+
 export default function PhotoUpload({
   groupId,
   token,
   onUploadSuccess,
 }: PhotoUploadProps) {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploaderNickname, setUploaderNickname] = useState('');
+  const [showNicknameDialog, setShowNicknameDialog] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<FileWithDescription[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<{
-    [key: string]: boolean;
-  }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 닉네임 불러오기 (localStorage)
+  useEffect(() => {
+    const savedNickname = localStorage.getItem(NICKNAME_STORAGE_KEY);
+    if (savedNickname) {
+      setUploaderNickname(savedNickname);
+    } else {
+      setShowNicknameDialog(true);
+    }
+  }, []);
+
+  const handleNicknameConfirm = (nickname: string) => {
+    setUploaderNickname(nickname);
+    localStorage.setItem(NICKNAME_STORAGE_KEY, nickname);
+    setShowNicknameDialog(false);
+  };
+
+  const handleChangeNickname = () => {
+    setShowNicknameDialog(true);
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -43,7 +70,12 @@ export default function PhotoUpload({
       return true;
     });
 
-    setSelectedFiles((prev) => [...prev, ...validFiles]);
+    const filesWithDescription = validFiles.map((file) => ({
+      file,
+      description: '',
+    }));
+
+    setSelectedFiles((prev) => [...prev, ...filesWithDescription]);
 
     // input 리셋 (같은 파일 다시 선택 가능하도록)
     if (fileInputRef.current) {
@@ -55,24 +87,38 @@ export default function PhotoUpload({
     setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const handleDescriptionChange = (index: number, description: string) => {
+    setSelectedFiles((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, description } : item
+      )
+    );
+  };
+
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
       toast.error('업로드할 사진을 선택해주세요.');
       return;
     }
 
+    if (!uploaderNickname.trim()) {
+      toast.error('닉네임을 설정해주세요.');
+      setShowNicknameDialog(true);
+      return;
+    }
+
     setIsUploading(true);
     let successCount = 0;
-    const progressMap: { [key: string]: boolean } = {};
 
     try {
       // 각 파일 업로드
-      for (const file of selectedFiles) {
+      for (const { file, description } of selectedFiles) {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('groupId', groupId);
-        if (uploaderNickname.trim()) {
-          formData.append('uploaderNickname', uploaderNickname.trim());
+        formData.append('uploaderNickname', uploaderNickname.trim());
+        if (description.trim()) {
+          formData.append('description', description.trim());
         }
 
         try {
@@ -88,8 +134,6 @@ export default function PhotoUpload({
 
           if (result.success) {
             successCount++;
-            progressMap[file.name] = true;
-            setUploadProgress({ ...progressMap });
           } else {
             toast.error(`${file.name}: ${result.error}`);
           }
@@ -102,7 +146,6 @@ export default function PhotoUpload({
       if (successCount > 0) {
         toast.success(`${successCount}개의 사진이 업로드되었습니다!`);
         setSelectedFiles([]);
-        setUploadProgress({});
         onUploadSuccess?.();
       }
     } finally {
@@ -111,10 +154,25 @@ export default function PhotoUpload({
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm">
-      <h3 className="text-lg font-semibold mb-4 font-display">사진 업로드</h3>
+    <>
+      <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm">
+        {/* 헤더: 닉네임 표시 */}
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold font-display">사진 업로드</h3>
+          {uploaderNickname && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleChangeNickname}
+              className="text-sm text-neutral-600"
+            >
+              <Edit2 className="w-3 h-3 mr-1" />
+              {uploaderNickname}
+            </Button>
+          )}
+        </div>
 
-      <div className="space-y-4">
+        <div className="space-y-4">
         {/* 파일 선택 */}
         <div>
           <Label htmlFor="photo-upload" className="cursor-pointer">
@@ -142,50 +200,54 @@ export default function PhotoUpload({
 
         {/* 선택된 파일 목록 */}
         {selectedFiles.length > 0 && (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <Label className="text-sm font-medium">
               선택된 파일 ({selectedFiles.length}개)
             </Label>
-            <div className="max-h-40 overflow-y-auto space-y-2">
-              {selectedFiles.map((file, index) => (
+            <div className="max-h-96 overflow-y-auto space-y-3">
+              {selectedFiles.map((item, index) => (
                 <div
-                  key={`${file.name}-${index}`}
-                  className="flex items-center justify-between bg-neutral-50 rounded-lg p-2"
+                  key={`${item.file.name}-${index}`}
+                  className="bg-neutral-50 rounded-lg p-3 space-y-2"
                 >
-                  <span className="text-sm text-neutral-700 truncate flex-1">
-                    {file.name}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemoveFile(index)}
-                    disabled={isUploading}
-                    className="ml-2"
-                  >
-                    <X className="w-4 h-4" />
-                  </Button>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-neutral-700 truncate flex-1">
+                      {item.file.name}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveFile(index)}
+                      disabled={isUploading}
+                      className="ml-2"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  {/* 사진 설명 입력 */}
+                  <div>
+                    <Textarea
+                      placeholder="사진 설명 (선택사항)"
+                      value={item.description}
+                      onChange={(e) =>
+                        handleDescriptionChange(index, e.target.value)
+                      }
+                      disabled={isUploading}
+                      className="text-sm resize-none"
+                      rows={2}
+                      maxLength={200}
+                    />
+                    {item.description && (
+                      <p className="text-xs text-neutral-500 mt-1">
+                        {item.description.length}/200
+                      </p>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
-
-        {/* 업로더 닉네임 (선택사항) */}
-        <div>
-          <Label htmlFor="uploader-nickname" className="text-sm">
-            닉네임 (선택사항)
-          </Label>
-          <Input
-            id="uploader-nickname"
-            type="text"
-            placeholder="예: 엄마, 아빠"
-            value={uploaderNickname}
-            onChange={(e) => setUploaderNickname(e.target.value)}
-            disabled={isUploading}
-            className="mt-1"
-            maxLength={50}
-          />
-        </div>
 
         {/* 업로드 버튼 */}
         <Button
@@ -204,5 +266,12 @@ export default function PhotoUpload({
         </Button>
       </div>
     </div>
+
+      {/* 닉네임 설정 다이얼로그 */}
+      <UploaderDialog
+        open={showNicknameDialog}
+        onConfirm={handleNicknameConfirm}
+      />
+    </>
   );
 }

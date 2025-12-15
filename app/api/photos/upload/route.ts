@@ -34,12 +34,23 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
     const uploaderNickname = formData.get('uploaderNickname') as string | null;
+    const description = formData.get('description') as string | null;
 
     if (!file) {
       return NextResponse.json<ApiResponse>(
         {
           success: false,
           error: '파일이 필요합니다.',
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!uploaderNickname?.trim()) {
+      return NextResponse.json<ApiResponse>(
+        {
+          success: false,
+          error: '업로더 닉네임이 필요합니다.',
         },
         { status: 400 }
       );
@@ -100,7 +111,8 @@ export async function POST(req: NextRequest) {
         file_name: file.name,
         file_size: file.size,
         mime_type: file.type,
-        uploader_nickname: uploaderNickname || null,
+        uploader_nickname: uploaderNickname.trim(),
+        description: description?.trim() || null,
       })
       .select()
       .single();

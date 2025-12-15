@@ -16,7 +16,8 @@ export interface Photo {
   file_name: string;
   file_size: number;
   mime_type: string;
-  uploader_nickname: string | null;
+  uploader_nickname: string;
+  description: string | null;
   created_at: string;
 }
 

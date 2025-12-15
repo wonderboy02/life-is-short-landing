@@ -16,15 +16,20 @@ export interface JWTPayload {
   groupName: string;
 }
 
+export interface AdminJWTPayload {
+  isAdmin: true;
+  loginTime: number;
+}
+
 /**
- * JWT 토큰 생성
+ * JWT 토큰 생성 (그룹용)
  */
 export function generateToken(payload: JWTPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
 
 /**
- * JWT 토큰 검증 및 디코딩
+ * JWT 토큰 검증 및 디코딩 (그룹용)
  * @returns 유효한 경우 payload, 그렇지 않으면 null
  */
 export function verifyToken(token: string): JWTPayload | null {
@@ -33,6 +38,34 @@ export function verifyToken(token: string): JWTPayload | null {
     return decoded;
   } catch (error) {
     console.error('JWT 검증 실패:', error);
+    return null;
+  }
+}
+
+/**
+ * Admin JWT 토큰 생성
+ */
+export function generateAdminToken(): string {
+  const payload: AdminJWTPayload = {
+    isAdmin: true,
+    loginTime: Date.now(),
+  };
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
+}
+
+/**
+ * Admin JWT 토큰 검증
+ * @returns 유효한 경우 payload, 그렇지 않으면 null
+ */
+export function verifyAdminToken(token: string): AdminJWTPayload | null {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as AdminJWTPayload;
+    if (decoded.isAdmin === true) {
+      return decoded;
+    }
+    return null;
+  } catch (error) {
+    console.error('Admin JWT 검증 실패:', error);
     return null;
   }
 }

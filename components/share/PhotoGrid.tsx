@@ -60,13 +60,18 @@ export default function PhotoGrid({
               <Trash2 className="w-4 h-4" />
             </button>
 
-            {/* 업로더 닉네임 (있는 경우) */}
-            {photo.uploader_nickname && (
-              <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            {/* 업로더 닉네임 + 설명 */}
+            <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 space-y-1">
+              <div className="bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 w-fit">
                 <User className="w-3 h-3" />
                 <span>{photo.uploader_nickname}</span>
               </div>
-            )}
+              {photo.description && (
+                <div className="bg-black/70 text-white text-xs px-2 py-1 rounded-md line-clamp-2">
+                  {photo.description}
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>

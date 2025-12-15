@@ -71,4 +71,34 @@ life_is_short_landing/
 - **언어**: TypeScript
 - **스타일링**: Tailwind CSS
 - **UI 라이브러리**: shadcn/ui
+- **백엔드**: Supabase (Database, Auth, Storage)
 - **패키지 매니저**: npm/pnpm
+
+## Supabase 타입 관리
+
+### 자동 생성된 데이터베이스 타입
+- **파일**: `lib/supabase/database.ts`
+- **생성 명령어**: `npm run gen:types`
+- **설명**: Supabase 데이터베이스 스키마를 기반으로 자동 생성된 TypeScript 타입
+- **사용법**:
+  ```typescript
+  import { Database, Tables } from '@/lib/supabase/database'
+
+  // 테이블 Row 타입 사용
+  type Photo = Tables<'photos'>
+  type Group = Tables<'groups'>
+
+  // Insert/Update 타입 사용
+  type PhotoInsert = Database['public']['Tables']['photos']['Insert']
+  type PhotoUpdate = Database['public']['Tables']['photos']['Update']
+  ```
+- **주의사항**:
+  - 데이터베이스 스키마 변경 시 `npm run gen:types` 실행하여 타입 동기화
+  - 이 파일은 자동 생성되므로 직접 수정하지 말 것
+
+### 수동 관리 타입
+- **파일**: `lib/supabase/types.ts`
+- **설명**: API Response, 확장된 타입 등 프로젝트 전용 타입 정의
+- **포함 내용**:
+  - API 응답 타입 (ApiResponse, GroupCreateResponse 등)
+  - 확장된 엔티티 타입 (PhotoWithUrl 등)
