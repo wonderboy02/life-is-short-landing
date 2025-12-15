@@ -130,7 +130,7 @@ export default function Home() {
         </section>
 
         {/* Reviews Section */}
-        <section className="overflow-hidden py-16 md:py-24">
+        <section className="overflow-hidden bg-neutral-50 py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center md:mb-16">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-4 py-2">
@@ -239,7 +239,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="border-y border-neutral-100 bg-neutral-50 py-16 md:py-24">
+        <section className="border-y border-neutral-100 bg-white py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-6xl">
               <div className="mb-12 text-center md:mb-20">
@@ -395,7 +395,7 @@ export default function Home() {
         </section>
 
         {/* Pricing Section */}
-        <section className="container mx-auto bg-gradient-to-b from-white to-neutral-50 px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+        <section className="container mx-auto bg-gradient-to-b from-neutral-50 to-neutral-100 px-4 py-16 sm:px-6 md:py-24 lg:px-8">
           <div className="mx-auto max-w-2xl">
             <div className="mb-12 text-center">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2">
@@ -719,7 +719,7 @@ export default function Home() {
         </section>
 
         {/* Brand Story Section */}
-        <section className="border-y border-neutral-100 bg-gradient-to-b from-neutral-50 to-white py-16 md:py-24">
+        <section className="border-y border-neutral-100 bg-neutral-50 py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-3xl">
               <div className="mb-8 text-center md:mb-12">
