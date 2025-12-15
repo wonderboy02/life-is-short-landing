@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/server';
 import { generateToken } from '@/lib/auth/jwt';
 import { isValidShareCode } from '@/lib/utils/share-code';
-import type { ApiResponse } from '@/lib/supabase/types';
+import type { ApiResponse, GroupVerifyResponse } from '@/lib/supabase/types';
 
 /**
  * Share Code로 그룹 조회 + JWT 발급
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     // 그룹 조회
     const { data: group, error } = await supabaseAdmin
       .from('groups')
-      .select('id, name')
+      .select('id, name, creator_nickname')
       .eq('share_code', shareCode)
       .single();
 
@@ -57,11 +57,12 @@ export async function GET(req: NextRequest) {
       groupName: group.name,
     });
 
-    return NextResponse.json<ApiResponse>({
+    return NextResponse.json<ApiResponse<GroupVerifyResponse>>({
       success: true,
       data: {
         groupId: group.id,
         groupName: group.name,
+        creatorNickname: group.creator_nickname,
         token,
       },
     });

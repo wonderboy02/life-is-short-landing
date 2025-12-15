@@ -53,17 +53,17 @@ export default function CreateGroupDialog({
       const result = await response.json();
 
       if (!result.success) {
-        toast.error(result.error || '그룹 생성에 실패했습니다.');
+        toast.error(result.error || '앨범 생성에 실패했습니다.');
         return;
       }
 
       // 성공 시 토스트 및 페이지 이동
-      toast.success('그룹이 생성되었습니다!');
+      toast.success('앨범이 생성되었습니다!');
       reset();
       onOpenChange(false);
       router.push(`/share/${result.data.shareCode}`);
     } catch (error) {
-      console.error('그룹 생성 오류:', error);
+      console.error('앨범 생성 오류:', error);
       toast.error('서버 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
@@ -75,23 +75,46 @@ export default function CreateGroupDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold font-display">
-            새 그룹 만들기
+            그때 그 시절 앨범 만들기
           </DialogTitle>
           <DialogDescription className="text-base">
-            가족, 친구들과 함께 사진을 공유할 그룹을 만들어보세요.
+            부모님의 청춘, 가족의 잊혀진 순간들을 모아보세요
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-4">
+          {/* 생성자 닉네임 */}
+          <div className="space-y-2">
+            <Label htmlFor="creatorNickname" className="text-base">
+              앨범 주인
+            </Label>
+            <Input
+              id="creatorNickname"
+              type="text"
+              placeholder="예: 큰아들"
+              className="h-12 text-base"
+              {...register('creatorNickname')}
+              disabled={isLoading}
+            />
+            {errors.creatorNickname && (
+              <p className="text-sm text-red-600">
+                {errors.creatorNickname.message}
+              </p>
+            )}
+            <p className="text-xs text-neutral-500">
+              옛 사진을 모으실 분의 닉네임을 입력해주세요
+            </p>
+          </div>
+
           {/* 그룹 이름 */}
           <div className="space-y-2">
             <Label htmlFor="name" className="text-base">
-              그룹 이름
+              앨범 이름
             </Label>
             <Input
               id="name"
               type="text"
-              placeholder="예: 우리 가족 여행"
+              placeholder="예: 엄마의 청춘앨범"
               className="h-12 text-base"
               {...register('name')}
               disabled={isLoading}
@@ -128,7 +151,7 @@ export default function CreateGroupDialog({
             className="w-full h-12 text-base bg-neutral-900 hover:bg-neutral-800"
             disabled={isLoading}
           >
-            {isLoading ? '생성 중...' : '그룹 만들기'}
+            {isLoading ? '생성 중...' : '앨범 만들기'}
           </Button>
         </form>
       </DialogContent>

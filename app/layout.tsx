@@ -7,20 +7,7 @@ export const metadata: Metadata = {
   description: "AI가 오래된 사진에 생명을 불어넣습니다",
   generator: "v0.app",
   icons: {
-    icon: [
-      {
-        url: "/favicon/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/favicon/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/favicon/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
+    icon: "/favicon/icon.png",
     apple: "/favicon/apple-icon.png",
   },
 }
