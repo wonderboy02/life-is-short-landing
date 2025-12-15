@@ -1,41 +1,42 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 /* 경기천년체 - 제목용 */
 @font-face {
-    font-family: 'GyeonggiMillenniumTitle';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff') format('woff');
-    font-weight: 300;
-    font-display: swap;
+  font-family: 'GyeonggiMillenniumTitle';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Light.woff') format('woff');
+  font-weight: 300;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'GyeonggiMillenniumTitle';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff') format('woff');
-    font-weight: 500;
-    font-display: swap;
+  font-family: 'GyeonggiMillenniumTitle';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Medium.woff') format('woff');
+  font-weight: 500;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'GyeonggiMillenniumTitle';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff') format('woff');
-    font-weight: 700;
-    font-display: swap;
+  font-family: 'GyeonggiMillenniumTitle';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/Title_Bold.woff') format('woff');
+  font-weight: 700;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'GyeonggiMillenniumTitle';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/TitleV.woff') format('woff');
-    font-weight: 800;
-    font-display: swap;
+  font-family: 'GyeonggiMillenniumTitle';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2410-3@1.0/TitleV.woff') format('woff');
+  font-weight: 800;
+  font-display: swap;
 }
 
 /* 고운돋움체 - 본문용 */
 @font-face {
-    font-family: 'GowoonDodum';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff') format('woff');
-    font-weight: normal;
-    font-display: swap;
+  font-family: 'GowoonDodum';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff')
+    format('woff');
+  font-weight: normal;
+  font-display: swap;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -75,14 +76,16 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
   /* Updated font variables with explicit fallbacks for deployment */
-  --font-inter: "GowoonDodum", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-instrument-serif: "GyeonggiMillenniumTitle", ui-serif, serif;
+  --font-inter:
+    'GowoonDodum', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-instrument-serif: 'GyeonggiMillenniumTitle', ui-serif, serif;
 }
 
 @theme inline {
   --font-sans: var(--font-inter);
   --font-serif: var(--font-instrument-serif);
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  --font-mono:
+    ui-monospace, SFMono-Regular, 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -140,7 +143,13 @@
 }
 
 .font-inter {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    var(--font-inter),
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
 .font-instrument-serif {
@@ -151,7 +160,7 @@
 /* Added explicit font loading optimization */
 @supports (font-display: swap) {
   @font-face {
-    font-family: "Instrument Serif";
+    font-family: 'Instrument Serif';
     font-display: swap;
   }
 }
@@ -162,4 +171,45 @@
 
 .backdrop-blur-custom {
   backdrop-filter: blur(8.25px);
+}
+
+/* 타이핑 애니메이션: Fade-in + Slide-up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 1.8s ease-out forwards;
+  opacity: 0; /* 초기 상태 */
+}
+
+.animate-delay-500 {
+  animation-delay: 0.5s;
+}
+
+.animate-delay-1000 {
+  animation-delay: 1s;
+}
+
+.animate-delay-1500 {
+  animation-delay: 1.5s;
+}
+
+.animate-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animate-delay-2500 {
+  animation-delay: 2.5s;
+}
+
+.animate-delay-3000 {
+  animation-delay: 3s;
 }
