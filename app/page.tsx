@@ -61,12 +61,11 @@ export default function Home() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-sm border-b border-neutral-100">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center h-16">
             <div className="flex items-center gap-3">
               <img src="/favicon/logo.png" alt="Life Is Short Logo" className="w-10 h-10" />
               <span className="text-lg font-semibold text-neutral-900 font-display">Life Is Short</span>
             </div>
-            <div className="text-sm text-neutral-500">Our Team</div>
           </div>
         </div>
       </header>
@@ -425,9 +424,8 @@ export default function Home() {
                         <Palette className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">AI를 활용해 사진을 최상의 품질로 복원해요</h3>
                       <h3 className="text-xl md:text-2xl font-bold font-display">
-                        최첨단 AI를 활용해
+                        최신 AI를 활용해
                         <br />
                         사진을 최상의 품질로 복원해요
                       </h3>
@@ -476,7 +474,7 @@ export default function Home() {
                       <h3 className="text-xl md:text-2xl font-bold font-display">
                         복원된 사진을
                         <br /> 
-                        첨단 AI 기술을 활용해 영상으로 만들어요</h3>
+                        최신 AI 기술을 활용해 영상으로 만들어요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
                         Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화 작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
                       </p>

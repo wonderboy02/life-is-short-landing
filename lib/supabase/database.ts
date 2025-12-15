@@ -17,6 +17,7 @@ export type Database = {
       groups: {
         Row: {
           created_at: string
+          creator_nickname: string
           id: string
           name: string
           password_hash: string
@@ -25,6 +26,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          creator_nickname?: string
           id?: string
           name: string
           password_hash: string
@@ -33,6 +35,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          creator_nickname?: string
           id?: string
           name?: string
           password_hash?: string
@@ -44,33 +47,36 @@ export type Database = {
       photos: {
         Row: {
           created_at: string
+          description: string | null
           file_name: string
           file_size: number
           group_id: string
           id: string
           mime_type: string
           storage_path: string
-          uploader_nickname: string | null
+          uploader_nickname: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
           file_name: string
           file_size: number
           group_id: string
           id?: string
           mime_type: string
           storage_path: string
-          uploader_nickname?: string | null
+          uploader_nickname: string
         }
         Update: {
           created_at?: string
+          description?: string | null
           file_name?: string
           file_size?: number
           group_id?: string
           id?: string
           mime_type?: string
           storage_path?: string
-          uploader_nickname?: string | null
+          uploader_nickname?: string
         }
         Relationships: [
           {

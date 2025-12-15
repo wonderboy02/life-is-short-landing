@@ -62,6 +62,8 @@ export default async function SharePage({ params }: Props) {
       {/* 메인 콘텐츠 */}
       <SharePageClient
         groupId={groupData.groupId}
+        groupName={groupData.groupName}
+        creatorNickname={groupData.creatorNickname}
         token={groupData.token}
       />
     </div>
