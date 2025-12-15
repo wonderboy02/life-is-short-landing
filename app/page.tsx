@@ -63,7 +63,7 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded bg-neutral-900"></div>
+              <img src="/favicon/favicon_v4.svg" alt="Life Is Short Logo" className="w-8 h-8" />
               <span className="text-lg font-semibold text-neutral-900 font-display">Life Is Short</span>
             </div>
             <div className="text-sm text-neutral-500">Our Team</div>
