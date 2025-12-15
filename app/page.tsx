@@ -63,12 +63,6 @@ export default function Home() {
   };
 
   const scrollToDemo = () => {
-    // setShowUpload(true);
-    // setTimeout(() => {
-    //   document
-    //     .getElementById('demo-section')
-    //     ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    // }, 100);
     setDialogOpen(true);
   };
 
@@ -111,13 +105,13 @@ export default function Home() {
               {/* Right: Text Content */}
               <div className="order-1 space-y-6 md:order-2">
                 <h1 className="font-display text-4xl leading-tight font-bold tracking-tight sm:text-5xl md:text-6xl">
-                  <span className="animate-fadeInUp animate-delay-1500 block">당신의 손끝에서</span>
-                  <span className="animate-fadeInUp animate-delay-2000 block">다시 빛나는</span>
-                  <span className="animate-fadeInUp animate-delay-2500 block">
+                  <span className="animate-fadeInUp animate-delay-1000 block">당신의 손끝에서</span>
+                  <span className="animate-fadeInUp animate-delay-1500 block">다시 빛나는</span>
+                  <span className="animate-fadeInUp animate-delay-2000 block">
                     부모님의 찬란한 청춘
                   </span>
                 </h1>
-                <p className="animate-fadeInUp animate-delay-3000 text-lg text-pretty text-neutral-600 md:text-2xl">
+                <p className="animate-fadeInUp animate-delay-2500 text-lg text-pretty text-neutral-600 md:text-2xl">
                   우리가 그러하듯, <br></br>부모님들께도 소중한 젊음이 있었습니다. <br></br>
                   이제는 사진 속에서 그 젊음을 꺼내어 선물해봅시다.
                 </p>
@@ -125,154 +119,57 @@ export default function Home() {
                   <Button
                     size="lg"
                     onClick={scrollToDemo}
-                    className="animate-fadeInUp animate-delay-3500 bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
+                    className="animate-fadeInUp animate-delay-3000 bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
                   >
                     바로 제작하기
                   </Button>
                 ) : null}
               </div>
             </div>
+          </div>
+        </section>
 
-            <div id="demo-section">
-              {showUpload && (
-                <div className="mb-12 md:mb-16">
-                  <div className="rounded-2xl border border-neutral-100 bg-neutral-50 p-6 sm:p-8 md:p-12">
-                    {uploadedImages.length === 0 ? (
-                      // Upload State
-                      <div className="flex aspect-[4/3] flex-col items-center justify-center gap-6 md:aspect-video">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-neutral-900">
-                          <Upload className="h-7 w-7 text-white" />
-                        </div>
-                        <div className="text-center">
-                          <h3 className="font-display mb-2 text-lg font-semibold md:text-4xl">
-                            소중한 추억을 업로드해주세요
-                          </h3>
-                          <p className="mb-6 text-sm text-neutral-500 md:text-lg">
-                            초점이 잘 맞는, 정면에서 찍은 사진이 가장 좋아요.
-                            <br></br>JPG, PNG 형식을 지원해요.
-                          </p>
-                          <label htmlFor="photo-upload" className="inline-block">
-                            <span className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-neutral-900 px-8 text-sm font-medium text-white ring-offset-white transition-colors hover:bg-neutral-700 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
-                              사진 전달하기
-                            </span>
-                          </label>
-                          <input
-                            id="photo-upload"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleImageUpload}
-                            className="hidden"
-                          />
-                        </div>
-                      </div>
-                    ) : !isSubmitted ? (
-                      <div className="space-y-6">
-                        <div className="grid grid-cols-3 gap-4">
-                          {uploadedImages.map((image, index) => (
-                            <div
-                              key={index}
-                              className="relative aspect-square overflow-visible rounded-xl bg-neutral-200"
-                            >
-                              <img
-                                src={image}
-                                alt={`Uploaded ${index + 1}`}
-                                className="h-full w-full rounded-xl object-cover"
-                              />
-                              <button
-                                onClick={() => handleRemoveImage(index)}
-                                className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-black text-lg font-light text-white shadow-lg hover:bg-neutral-800"
-                                type="button"
-                              >
-                                ×
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="text-center">
-                          <label htmlFor="photo-upload-more" className="inline-block">
-                            <span className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-neutral-200 px-6 text-sm font-medium text-neutral-900 ring-offset-white transition-colors hover:bg-neutral-300 focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
-                              + 사진 추가
-                            </span>
-                          </label>
-                          <input
-                            id="photo-upload-more"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleImageUpload}
-                            className="hidden"
-                          />
-                        </div>
-
-                        {showForm && (
-                          <form onSubmit={handleSubmit} className="space-y-6 pt-4">
-                            <div className="space-y-4">
-                              <div className="space-y-2">
-                                <Label htmlFor="phone" className="text-base">
-                                  전화번호
-                                </Label>
-                                <Input
-                                  id="phone"
-                                  type="tel"
-                                  placeholder="010-0000-0000"
-                                  value={phoneNumber}
-                                  onChange={(e) => setPhoneNumber(e.target.value)}
-                                  required
-                                  className="h-12 text-base"
-                                />
-                              </div>
-
-                              <div className="flex items-start gap-3 pt-2">
-                                <Checkbox
-                                  id="terms"
-                                  checked={agreedToTerms}
-                                  onCheckedChange={(checked) =>
-                                    setAgreedToTerms(checked as boolean)
-                                  }
-                                  required
-                                  className="mt-1"
-                                />
-                                <Label
-                                  htmlFor="terms"
-                                  className="cursor-pointer text-sm leading-relaxed text-neutral-600"
-                                >
-                                  개인정보 수집 및 이용에 동의합니다. 제공된 정보는 영상 제작 및
-                                  전송 목적으로만 사용됩니다.
-                                </Label>
-                              </div>
-                            </div>
-
-                            <Button
-                              type="submit"
-                              disabled={!phoneNumber || !agreedToTerms}
-                              className="h-12 w-full bg-neutral-900 text-base text-white hover:bg-neutral-800 disabled:opacity-50"
-                            >
-                              제출하기
-                            </Button>
-                          </form>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="flex aspect-[4/3] flex-col items-center justify-center gap-6 text-center md:aspect-video">
-                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                          <MessageCircle className="h-7 w-7 text-green-700" />
-                        </div>
-                        <div>
-                          <h3 className="font-display mb-3 text-xl font-semibold md:text-2xl">
-                            제출 완료!
-                          </h3>
-                          <p className="mx-auto max-w-md leading-relaxed text-neutral-600">
-                            보내주신 소중한 추억, 저희 팀도 조심스럽게 다룰게요.
-                            <br />곧 카카오톡을 통해 연락드리겠습니다!
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+        {/* Service Description Section */}
+        <section className="bg-neutral-100 py-16 md:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-4xl">
+              <h2 className="font-display mb-8 text-center text-3xl font-bold text-neutral-900 md:mb-12 md:text-4xl">
+                저희의 서비스는,
+              </h2>
+              <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
+                <div className="space-y-6">
+                  <p className="text-lg leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed">
+                    빛나는 청춘을 살아내신 부모님들의 옛 사진들을 <span> </span>
+                    <br className="hidden md:block" />
+                    최신 AI 기술을 통해
+                    <span className="font-semibold text-neutral-900"> 움직이는 영상</span>으로
+                    제작해드리는 서비스입니다.
+                  </p>
+                  <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
+                    기술의 한계로 인해{' '}
+                    <span className="font-semibold text-neutral-900">
+                      사진으로만 추억을 남길 수 있던
+                    </span>{' '}
+                    부모님들께,
+                    <br className="hidden md:block" />
+                    아름다웠던 삶의 궤적에 빛을 더해 선물해보세요.
+                  </p>
+                  <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
+                    뜻깊은 부모님의 <span className="font-semibold text-neutral-900">생신</span>에,{' '}
+                    <br></br>
+                    특별한{' '}
+                    <span className="font-semibold text-neutral-900">
+                      환갑, 칠순, 팔순 잔치
+                    </span>에, <br></br>
+                    부모님 두 분의{' '}
+                    <span className="font-semibold text-neutral-900">결혼기념일</span>에, <br></br>
+                    가족 모두 모인 <span> </span>
+                    <span className="font-semibold text-neutral-900">
+                      어버이날과 추석, 신년
+                    </span>에 <br></br>그 어느 순간이라도 감동을 선물해보세요
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
           </div>
         </section>
@@ -389,7 +286,7 @@ export default function Home() {
           </section>
         )}
 
-        <section className="border-y border-neutral-100 bg-neutral-50 py-16 md:py-24">
+        <section className="border-y border-neutral-100 bg-white py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-6xl">
               <div className="mb-12 text-center md:mb-20">
@@ -699,7 +596,7 @@ export default function Home() {
                       <ul className="mb-4 space-y-2 text-sm text-neutral-600">
                         <li className="flex items-start gap-2">
                           <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                          <span>사진 1장당 가격</span>
+                          <span>사진 1장당 최대 8초로 영상화</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
@@ -958,6 +855,66 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        {/* Brand Story Section */}
+        <section className="border-y border-neutral-100 bg-neutral-50 py-16 md:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-3xl">
+              <div className="mb-8 text-center md:mb-12">
+                <h2 className="font-display lack-600 mb-6 border-b border-b-5 border-dotted pb-10 text-3xl leading-tight font-bold md:text-4xl">
+                  Life Is Short's <span className="text-xl">Brand Story</span>
+                </h2>
+              </div>
+
+              <div className="mx-7 space-y-1 text-base leading-relaxed text-neutral-700 md:text-lg md:leading-relaxed">
+                <p>
+                  안녕하세요. <br></br>Life is Short 서비스를 공동으로 기획하고 운영 중인
+                  김태양이라고 합니다.
+                </p>
+                <br></br>
+                <p>
+                  저희 서비스를 재밌게 보셨나요? 어쩌면 조금은 생소하게도, 조금은 놀랍게도 느껴졌을
+                  것 같습니다. 저희가 숨결을 불어넣은 영상들은 여태껏 많은 고객님들에게 감동을
+                  선물했습니다. 그게 저희 팀의 커다란 자부심 중 하나이기도 하고요.
+                </p>
+                <br></br>
+                <p>
+                  이 서비스가 어쩌다가 세상에 태어났을까요?
+                  <p className="font-semibold text-neutral-900">
+                    사실, 저희 어머니께서 참 좋아하시더라고요.
+                  </p>
+                </p>
+                <br></br>
+                <p>
+                  어머니와 함께 핸드폰 갤러리를 돌아보던 어느 주말, 어머니께서 말씀하셨습니다.
+                  <p className="text-neutral-600 italic">
+                    "아 이때 영상이 있었으면 참 좋았을 텐데."
+                  </p>
+                </p>
+                <br></br>
+                <p>
+                  그때 저는 제가 능숙하게 다룰 줄 아는 인공지능을 이용해보기로 마음 먹었습니다. 한두
+                  시간 정도 여러 차례 영상화 작업을 시도해본 뒤, 어머니께 보여드렸습니다. 제가
+                  평소에 장난기가 많아서, 다소 장난스럽게 영상을 만들었었죠. 그렇게 완성된 영상이
+                  바로 지금 옆에서 여러분께서 보고 계신 영상입니다. 어머니께서 놀라시면서도 아주
+                  기뻐하셨습니다. 몇 번씩이고 영상을 돌려보시더라고요.
+                </p>
+                <br></br>
+                <p>
+                  <p className="font-semibold text-neutral-900">"이거다" 싶었습니다.</p>제 부모님
+                  뿐만 아니라 다른 사람들에게도 가치를, 만족을 줄 수 있는 방법. 저는 곧바로 팀원과
+                  함께 서비스를 기획했고, 끝내 이렇게 여러분들께 인사드리고 있습니다.{' '}
+                </p>
+                <br></br>
+                <p>
+                  가족분들과 한 번 더 웃고, 한 번 더 포옹하고, 한 번 더 행복할 수 있는 계기가
+                  되었으면 좋겠습니다. 오늘도, 내일도 행복하시기를 바랍니다.
+                </p>
+                <p className="mt-8 text-right font-medium text-neutral-800">김태양 올림</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
