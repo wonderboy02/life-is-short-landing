@@ -278,12 +278,12 @@ export default function Home() {
         <section className="overflow-hidden py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center md:mb-16">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-6 py-3">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-4 py-2">
                 <span className="text-3xl font-bold text-neutral-900">1,247</span>
                 <span className="text-neutral-600">명의 사용자</span>
               </div>
               <h2 className="font-display mb-4 text-3xl font-bold md:text-4xl">
-                직접 감동을 선물해본 이들의 경험담
+                직접 감동을 선물해본 <br className="inline md:hidden"></br> 이들의 경험담
               </h2>
               <p className="text-lg text-neutral-600">
                 실제 사용자분들이 대가 없이 남겨주신 피드백이에요.
@@ -389,7 +389,7 @@ export default function Home() {
             <div className="mx-auto max-w-6xl">
               <div className="mb-12 text-center md:mb-20">
                 <h2 className="font-display mb-4 text-3xl font-bold md:text-5xl">
-                  저희는 이렇게 추억을 되살려 드려요
+                  저희는 이렇게 <br className="inline md:hidden"></br>추억을 되살려 드려요
                 </h2>
                 <p className="text-xl text-neutral-600">
                   추억이 온전히 되살아날 수 있도록, <br></br>저희 팀의 기술을 최대한 활용하고
@@ -422,7 +422,7 @@ export default function Home() {
                       <h3 className="font-display text-xl font-bold md:text-4xl">
                         소중한 사진을 받아 검수해요
                       </h3>
-                      <p className="text-base text-xl leading-relaxed text-neutral-600">
+                      <p className="text-base text-lg leading-relaxed text-neutral-600 md:text-xl">
                         추억이 담긴 사진들은 훼손되거나, 빛바랜 경우가 많아요.
                         <br></br>
                         하지만 걱정하지 마세요.
@@ -644,7 +644,7 @@ export default function Home() {
               >
                 {/* 인기 배지 */}
                 <div className="absolute -top-3 left-1/2 z-10 -translate-x-1/2">
-                  <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-1 text-xs font-bold text-white shadow-lg">
+                  <div className="flex items-center gap-1 rounded-full border border-red-200 bg-red-50 px-4 py-1 text-xs font-bold text-red-600 shadow-lg">
                     가장 인기
                   </div>
                 </div>
@@ -674,7 +674,7 @@ export default function Home() {
 
                 {expandedPlan === 'story' && (
                   <div className="border-t border-neutral-100 px-5 pt-2 pb-5">
-                    <div className="mb-4 rounded-xl bg-gradient-to-r from-neutral-50 to-neutral-100 p-4">
+                    <div className="mb-4 rounded-xl p-4">
                       <div className="mb-3 text-center">
                         <div className="mb-1 text-2xl font-bold">🎬 사진 10장 → 1분 영상</div>
                       </div>
@@ -683,7 +683,7 @@ export default function Home() {
                         <span className="text-3xl font-bold text-neutral-900">12,900원</span>
                       </div>
                       <div className="text-center">
-                        <span className="inline-block rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
+                        <span className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
                           57% 할인
                         </span>
                         <p className="mt-2 text-xs text-neutral-500">장당 1,290원</p>
@@ -786,7 +786,6 @@ export default function Home() {
                     <div>
                       <h3 className="flex items-center gap-2 text-lg font-semibold">
                         프리미엄 패키지
-                        <span className="text-base">💎</span>
                       </h3>
                       <p className="text-sm text-neutral-500">가장 큰 감동</p>
                     </div>
@@ -800,7 +799,7 @@ export default function Home() {
 
                 {expandedPlan === 'premium' && (
                   <div className="border-t border-neutral-100 px-5 pt-2 pb-5">
-                    <div className="mb-4 rounded-xl border border-purple-100 bg-gradient-to-br from-purple-50 to-pink-50 p-4">
+                    <div className="mb-4 rounded-xl p-4">
                       <div className="mb-3 text-center">
                         <div className="mb-1 text-2xl font-bold">🎥 사진 20장 → 2분 영상</div>
                       </div>
@@ -809,7 +808,7 @@ export default function Home() {
                         <span className="text-3xl font-bold text-neutral-900">19,900원</span>
                       </div>
                       <div className="text-center">
-                        <span className="inline-block rounded-full bg-purple-600 px-3 py-1 text-sm font-bold text-white">
+                        <span className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-600">
                           60% 할인
                         </span>
                         <p className="mt-2 text-xs text-neutral-500">장당 995원</p>
