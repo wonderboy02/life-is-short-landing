@@ -636,11 +636,12 @@ export default function Home() {
                     <div className="mb-5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
                       <div className="text-center">
                         <div className="text-lg font-bold text-neutral-900 mb-2">
-                          이제야 완성된 기술
+                          🎬 이제까지 없던 새로운 방식
                         </div>
                         <p className="text-sm text-neutral-700 leading-relaxed">
                           단순한 복원이 아닙니다.<br />
-                          부모님 인생의 흐름을 하나의 감동적인 스토리로 만들어드립니다.
+                          인생의 흐름이 하나의 영상이 되어<br />
+                          추억이 눈앞에 돌아옵니다.
                         </p>
                       </div>
                     </div>
@@ -648,10 +649,10 @@ export default function Home() {
                     {/* 영상 미리보기 */}
                     <div className="mb-5 rounded-xl overflow-hidden bg-neutral-900">
                       <video
-                        src="/hero_video_mq.mp4"
+                        src="/story_video.mp4"
                         controls
                         preload="metadata"
-                        poster="/hero_video_poster.jpg"
+                        poster="/story_video_poster.jpg"
                         playsInline
                         className="w-full"
                         style={{ maxHeight: '500px' }}
