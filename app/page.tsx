@@ -593,20 +593,20 @@ export default function Home() {
                         </span>
                       </div>
 
-                    <ul className="mb-4 space-y-2 text-sm text-neutral-600">
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span>사진 1장당 최대 8초로 영상화</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span>AI 화질 복원 및 컬러 추가</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                        <span>고품질 이미지 전송</span>
-                      </li>
-                    </ul>
+                      <ul className="mb-4 space-y-2 text-sm text-neutral-600">
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span>사진 1장당 최대 8초로 영상화</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span>AI 화질 복원 및 컬러 추가</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
+                          <span>고품질 이미지 전송</span>
+                        </li>
+                      </ul>
 
                       <Button
                         size="lg"
@@ -849,11 +849,12 @@ export default function Home() {
                 </div>
               </div>
 
-            <p className="mt-6 text-center text-xs text-neutral-500">
-              * 출시 기념 특가는 조기 마감될 수 있습니다
-            </p>
-          </div>
-        </section>
+              <p className="mt-6 text-center text-xs text-neutral-500">
+                * 출시 기념 특가는 조기 마감될 수 있습니다
+              </p>
+            </div>
+          </section>
+        )}
 
         {/* Brand Story Section */}
         <section className="border-y border-neutral-100 bg-neutral-50 py-16 md:py-24">
