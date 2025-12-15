@@ -72,32 +72,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Instagram Embed Section */}
-      {/* <section className="pt-20 pb-8 flex justify-center">
-        <div className="max-w-xl w-full px-4">
-          <blockquote
-            className="instagram-media"
-            data-instgrm-permalink="https://www.instagram.com/reel/DRaiWFvCJx5/?utm_source=ig_embed&utm_campaign=loading"
-            data-instgrm-version="14"
-            style={{
-              background: '#FFF',
-              border: 0,
-              borderRadius: '3px',
-              boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
-              margin: '1px',
-              maxWidth: '540px',
-              minWidth: '326px',
-              padding: 0,
-              width: 'calc(100% - 2px)',
-            }}
-          />
-        </div>
-        <Script
-          src="https://www.instagram.com/embed.js"
-          strategy="lazyOnload"
-        />
-      </section> */}
-
       {/* Main Content */}
       <main className="pt-16">
         {/* Hero + Demo Section */}
@@ -426,14 +400,13 @@ export default function Home() {
                         <Palette className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">AI를 활용해 사진을 최상의 품질로 복원해요</h3>
                       <h3 className="text-xl md:text-2xl font-bold font-display">
-                        최첨단 AI를 활용해
+                        최신 AI를 활용해
                         <br />
                         사진을 최상의 품질로 복원해요
                       </h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                      추억의 해상도는 생생해야 하는 법이에요. AI를 이용해 "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래 흐려진 부분 등을 복원하고, 사진의 화질을 올려요. 
+                      추억의 해상도는 생생해야 하는 법이에요. Google의 Nano banana Pro AI를 이용해 "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래 흐려진 부분 등을 복원하고, 사진의 화질을 올려요. 
                       </p>
                     </div>
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
