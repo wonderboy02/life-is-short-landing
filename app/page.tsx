@@ -133,7 +133,7 @@ export default function Home() {
         <section className="bg-neutral-100 py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-4xl">
-              <h2 className="font-display mb-8 text-center text-2xl font-bold text-neutral-900 md:mb-12 md:text-4xl">
+              <h2 className="font-display mb-8 text-center text-3xl font-bold text-neutral-900 md:mb-12 md:text-4xl">
                 저희의 서비스는,
               </h2>
               <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
@@ -178,7 +178,7 @@ export default function Home() {
         <section className="overflow-hidden bg-neutral-50 py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center md:mb-16">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-4 py-2">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-neutral-200 px-4 py-2">
                 <span className="text-3xl font-bold text-neutral-900">1,247</span>
                 <span className="text-neutral-600">명의 사용자</span>
               </div>
@@ -769,7 +769,7 @@ export default function Home() {
             <div className="mx-auto max-w-3xl">
               <div className="mb-8 text-center md:mb-12">
                 <h2 className="font-display lack-600 mb-6 border-b border-b-5 border-dotted pb-10 text-3xl leading-tight font-bold md:text-4xl">
-                  Brand Story
+                  Life Is Short's <span className="text-xl">Brand Story</span>
                 </h2>
               </div>
 
