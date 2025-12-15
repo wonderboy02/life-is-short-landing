@@ -45,8 +45,8 @@ export default function BrandStory() {
             </p>
             <br></br>
             <p>
-              <p className="font-semibold text-neutral-900">"이거다" 싶었습니다.</p>제 부모님 뿐만
-              아니라 다른 사람들에게도 가치를, 만족을 줄 수 있는 방법. 저는 곧바로 팀원과 함께
+              <span className="font-semibold text-neutral-900">"이거다" 싶었습니다.</span>제 부모님
+              뿐만 아니라 다른 사람들에게도 가치를, 만족을 줄 수 있는 방법. 저는 곧바로 팀원과 함께
               서비스를 기획했고, 끝내 이렇게 여러분들께 인사드리고 있습니다.{' '}
             </p>
             <br></br>
