@@ -127,7 +127,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div id="demo-section">
+            {/* <div id="demo-section">
               {showUpload && (
                 <div className="mb-12 md:mb-16">
                   <div className="rounded-2xl border border-neutral-100 bg-neutral-50 p-6 sm:p-8 md:p-12">
@@ -267,7 +267,7 @@ export default function Home() {
                   </div>
                 </div>
               )}
-            </div>
+            </div> */}
           </div>
         </section>
 
