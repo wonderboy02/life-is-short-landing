@@ -99,25 +99,10 @@ export default function SharePageClient({
         />
       </div>
 
-      {/* 사진 그리드 섹션 */}
-      <section
-        ref={photoGridRef}
-        className="min-h-screen bg-neutral-50 py-12 scroll-mt-16"
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-semibold mb-6 font-display">
-              모인 추억들
-            </h2>
-            <PhotoGridClient key={refreshKey} groupId={groupId} />
-          </div>
-        </div>
-      </section>
-
-      {/* 사진 업로드 섹션 */}
+      {/* 사진 업로드 섹션 - Grid보다 먼저 배치 */}
       <section
         ref={photoUploadRef}
-        className="min-h-screen bg-white py-12 scroll-mt-16"
+        className="bg-white py-12 scroll-mt-16"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
@@ -126,6 +111,21 @@ export default function SharePageClient({
               token={token}
               onUploadSuccess={handleUploadSuccess}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* 사진 그리드 섹션 */}
+      <section
+        ref={photoGridRef}
+        className="bg-neutral-50 py-12 scroll-mt-16"
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-semibold mb-6 font-display">
+              모인 추억들
+            </h2>
+            <PhotoGridClient key={refreshKey} groupId={groupId} />
           </div>
         </div>
       </section>

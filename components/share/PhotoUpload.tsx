@@ -114,12 +114,12 @@ export default function PhotoUpload({
 
   const handleUpload = async () => {
     if (selectedFiles.length === 0) {
-      toast.error('업로드할 사진을 선택해주세요.');
+      toast.error('사진을 먼저 선택해주세요');
       return;
     }
 
     if (!uploaderNickname.trim()) {
-      toast.error('닉네임을 설정해주세요.');
+      toast.error('닉네임을 설정해주세요');
       setShowNicknameDialog(true);
       return;
     }
@@ -161,7 +161,7 @@ export default function PhotoUpload({
       }
 
       if (successCount > 0) {
-        toast.success(`${successCount}개의 사진이 업로드되었습니다!`);
+        toast.success(`${successCount}개의 추억이 저장되었습니다 ✨`);
         setSelectedFiles([]);
         onUploadSuccess?.();
       }
@@ -172,16 +172,21 @@ export default function PhotoUpload({
 
   return (
     <>
-      <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm">
-        {/* 헤더: 닉네임 표시 */}
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold font-display">사진 업로드</h3>
+      <div className="max-w-2xl mx-auto space-y-8">
+        {/* 헤더 */}
+        <div className="text-center space-y-3">
+          <h2 className="text-3xl font-bold font-display text-neutral-900">
+            소중한 순간 남기기
+          </h2>
+          <p className="text-base text-neutral-600 leading-relaxed">
+            옛날 사진 속 잊혀진 이야기를 함께 나눠주세요
+          </p>
           {uploaderNickname && (
             <Button
               variant="ghost"
               size="sm"
               onClick={handleChangeNickname}
-              className="text-sm text-neutral-600"
+              className="text-sm text-neutral-500 hover:text-neutral-700 -mt-1"
             >
               <Edit2 className="w-3 h-3 mr-1" />
               {uploaderNickname}
@@ -189,18 +194,22 @@ export default function PhotoUpload({
           )}
         </div>
 
-        <div className="space-y-4">
         {/* 파일 선택 */}
         <div>
           <Label htmlFor="photo-upload" className="cursor-pointer">
-            <div className="border-2 border-dashed border-neutral-300 rounded-xl p-6 text-center hover:border-neutral-400 transition-colors">
-              <Upload className="w-10 h-10 text-neutral-400 mx-auto mb-2" />
-              <p className="text-sm text-neutral-600 mb-1">
-                사진을 업로드하세요
-              </p>
-              <p className="text-xs text-neutral-500">
-                JPG, PNG, WebP (최대 10MB)
-              </p>
+            <div className="relative bg-gradient-to-br from-neutral-50 to-neutral-100/50 border-2 border-dashed border-neutral-300 rounded-2xl p-12 text-center hover:border-neutral-400 hover:from-neutral-100/80 hover:to-neutral-50 transition-all duration-300 group">
+              <div className="absolute inset-0 bg-neutral-900/0 group-hover:bg-neutral-900/[0.02] rounded-2xl transition-colors duration-300" />
+              <div className="relative">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:shadow-md transition-shadow">
+                  <Upload className="w-8 h-8 text-neutral-600" />
+                </div>
+                <p className="text-lg font-medium text-neutral-800 mb-2">
+                  여기를 눌러 사진을 선택하세요
+                </p>
+                <p className="text-sm text-neutral-500">
+                  JPG, PNG, WebP · 최대 10MB
+                </p>
+              </div>
             </div>
           </Label>
           <Input
@@ -217,57 +226,62 @@ export default function PhotoUpload({
 
         {/* 선택된 파일 미리보기 */}
         {selectedFiles.length > 0 && (
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">
-              선택된 파일 ({selectedFiles.length}개)
-            </Label>
-            <div className="max-h-[600px] overflow-y-auto space-y-4">
+          <div className="space-y-5">
+            <div className="text-center">
+              <p className="text-lg font-semibold text-neutral-800">
+                {selectedFiles.length}개의 추억을 준비했어요
+              </p>
+              <p className="text-sm text-neutral-500 mt-1">
+                사진마다 이야기를 남겨보세요
+              </p>
+            </div>
+
+            <div className="max-h-[600px] overflow-y-auto space-y-4 px-1">
               {selectedFiles.map((item, index) => (
                 <div
                   key={`${item.file.name}-${index}`}
-                  className="bg-neutral-50 rounded-lg p-3 space-y-3"
+                  className="bg-white rounded-xl overflow-hidden border border-neutral-200 hover:border-neutral-300 transition-colors"
                 >
                   {/* 이미지 미리보기 + 삭제 버튼 */}
-                  <div className="relative aspect-video rounded-lg overflow-hidden bg-neutral-200">
+                  <div className="relative aspect-video bg-neutral-100">
                     <img
                       src={item.previewUrl}
                       alt={item.file.name}
                       className="w-full h-full object-contain"
                     />
-                    <Button
-                      variant="destructive"
-                      size="sm"
+                    <button
                       onClick={() => handleRemoveFile(index)}
                       disabled={isUploading}
-                      className="absolute top-2 right-2 h-8 w-8 p-0 rounded-full"
+                      className="absolute top-3 right-3 w-9 h-9 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm disabled:opacity-50"
+                      aria-label="사진 제거"
                     >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-
-                  {/* 파일명 */}
-                  <div className="text-sm text-neutral-600 truncate">
-                    {item.file.name}
+                      <X className="w-5 h-5" />
+                    </button>
                   </div>
 
                   {/* 사진 설명 입력 */}
-                  <div>
+                  <div className="p-4">
                     <Textarea
-                      placeholder="사진 설명 (선택사항)"
+                      placeholder="이 사진의 이야기를 들려주세요... (선택)"
                       value={item.description}
                       onChange={(e) =>
                         handleDescriptionChange(index, e.target.value)
                       }
                       disabled={isUploading}
-                      className="text-sm resize-none"
+                      className="text-sm resize-none border-neutral-200 focus:border-neutral-400 rounded-lg"
                       rows={2}
                       maxLength={200}
                     />
-                    {item.description && (
-                      <p className="text-xs text-neutral-500 mt-1">
-                        {item.description.length}/200
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-xs text-neutral-400 truncate flex-1">
+                        {item.file.name}
                       </p>
-                    )}
+                      {item.description && (
+                        <p className="text-xs text-neutral-400 ml-2">
+                          {item.description.length}/200
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -276,22 +290,23 @@ export default function PhotoUpload({
         )}
 
         {/* 업로드 버튼 */}
-        <Button
-          onClick={handleUpload}
-          disabled={selectedFiles.length === 0 || isUploading}
-          className="w-full bg-neutral-900 hover:bg-neutral-800"
-        >
-          {isUploading ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              업로드 중...
-            </>
-          ) : (
-            `${selectedFiles.length}개 사진 업로드`
-          )}
-        </Button>
+        {selectedFiles.length > 0 && (
+          <Button
+            onClick={handleUpload}
+            disabled={isUploading}
+            className="w-full bg-neutral-900 hover:bg-neutral-800 h-14 text-base font-semibold rounded-xl shadow-sm"
+          >
+            {isUploading ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                추억을 저장하는 중...
+              </>
+            ) : (
+              `${selectedFiles.length}개의 추억 저장하기`
+            )}
+          </Button>
+        )}
       </div>
-    </div>
 
       {/* 닉네임 설정 다이얼로그 */}
       <UploaderDialog

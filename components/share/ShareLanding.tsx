@@ -22,9 +22,9 @@ export default function ShareLanding({
   onAddPhotos,
 }: ShareLandingProps) {
   return (
-    <section className="min-h-screen flex flex-col justify-between bg-white py-16 px-4">
+    <section className="min-h-[100dvh] flex flex-col justify-between bg-white py-12 px-4">
       <div className="flex-1 flex items-center justify-center">
-        <div className="max-w-lg mx-auto w-full space-y-12">
+        <div className="max-w-lg mx-auto w-full space-y-10">
           {/* 메인 메시지 */}
           <div className="text-center space-y-6">
             <div className="space-y-2">
@@ -72,34 +72,36 @@ export default function ShareLanding({
           {/* CTA 버튼 */}
           <div className="flex flex-col gap-3 pt-4">
             <Button
-              onClick={onViewPhotos}
-              size="lg"
-              className="w-full bg-neutral-900 hover:bg-neutral-800 h-14 text-base font-medium rounded-xl"
-            >
-              추억 보기 ({photoCount})
-            </Button>
-            <Button
               onClick={onAddPhotos}
               size="lg"
-              variant="outline"
-              className="w-full border-neutral-300 hover:bg-neutral-50 h-14 text-base font-medium rounded-xl"
+              className="w-full bg-neutral-900 hover:bg-neutral-800 h-14 text-base font-semibold rounded-xl shadow-sm"
             >
               옛 사진 추가하기
             </Button>
+            {photoCount > 0 && (
+              <Button
+                onClick={onViewPhotos}
+                size="lg"
+                variant="outline"
+                className="w-full border-neutral-300 hover:bg-neutral-50 h-14 text-base font-medium rounded-xl"
+              >
+                모든 사진 보기 ({photoCount})
+              </Button>
+            )}
+          </div>
+
+          {/* 스크롤 힌트 */}
+          <div className="flex justify-center pt-6">
+            <button
+              onClick={onAddPhotos}
+              className="text-neutral-400 hover:text-neutral-600 transition-colors flex flex-col items-center gap-1"
+              aria-label="아래로 스크롤"
+            >
+              <span className="text-xs">아래로</span>
+              <ChevronDown className="w-5 h-5 animate-bounce" />
+            </button>
           </div>
         </div>
-      </div>
-
-      {/* 스크롤 힌트 */}
-      <div className="pb-8 flex justify-center">
-        <button
-          onClick={onViewPhotos}
-          className="text-neutral-400 hover:text-neutral-600 transition-colors flex flex-col items-center gap-2"
-          aria-label="아래로 스크롤"
-        >
-          <span className="text-sm">모든 사진 보기</span>
-          <ChevronDown className="w-5 h-5 animate-bounce" />
-        </button>
       </div>
     </section>
   );

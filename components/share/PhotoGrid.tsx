@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Trash2, User } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
 import DeletePhotoDialog from './DeletePhotoDialog';
 
@@ -12,12 +13,15 @@ interface PhotoGridProps {
   onDeleteSuccess?: () => void;
 }
 
+const INITIAL_DISPLAY_COUNT = 10;
+
 export default function PhotoGrid({
   photos,
   groupId,
   onDeleteSuccess,
 }: PhotoGridProps) {
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   if (photos.length === 0) {
     return (
@@ -31,10 +35,15 @@ export default function PhotoGrid({
     );
   }
 
+  const displayedPhotos = showAll
+    ? photos
+    : photos.slice(0, INITIAL_DISPLAY_COUNT);
+  const hasMore = photos.length > INITIAL_DISPLAY_COUNT;
+
   return (
     <>
       <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        {photos.map((photo) => (
+        {displayedPhotos.map((photo) => (
           <div
             key={photo.id}
             className="group relative aspect-square rounded-xl overflow-hidden bg-neutral-100 shadow-sm hover:shadow-md transition-shadow"
@@ -75,6 +84,20 @@ export default function PhotoGrid({
           </div>
         ))}
       </div>
+
+      {/* 모두 보기 버튼 */}
+      {hasMore && !showAll && (
+        <div className="mt-8 flex justify-center">
+          <Button
+            onClick={() => setShowAll(true)}
+            variant="outline"
+            size="lg"
+            className="px-8 h-12 text-base rounded-xl border-neutral-300 hover:bg-neutral-50"
+          >
+            모두 보기 ({photos.length - INITIAL_DISPLAY_COUNT}개 더)
+          </Button>
+        </div>
+      )}
 
       {/* 삭제 다이얼로그 */}
       {selectedPhotoId && (
