@@ -105,13 +105,13 @@ export default function Home() {
               {/* Right: Text Content */}
               <div className="order-1 space-y-6 md:order-2">
                 <h1 className="font-display text-4xl leading-tight font-bold tracking-tight sm:text-5xl md:text-6xl">
-                  <span className="animate-fadeInUp animate-delay-1500 block">당신의 손끝에서</span>
-                  <span className="animate-fadeInUp animate-delay-2000 block">다시 빛나는</span>
-                  <span className="animate-fadeInUp animate-delay-2500 block">
+                  <span className="animate-fadeInUp animate-delay-1000 block">당신의 손끝에서</span>
+                  <span className="animate-fadeInUp animate-delay-1500 block">다시 빛나는</span>
+                  <span className="animate-fadeInUp animate-delay-2000 block">
                     부모님의 찬란한 청춘
                   </span>
                 </h1>
-                <p className="animate-fadeInUp animate-delay-3000 text-lg text-pretty text-neutral-600 md:text-2xl">
+                <p className="animate-fadeInUp animate-delay-2500 text-lg text-pretty text-neutral-600 md:text-2xl">
                   우리가 그러하듯, <br></br>부모님들께도 소중한 젊음이 있었습니다. <br></br>
                   이제는 사진 속에서 그 젊음을 꺼내어 선물해봅시다.
                 </p>
@@ -119,7 +119,7 @@ export default function Home() {
                   <Button
                     size="lg"
                     onClick={scrollToDemo}
-                    className="animate-fadeInUp animate-delay-3500 bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
+                    className="animate-fadeInUp animate-delay-3000 bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
                   >
                     바로 제작하기
                   </Button>
@@ -139,13 +139,13 @@ export default function Home() {
               <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
                 <div className="space-y-6">
                   <p className="text-lg leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed">
-                    빛나는 청춘을 살아내신 부모님들의 옛 사진들을
+                    빛나는 청춘을 살아내신 부모님들의 옛 사진들을 <span> </span>
                     <br className="hidden md:block" />
-                    <span className="font-semibold text-neutral-900"> 최신 AI 기술</span>을 통해
+                    최신 AI 기술을 통해
                     <span className="font-semibold text-neutral-900"> 움직이는 영상</span>으로
                     제작해드리는 서비스입니다.
                   </p>
-                  <p className="text-lg leading-relaxed text-neutral-600 md:text-xl md:leading-relaxed">
+                  <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
                     기술의 한계로 인해{' '}
                     <span className="font-semibold text-neutral-900">
                       사진으로만 추억을 남길 수 있던
@@ -153,6 +153,20 @@ export default function Home() {
                     부모님들께,
                     <br className="hidden md:block" />
                     아름다웠던 삶의 궤적에 빛을 더해 선물해보세요.
+                  </p>
+                  <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
+                    뜻깊은 부모님의 <span className="font-semibold text-neutral-900">생신</span>에,{' '}
+                    <br></br>
+                    특별한{' '}
+                    <span className="font-semibold text-neutral-900">
+                      환갑, 칠순, 팔순 잔치
+                    </span>에, <br></br>
+                    부모님 두 분의{' '}
+                    <span className="font-semibold text-neutral-900">결혼기념일</span>에, <br></br>
+                    가족 모두 모인 <span> </span>
+                    <span className="font-semibold text-neutral-900">
+                      어버이날과 추석, 신년
+                    </span>에 <br></br>그 어느 순간이라도 감동을 선물해보세요
                   </p>
                 </div>
               </div>

@@ -190,6 +190,10 @@
   opacity: 0; /* 초기 상태 */
 }
 
+.animate-delay-1000 {
+  animation-delay: 1s;
+}
+
 .animate-delay-1500 {
   animation-delay: 1.5s;
 }
