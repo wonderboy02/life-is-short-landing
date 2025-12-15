@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { isValidShareCode } from '@/lib/utils/share-code';
+import { getAppUrl } from '@/lib/utils';
 import SharePageClient from './SharePageClient';
 import ShareUrlButton from '@/components/share/ShareUrlButton';
 
@@ -11,7 +12,7 @@ interface Props {
  * Share Code로 그룹 조회 + JWT 발급
  */
 async function getGroupData(shareCode: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const baseUrl = getAppUrl();
 
   const response = await fetch(`${baseUrl}/api/groups/verify?code=${shareCode}`, {
     cache: 'no-store', // 항상 최신 데이터 조회
@@ -39,8 +40,7 @@ export default async function SharePage({ params }: Props) {
     notFound();
   }
 
-  const shareUrl =
-    (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000') + `/share/${code}`;
+  const shareUrl = `${getAppUrl()}/share/${code}`;
 
   return (
     <div className="min-h-screen bg-neutral-50">

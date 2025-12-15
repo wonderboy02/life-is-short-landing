@@ -13,6 +13,7 @@ import UploaderDialog from './UploaderDialog';
 interface FileWithDescription {
   file: File;
   description: string;
+  previewUrl: string;
 }
 
 interface PhotoUploadProps {
@@ -20,8 +21,6 @@ interface PhotoUploadProps {
   token: string;
   onUploadSuccess?: () => void;
 }
-
-const NICKNAME_STORAGE_KEY = 'photo-uploader-nickname';
 
 export default function PhotoUpload({
   groupId,
@@ -34,19 +33,31 @@ export default function PhotoUpload({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // 닉네임 불러오기 (localStorage)
+  // 그룹별 localStorage 키
+  const nicknameKey = `photo-uploader-nickname-${groupId}`;
+
+  // 닉네임 불러오기 (그룹별 localStorage)
   useEffect(() => {
-    const savedNickname = localStorage.getItem(NICKNAME_STORAGE_KEY);
+    const savedNickname = localStorage.getItem(nicknameKey);
     if (savedNickname) {
       setUploaderNickname(savedNickname);
     } else {
       setShowNicknameDialog(true);
     }
-  }, []);
+  }, [nicknameKey]);
+
+  // cleanup: 컴포넌트 언마운트 시 미리보기 URL 해제
+  useEffect(() => {
+    return () => {
+      selectedFiles.forEach((item) => {
+        URL.revokeObjectURL(item.previewUrl);
+      });
+    };
+  }, [selectedFiles]);
 
   const handleNicknameConfirm = (nickname: string) => {
     setUploaderNickname(nickname);
-    localStorage.setItem(NICKNAME_STORAGE_KEY, nickname);
+    localStorage.setItem(nicknameKey, nickname);
     setShowNicknameDialog(false);
   };
 
@@ -73,6 +84,7 @@ export default function PhotoUpload({
     const filesWithDescription = validFiles.map((file) => ({
       file,
       description: '',
+      previewUrl: URL.createObjectURL(file), // 미리보기 URL 생성
     }));
 
     setSelectedFiles((prev) => [...prev, ...filesWithDescription]);
@@ -84,7 +96,12 @@ export default function PhotoUpload({
   };
 
   const handleRemoveFile = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    setSelectedFiles((prev) => {
+      const fileToRemove = prev[index];
+      // 메모리 누수 방지: 미리보기 URL 해제
+      URL.revokeObjectURL(fileToRemove.previewUrl);
+      return prev.filter((_, i) => i !== index);
+    });
   };
 
   const handleDescriptionChange = (index: number, description: string) => {
@@ -198,32 +215,41 @@ export default function PhotoUpload({
           />
         </div>
 
-        {/* 선택된 파일 목록 */}
+        {/* 선택된 파일 미리보기 */}
         {selectedFiles.length > 0 && (
           <div className="space-y-3">
             <Label className="text-sm font-medium">
               선택된 파일 ({selectedFiles.length}개)
             </Label>
-            <div className="max-h-96 overflow-y-auto space-y-3">
+            <div className="max-h-[600px] overflow-y-auto space-y-4">
               {selectedFiles.map((item, index) => (
                 <div
                   key={`${item.file.name}-${index}`}
-                  className="bg-neutral-50 rounded-lg p-3 space-y-2"
+                  className="bg-neutral-50 rounded-lg p-3 space-y-3"
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-neutral-700 truncate flex-1">
-                      {item.file.name}
-                    </span>
+                  {/* 이미지 미리보기 + 삭제 버튼 */}
+                  <div className="relative aspect-video rounded-lg overflow-hidden bg-neutral-200">
+                    <img
+                      src={item.previewUrl}
+                      alt={item.file.name}
+                      className="w-full h-full object-contain"
+                    />
                     <Button
-                      variant="ghost"
+                      variant="destructive"
                       size="sm"
                       onClick={() => handleRemoveFile(index)}
                       disabled={isUploading}
-                      className="ml-2"
+                      className="absolute top-2 right-2 h-8 w-8 p-0 rounded-full"
                     >
                       <X className="w-4 h-4" />
                     </Button>
                   </div>
+
+                  {/* 파일명 */}
+                  <div className="text-sm text-neutral-600 truncate">
+                    {item.file.name}
+                  </div>
+
                   {/* 사진 설명 입력 */}
                   <div>
                     <Textarea
