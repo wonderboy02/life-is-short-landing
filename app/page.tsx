@@ -139,20 +139,25 @@ export default function Home() {
               <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
                 <div className="space-y-6">
                   <p className="text-lg leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed">
-                    빛나는 청춘을 살아내신 부모님들의 옛 사진들을 <span> </span>
+                    빛나는 청춘을 살아내신
+                    <br />
+                    부모님들의 옛 사진들을 <span> </span>
                     <br className="hidden md:block" />
                     최신 AI 기술을 통해
+                    <br />
                     <span className="font-semibold text-neutral-900"> 움직이는 영상</span>으로
                     제작해드리는 서비스입니다.
                   </p>
                   <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
-                    기술의 한계로 인해{' '}
+                    기술의 한계로 인해
+                    <br />
                     <span className="font-semibold text-neutral-900">
                       사진으로만 추억을 남길 수 있던
                     </span>{' '}
                     부모님들께,
+                    <br />
                     <br className="hidden md:block" />
-                    아름다웠던 삶의 궤적에 빛을 더해 선물해보세요.
+                    아름다웠던 삶의 궤적에 생동감을 더해 선물해보세요.
                   </p>
                   <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
                     뜻깊은 부모님의 <span className="font-semibold text-neutral-900">생신</span>에,{' '}
@@ -396,7 +401,7 @@ export default function Home() {
                         <br />
                         복원된 사진을 영상으로 바꿔요
                       </h3>
-                      <p className="text-base leading-relaxed text-neutral-600 md:text-xl">
+                      <p className="text-base text-lg leading-relaxed text-neutral-600 md:text-xl">
                         Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화
                         작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
                       </p>
@@ -415,7 +420,7 @@ export default function Home() {
                       <h3 className="font-display text-xl font-bold md:text-4xl">
                         영상은 물론, 복원된 사진까지 <br></br>원본 화질로 함께 보내드려요
                       </h3>
-                      <p className="text-base leading-relaxed text-neutral-600 md:text-xl">
+                      <p className="text-base text-lg leading-relaxed text-neutral-600 md:text-xl">
                         하루 정도 소요되니 조금만 기다려주세요.<br></br> 완성된 영상과 함께 복원된
                         사진들도 <br></br> 원본 화질로 모두 보내드립니다.
                       </p>
@@ -802,11 +807,11 @@ export default function Home() {
                 </p>
                 <br></br>
                 <p>
-                  그때 저는 제가 능숙하게 다룰 줄 아는 인공지능을 이용해보기로 마음 먹었습니다. 한두
+                  그때 저는 제가 능숙하게 다룰 줄 아는 인공지능을 이용해보기로 마음 먹었습니다. 두
                   시간 정도 여러 차례 영상화 작업을 시도해본 뒤, 어머니께 보여드렸습니다. 제가
-                  평소에 장난기가 많아서, 다소 장난스럽게 영상을 만들었었죠. 그렇게 완성된 영상이
-                  바로 지금 옆에서 여러분께서 보고 계신 영상입니다. 어머니께서 놀라시면서도 아주
-                  기뻐하셨습니다. 몇 번씩이고 영상을 돌려보시더라고요.
+                  평소에 장난기가 많아서, 다소 장난스럽게 영상을 만들었었죠. 그렇게 완성된 영상을
+                  보시고는 어머니께서 놀라시면서도 아주 기뻐하셨습니다. 몇 번씩이고 영상을
+                  돌려보시더라고요.
                 </p>
                 <br></br>
                 <p>
@@ -816,10 +821,15 @@ export default function Home() {
                 </p>
                 <br></br>
                 <p>
-                  가족분들과 한 번 더 웃고, 한 번 더 포옹하고, 한 번 더 행복할 수 있는 계기가
-                  되었으면 좋겠습니다. 오늘도, 내일도 행복하시기를 바랍니다.
+                  저희의 서비스가 가족분들과 한 번 더 웃고, 한 번 더 포옹하고, 한 번 더 행복할 수
+                  있는 계기가 되었으면 좋겠습니다. 오늘도, 내일도 행복하시기를 바랍니다.
                 </p>
-                <p className="mt-8 text-right font-medium text-neutral-800">김태양 올림</p>
+                <p className="mt-8 text-right text-lg font-medium text-neutral-800">
+                  <span className="inline-block align-bottom text-sm">
+                    세상에 행복 한 조각을 더하며,
+                  </span>{' '}
+                  김태양 올림
+                </p>
               </div>
             </div>
           </div>
