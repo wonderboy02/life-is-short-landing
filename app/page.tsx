@@ -3,14 +3,17 @@
 import type React from "react"
 
 import { useState } from "react"
+import Script from "next/script"
 import { Button } from "@/components/ui/button"
 import { Upload, Play, ImageIcon, Palette, Video, MessageCircle, ChevronDown, Check } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import Marquee from "react-fast-marquee"
+import CreateGroupDialog from "@/components/landing/CreateGroupDialog"
 
 export default function Home() {
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
   const [uploadedImages, setUploadedImages] = useState<string[]>([])
   const [showForm, setShowForm] = useState(false)
@@ -50,10 +53,7 @@ export default function Home() {
   }
 
   const scrollToDemo = () => {
-    setShowUpload(true)
-    setTimeout(() => {
-      document.getElementById("demo-section")?.scrollIntoView({ behavior: "smooth", block: "center" })
-    }, 100)
+    setDialogOpen(true)
   }
 
   return (
@@ -70,6 +70,32 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* Instagram Embed Section */}
+      {/* <section className="pt-20 pb-8 flex justify-center">
+        <div className="max-w-xl w-full px-4">
+          <blockquote
+            className="instagram-media"
+            data-instgrm-permalink="https://www.instagram.com/reel/DRaiWFvCJx5/?utm_source=ig_embed&utm_campaign=loading"
+            data-instgrm-version="14"
+            style={{
+              background: '#FFF',
+              border: 0,
+              borderRadius: '3px',
+              boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
+              margin: '1px',
+              maxWidth: '540px',
+              minWidth: '326px',
+              padding: 0,
+              width: 'calc(100% - 2px)',
+            }}
+          />
+        </div>
+        <Script
+          src="https://www.instagram.com/embed.js"
+          strategy="lazyOnload"
+        />
+      </section> */}
 
       {/* Main Content */}
       <main className="pt-16">
@@ -96,11 +122,12 @@ export default function Home() {
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-balance leading-tight tracking-tight font-display">
                   당신의 손끝에서
                   <br />
-                  다시 시작되는
+                  다시 빛나는
                   <br />
-                  부모님의 찬란했던 청춘
+                  부모님의 찬란한 청춘
                 </h1>
-                <p className="text-lg md:text-xl text-neutral-600 text-pretty">빛나던 시절을 AI가 돌려드립니다</p>
+                <p className="text-lg md:text-xl text-neutral-600 text-pretty">우리가 그러하듯, 부모님들께도 소중한 젊음이 있었습니다. <br></br>
+                이제는 사진 속에서 그 젊음을 꺼내어 선물해봅시다.</p>
                 {!showUpload ? (
                   <Button
                     size="lg"
@@ -124,11 +151,12 @@ export default function Home() {
                           <Upload className="w-7 h-7 text-white" />
                         </div>
                         <div className="text-center">
-                          <h3 className="text-lg md:text-xl font-semibold mb-2">사진을 업로드하세요</h3>
-                          <p className="text-sm text-neutral-500 mb-6">JPG, PNG 형식 지원 (여러 장 가능)</p>
+                          <h3 className="text-lg md:text-xl font-semibold mb-2 font-display">소중한 추억을 업로드해주세요</h3>
+                          <p className="text-sm text-neutral-500 mb-6">
+                            초점이 잘 맞는, 정면에서 찍은 사진이 가장 좋아요.<br></br>JPG, PNG 형식을 지원해요.</p>
                           <label htmlFor="photo-upload" className="inline-block">
                             <span className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-neutral-900 text-white hover:bg-neutral-800 h-10 px-8 cursor-pointer">
-                              사진 넣기
+                              사진 전달하기
                             </span>
                           </label>
                           <input
@@ -232,8 +260,8 @@ export default function Home() {
                         <div>
                           <h3 className="text-xl md:text-2xl font-semibold mb-3 font-display">제출 완료!</h3>
                           <p className="text-neutral-600 leading-relaxed max-w-md mx-auto">
-                            소중한 사진 감사드립니다.
-                            <br />곧 연락드리겠습니다.
+                            보내주신 소중한 추억, 저희 팀도 조심스럽게 다룰게요.
+                            <br />곧 카카오톡을 통해 연락드리겠습니다!
                           </p>
                         </div>
                       </div>
@@ -253,10 +281,9 @@ export default function Home() {
                 <span className="text-3xl font-bold text-neutral-900">1,247</span>
                 <span className="text-neutral-600">명의 사용자</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">소중한 추억을 되찾은 분들의 이야기</h2>
-              <p className="text-lg text-neutral-600">실제 사용자분들의 생생한 후기입니다</p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 font-display">직접 감동을 선물해본 이들의 경험담</h2>
+              <p className="text-lg text-neutral-600">실제 사용자분들이 대가 없이 남겨주신 피드백이에요.</p>
             </div>
-          </div>
 
           <Marquee gradient={false} speed={40} className="py-4">
             {/* Review 1 */}
@@ -349,14 +376,15 @@ export default function Home() {
               <div className="text-sm text-neutral-600">윤*호 (44세, 남)</div>
             </div>
           </Marquee>
+          </div>
         </section>
 
-        <section className="bg-neutral-50 py-16 md:py-24 border-y border-neutral-100">
+      <section className="bg-neutral-50 py-16 md:py-24 border-y border-neutral-100">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12 md:mb-20">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4 font-display">정성을 다하는 4단계</h2>
-                <p className="text-lg text-neutral-600">우리는 당신의 소중한 추억을 정성스럽게 다룹니다</p>
+                <h2 className="text-3xl md:text-5xl font-bold mb-4 font-display">저희는 이렇게 추억을 되살려 드려요</h2>
+                <p className="text-lg text-neutral-600">추억이 온전히 되살아날 수 있도록, <br></br>저희 팀의 기술을 최대한 활용하고 있어요.</p>
               </div>
 
               <div className="space-y-8 md:space-y-12">
@@ -373,7 +401,7 @@ export default function Home() {
                       </div>
                       {/* Step number overlay */}
                       <div className="absolute -top-3 -left-3 w-12 h-12 bg-neutral-900 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-                        1
+                        하나
                       </div>
                     </div>
                     <div className="space-y-3 text-center md:text-left">
@@ -383,7 +411,7 @@ export default function Home() {
                       </div>
                       <h3 className="text-xl md:text-2xl font-bold font-display">소중한 사진을 받아 검수해요</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        추억이 담긴 옛날 사진들은 찢어지거나, 훼손되거나, 빛바랜 경우가 많아요. 하지만 걱정하지 마세요. 그런 사진들도 휴대폰 카메라로 찍어 보내주시면 저희가 검수를 해드려요.
+                        추억이 담긴 옛날 사진들은 찢어지거나, 훼손되거나, 빛바랜 경우가 많아요. 하지만 걱정하지 마세요. 그런 사진들도 휴대폰 카메라로 찍어서 보내주시면 저희가 검수를 도와드려요.
                       </p>
                     </div>
                   </div>
@@ -397,13 +425,14 @@ export default function Home() {
                         <Palette className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">AI 화질 복원</span>
                       </div>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">AI를 활용해 사진을 최상의 품질로 복원해요</h3>
                       <h3 className="text-xl md:text-2xl font-bold font-display">
                         최첨단 AI를 활용해
                         <br />
                         사진을 최상의 품질로 복원해요
                       </h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        AI를 이용해 "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래 흐려진 부분 등을 복원하고, 사진의 화질을 올려요. 추억의 해상도는 생생해야 하는 법이니까요.
+                      추억의 해상도는 생생해야 하는 법이에요. AI를 이용해 "업스케일링"이라는 과정을 거쳐요. 사진에서 찢어져 사라진 부분, 빛이 바래 흐려진 부분 등을 복원하고, 사진의 화질을 올려요. 
                       </p>
                     </div>
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
@@ -415,7 +444,7 @@ export default function Home() {
                         />
                       </div>
                       <div className="absolute -top-3 -right-3 w-12 h-12 bg-neutral-900 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-                        2
+                        둘
                       </div>
                     </div>
                   </div>
@@ -436,7 +465,7 @@ export default function Home() {
                         />
                       </div>
                       <div className="absolute -top-3 -left-3 w-12 h-12 bg-neutral-900 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-                        3
+                        셋
                       </div>
                     </div>
                     <div className="space-y-3 text-center md:text-left">
@@ -463,21 +492,21 @@ export default function Home() {
                         <MessageCircle className="w-4 h-4 text-neutral-700" />
                         <span className="text-sm font-medium">카카오톡 전송</span>
                       </div>
-                      <h3 className="text-xl md:text-2xl font-bold font-display">카카오톡으로 영상을 받아보세요</h3>
+                      <h3 className="text-xl md:text-2xl font-bold font-display">영상은 물론, 복원된 사진까지 함께 <br></br>원본 화질로 보내드려요.</h3>
                       <p className="text-neutral-600 text-base leading-relaxed">
-                        하루 정도 소요되니 조금만 기다려주세요. 완성된 영상과 함께 복원된 사진들도 원본 화질로 모두 보내드립니다.
+                        하루 정도 소요되니 조금만 기다려주세요.<br></br> 완성된 영상과 함께 복원된 사진들도 원본 화질로 모두 보내드립니다.
                       </p>
                     </div>
                     <div className="relative w-48 md:w-64 mx-auto md:mx-0 md:order-2 order-1 md:ml-auto">
                       <div className="aspect-[2/3] rounded-xl overflow-hidden shadow-md">
                         <img
-                          src="/smartphone-receiving-kakaotalk-message-with-video.jpg"
+                          src="/kakao.png"
                           alt="카카오톡 전송"
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="absolute -top-3 -right-3 w-12 h-12 bg-neutral-900 text-white rounded-full flex items-center justify-center text-xl font-bold shadow-lg">
-                        4
+                        넷
                       </div>
                     </div>
                   </div>
@@ -636,11 +665,12 @@ export default function Home() {
                     <div className="mb-5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
                       <div className="text-center">
                         <div className="text-lg font-bold text-neutral-900 mb-2">
-                          이제야 완성된 기술
+                          🎬 이제까지 없던 새로운 방식
                         </div>
                         <p className="text-sm text-neutral-700 leading-relaxed">
                           단순한 복원이 아닙니다.<br />
-                          부모님 인생의 흐름을 하나의 감동적인 스토리로 만들어드립니다.
+                          인생의 흐름이 하나의 영상이 되어<br />
+                          추억이 눈앞에 돌아옵니다.
                         </p>
                       </div>
                     </div>
@@ -648,10 +678,10 @@ export default function Home() {
                     {/* 영상 미리보기 */}
                     <div className="mb-5 rounded-xl overflow-hidden bg-neutral-900">
                       <video
-                        src="/hero_video_mq.mp4"
+                        src="/story_video.mp4"
                         controls
                         preload="metadata"
-                        poster="/hero_video_poster.jpg"
+                        poster="/story_video_poster.jpg"
                         playsInline
                         className="w-full"
                         style={{ maxHeight: '500px' }}
@@ -826,6 +856,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* 그룹 생성 다이얼로그 */}
+      <CreateGroupDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   )
 }
