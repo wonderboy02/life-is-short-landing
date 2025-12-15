@@ -72,7 +72,7 @@ life_is_short_landing/
 - **스타일링**: Tailwind CSS
 - **UI 라이브러리**: shadcn/ui
 - **백엔드**: Supabase (Database, Auth, Storage)
-- **패키지 매니저**: npm/pnpm
+- **패키지 매니저**: npm
 
 ## Supabase 타입 관리
 
