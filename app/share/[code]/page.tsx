@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import { isValidShareCode } from '@/lib/utils/share-code';
 import { getAppUrl } from '@/lib/utils';
 import SharePageClient from './SharePageClient';
@@ -46,6 +47,27 @@ async function getInitialPhotos(groupId: string) {
     console.error('초기 사진 로딩 실패:', error);
     return [];
   }
+}
+
+/**
+ * 동적 메타데이터 생성 (미리보기 문구)
+ */
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { code } = await params;
+
+  if (!isValidShareCode(code)) {
+    return {};
+  }
+
+  const groupData = await getGroupData(code);
+  if (!groupData) {
+    return {};
+  }
+
+  return {
+    title: `${groupData.creatorNickname}과 함께 만드는 타임머신`,
+    description: `${groupData.creatorNickname}님과 만드는 추억 앨범`,
+  };
 }
 
 export default async function SharePage({ params }: Props) {
