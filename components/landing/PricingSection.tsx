@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, Check } from 'lucide-react';
 
@@ -14,9 +14,33 @@ export default function PricingSection({ onActionClick }: PricingSectionProps) {
   const [selectedPlan, setSelectedPlan] = useState<PlanType>('story');
   const [expandedPlan, setExpandedPlan] = useState<PlanType | null>('story');
 
+  const singleRef = useRef<HTMLDivElement>(null);
+  const storyRef = useRef<HTMLDivElement>(null);
+  const premiumRef = useRef<HTMLDivElement>(null);
+
   const handlePlanClick = (plan: PlanType) => {
+    const wasExpanded = expandedPlan === plan;
     setSelectedPlan(plan);
-    setExpandedPlan(expandedPlan === plan ? null : plan);
+    setExpandedPlan(wasExpanded ? null : plan);
+
+    // 카드가 펼쳐질 때만 스크롤 (접힐 때는 스크롤하지 않음)
+    if (!wasExpanded) {
+      // 약간의 지연을 주어 DOM이 업데이트된 후 스크롤
+      setTimeout(() => {
+        const refs = { single: singleRef, story: storyRef, premium: premiumRef };
+        const ref = refs[plan];
+
+        if (ref.current) {
+          const navbarHeight = 64; // 네비바 높이 (h-16 = 64px)
+          const additionalPadding = 20; // 추가 상단 여백
+          const yOffset = -(navbarHeight + additionalPadding); // 네비바 + 여백 고려
+          const element = ref.current;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
+    }
   };
 
   return (
@@ -36,6 +60,7 @@ export default function PricingSection({ onActionClick }: PricingSectionProps) {
           <div className="space-y-3">
             {/* 단품 제작 */}
             <div
+              ref={singleRef}
               className={`cursor-pointer rounded-2xl border-2 bg-white transition-all ${
                 selectedPlan === 'single'
                   ? 'border-neutral-900 shadow-md'
@@ -110,6 +135,7 @@ export default function PricingSection({ onActionClick }: PricingSectionProps) {
 
             {/* 청춘 스토리 (기본 선택 & 펼쳐짐) */}
             <div
+              ref={storyRef}
               className={`relative cursor-pointer overflow-visible rounded-2xl border-2 bg-white transition-all ${
                 selectedPlan === 'story'
                   ? 'border-neutral-900 shadow-lg'
@@ -221,6 +247,7 @@ export default function PricingSection({ onActionClick }: PricingSectionProps) {
 
             {/* 프리미엄 패키지 */}
             <div
+              ref={premiumRef}
               className={`cursor-pointer rounded-2xl border-2 bg-white transition-all ${
                 selectedPlan === 'premium'
                   ? 'border-neutral-900 shadow-md'
