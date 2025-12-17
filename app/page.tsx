@@ -326,7 +326,7 @@ export default function Home() {
                 </div>
 
                 {/* Step 2 */}
-                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-20">
+                <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="order-2 space-y-3 text-center md:order-1 md:text-left">
                       <h3 className="font-display text-xl font-bold md:text-4xl">
@@ -388,7 +388,7 @@ export default function Home() {
                 </div>
 
                 {/* Step 4 */}
-                <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-20">
+                <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="order-2 space-y-3 text-center md:order-1 md:text-left">
                       <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1.5">
