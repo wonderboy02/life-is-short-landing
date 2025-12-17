@@ -286,13 +286,12 @@ export default function Home() {
         <section className="border-y border-neutral-100 bg-white py-16 md:py-24">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mx-auto max-w-6xl">
-              <div className="mb-12 text-center md:mb-20">
+              <div className="mb-12 text-left md:mb-20">
                 <h2 className="font-display mb-4 text-3xl font-bold md:text-5xl">
-                  저희는 이렇게 <br className="inline md:hidden"></br>추억을 되살려 드려요
+                  그저 사진들을 <br className="inline md:hidden"></br>폰으로 찍어 올려만 주시면 돼요
                 </h2>
                 <p className="text-xl text-neutral-600">
-                  추억이 온전히 되살아날 수 있도록, <br></br>저희 팀의 기술을 최대한 활용하고
-                  있어요.
+                  나머지는 전부 저희가 맡아 세상에 단 하나 뿐인 선물로 만들어드려요.
                 </p>
               </div>
 
@@ -309,24 +308,18 @@ export default function Home() {
                         />
                       </div>
                       {/* Step number overlay */}
-                      <div className="absolute -top-3 -left-3 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
-                        하나
+                      <div className="absolute -top-3 -left-3 flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
+                        1
                       </div>
                     </div>
                     <div className="space-y-3 text-center md:text-left">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1.5">
-                        <ImageIcon className="h-4 w-4 text-neutral-700" />
-                        <span className="text-sm font-medium">사진 준비</span>
-                      </div>
                       <h3 className="font-display text-xl font-bold md:text-4xl">
-                        소중한 사진을 받아 검수해요
+                        영상으로 바뀔 사진들이 한곳에 모여요
                       </h3>
-                      <p className="text-base text-lg leading-relaxed text-neutral-600 md:text-xl">
-                        추억이 담긴 사진들은 훼손되거나, 빛바랜 경우가 많아요.
-                        <br></br>
-                        하지만 걱정하지 마세요.
-                        <br></br>그런 사진들도 휴대폰 카메라로 찍어서 보내주시면 저희가 검수를
-                        도와드려요.
+                      <p className="text-base leading-relaxed break-keep text-neutral-600 md:text-xl">
+                        추억이 담긴 사진들은 훼손되거나, 빛바랜 경우가 많아요. 하지만 걱정하지
+                        마세요. 그런 사진들도 그저 휴대폰 카메라로 찍어서 보내주시기만 하면 돼요. 더
+                        이상 고객님께서 신경써야 할 부분은 없답니다.
                       </p>
                     </div>
                   </div>
@@ -336,20 +329,15 @@ export default function Home() {
                 <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="order-2 space-y-3 text-center md:order-1 md:text-left">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1.5">
-                        <Palette className="h-4 w-4 text-neutral-700" />
-                        <span className="text-sm font-medium">AI 화질 복원</span>
-                      </div>
                       <h3 className="font-display text-xl font-bold md:text-4xl">
                         최신 AI를 활용해
                         <br />
                         사진을 최상의 품질로 복원해요
                       </h3>
-                      <p className="text-base text-lg leading-relaxed text-neutral-600 md:text-xl">
-                        추억의 해상도는 생생해야 하는 법이에요.
-                        <br></br>Google의 Nano banana Pro AI를 이용해 <br></br>"업스케일링"이라는
-                        과정을 거쳐요. <br></br>사진의 찢어져 사라진 부분, 흐려진 부분 등을
-                        복원하고, 사진의 화질을 올려요.
+                      <p className="text-base leading-relaxed break-keep text-neutral-600 md:text-xl">
+                        추억의 해상도는 생생해야 하는 법이에요. Google의 Nano banana Pro AI를 이용해
+                        "업스케일링"이라는 과정을 거쳐요. 찢어져 사라진 부분, 흐려진 부분 등을
+                        복원하고, 사진의 화질을 끌어올려요.
                       </p>
                     </div>
                     <div className="relative order-1 mx-auto w-48 md:order-2 md:mx-0 md:ml-auto md:w-64">
@@ -360,8 +348,8 @@ export default function Home() {
                           className="h-full w-full object-cover"
                         />
                       </div>
-                      <div className="absolute -top-3 -right-3 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
-                        둘
+                      <div className="absolute -top-3 -right-3 flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
+                        2
                       </div>
                     </div>
                   </div>
@@ -381,21 +369,17 @@ export default function Home() {
                           className="h-full w-full object-cover"
                         />
                       </div>
-                      <div className="absolute -top-3 -left-3 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
-                        셋
+                      <div className="absolute -top-3 -left-3 flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
+                        3
                       </div>
                     </div>
                     <div className="space-y-3 text-center md:text-left">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1.5">
-                        <Video className="h-4 w-4 text-neutral-700" />
-                        <span className="text-sm font-medium">영상 제작</span>
-                      </div>
                       <h3 className="font-display text-xl font-bold md:text-4xl">
-                        첨단 AI 기술을 활용해
+                        복원된 사진들을 모두 모아
                         <br />
-                        복원된 사진을 영상으로 바꿔요
+                        살아 숨쉬는 영상을 빚어내요
                       </h3>
-                      <p className="text-base leading-relaxed text-neutral-600 md:text-xl">
+                      <p className="text-base leading-relaxed break-keep text-neutral-600 md:text-xl">
                         Google의 검증된 AI 엔진과, 다수의 작업을 거쳐본 저희의 노하우로 영상화
                         작업을 진행해요. 결과물이 만족스러울 때까지, 시행착오를 아끼지 않아요.
                       </p>
@@ -412,11 +396,11 @@ export default function Home() {
                         <span className="text-sm font-medium">카카오톡 전송</span>
                       </div>
                       <h3 className="font-display text-xl font-bold md:text-4xl">
-                        영상은 물론, 복원된 사진까지 <br></br>원본 화질로 함께 보내드려요
+                        영상은 물론, 복원된 사진까지 <br></br>최대 화질로 모두 보내드려요
                       </h3>
-                      <p className="text-base leading-relaxed text-neutral-600 md:text-xl">
-                        하루 정도 소요되니 조금만 기다려주세요.<br></br> 완성된 영상과 함께 복원된
-                        사진들도 <br></br> 원본 화질로 모두 보내드립니다.
+                      <p className="text-base leading-relaxed break-keep text-neutral-600 md:text-xl">
+                        작업은 약 하루 정도 소요돼요. 조금만 기다려주시면, 완성된 영상과 복원된
+                        사진들을 함께 원본 화질로 보내드릴게요.
                       </p>
                     </div>
                     <div className="relative order-1 mx-auto w-48 md:order-2 md:mx-0 md:ml-auto md:w-64">
@@ -427,8 +411,8 @@ export default function Home() {
                           className="h-full w-full object-cover"
                         />
                       </div>
-                      <div className="absolute -top-3 -right-3 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
-                        넷
+                      <div className="absolute -top-3 -right-3 flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
+                        4
                       </div>
                     </div>
                   </div>
