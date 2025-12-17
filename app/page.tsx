@@ -849,20 +849,20 @@ export default function Home() {
                 </h2>
               </div>
 
-              <div className="mx-7 space-y-1 text-base leading-relaxed text-neutral-700 md:text-lg md:leading-relaxed">
+              <div className="mx-7 space-y-1 text-base leading-relaxed break-keep text-neutral-700 md:text-lg md:leading-relaxed">
                 <p>
-                  안녕하세요. <br></br>Life is Short 서비스를 공동으로 기획하고 운영 중인
+                  안녕하세요. <br></br>Life is Short 서비스를 공동으로 기획하고 운영 중인 대학생
                   김태양이라고 합니다.
                 </p>
                 <br></br>
                 <p>
                   저희 서비스를 재밌게 보셨나요? 어쩌면 조금은 생소하게도, 조금은 놀랍게도 느껴졌을
-                  것 같습니다. 저희가 숨결을 불어넣은 영상들은 여태껏 많은 고객님들에게 감동을
-                  선물했습니다. 그게 저희 팀의 커다란 자부심 중 하나이기도 하고요.
+                  것 같습니다. AI를 이토록 뜻깊은 방식으로도 활용할 수 있다는 선례가 되었으면
+                  좋겠다는 작은 소원을 품어봅니다.
                 </p>
                 <br></br>
                 <p>
-                  이 서비스가 어쩌다가 세상에 태어났을까요?
+                  그런데, 이 서비스가 어쩌다가 세상에 태어났을까요?
                   <span className="font-semibold text-neutral-900">
                     사실, 저희 어머니께서 참 좋아하시더라고요.
                   </span>
@@ -876,24 +876,30 @@ export default function Home() {
                 </p>
                 <br></br>
                 <p>
-                  그때 저는 제가 능숙하게 다룰 줄 아는 인공지능을 이용해보기로 마음 먹었습니다. 한두
-                  시간 정도 여러 차례 영상화 작업을 시도해본 뒤, 어머니께 보여드렸습니다. 제가
-                  평소에 장난기가 많아서, 다소 장난스럽게 영상을 만들었었죠. 그렇게 완성된 영상이
-                  바로 지금 옆에서 여러분께서 보고 계신 영상입니다. 어머니께서 놀라시면서도 아주
-                  기뻐하셨습니다. 몇 번씩이고 영상을 돌려보시더라고요.
+                  그때 제 머릿속에 아이디어가 스쳤습니다. 저는 제가 능숙하게 다룰 줄 아는 인공지능을
+                  이용해보기로 마음 먹었습니다. 한두 시간 정도를 투자하여 여러 차례 영상화 작업을
+                  시도해본 뒤, 어머니께 영상을 보여드렸습니다. 제가 평소에 장난기가 많아서, 다소
+                  장난스럽게 영상을 만들었던 게 제 첫 작품입니다. 어머니께서 처음엔 놀라시더니 몇
+                  번이나 그걸 돌려보시고, 당신의 카카오톡으로 보내달라고까지 하시더라고요. 소장하고
+                  싶으시다면서요.
                 </p>
                 <br></br>
                 <p>
-                  <p className="font-semibold text-neutral-900">"이거다" 싶었습니다.</p>제 부모님
-                  뿐만 아니라 다른 사람들에게도 가치를, 만족을 줄 수 있는 방법. 저는 곧바로 팀원과
-                  함께 서비스를 기획했고, 끝내 이렇게 여러분들께 인사드리고 있습니다.{' '}
+                  <p className="font-semibold text-neutral-900">저는 "이거다" 싶었습니다.</p>제
+                  부모님 뿐만 아니라 다른 이 땅의 부모님들께도 가치를, 웃음을 전할 수 있는 방법.
+                  저는 곧바로 팀원과 함께 서비스를 본격적으로 기획했고, 끝내 이렇게 여러분들께
+                  인사드리고 있습니다.{' '}
                 </p>
                 <br></br>
                 <p>
                   가족분들과 한 번 더 웃고, 한 번 더 포옹하고, 한 번 더 행복할 수 있는 계기가
                   되었으면 좋겠습니다. 오늘도, 내일도 행복하시기를 바랍니다.
                 </p>
-                <p className="mt-8 text-right font-medium text-neutral-800">김태양 올림</p>
+                <br />
+                <div className="mt-8 text-right">
+                  <p className="text-neutral-700">세상에 행복 한 점을 더하며,</p>
+                  <p className="text-xl text-neutral-800">김태양 올림</p>
+                </div>
               </div>
             </div>
           </div>
