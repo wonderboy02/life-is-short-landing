@@ -431,7 +431,7 @@ export default function Home() {
                 <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-5 py-2.5">
                   <span className="text-xl">✨</span>
                   <span className="text-sm font-semibold text-neutral-700">
-                    얼리 테스터 모집 중
+                    서비스 사전 운영 중
                   </span>
                 </div>
               </div>
@@ -445,8 +445,8 @@ export default function Home() {
 
               {/* 서브 카피 */}
               <p className="mb-10 text-center text-base leading-relaxed text-neutral-600 md:text-lg">
-                부모님의 청춘을 되살리는 유일한 서비스.
-                <br className="md:hidden" /> 지금 베타 테스터로 먼저 경험하세요.
+                부모님의 청춘을 온전히 선물할 수 있는 유일한 서비스.
+                <br className="md:hidden" /> 지금 누구보다 먼저, 부모님께 무료로 선물하세요.
               </p>
 
               {/* 가격 카드 */}
@@ -455,15 +455,17 @@ export default function Home() {
                 <div className="mb-6">
                   <div className="mb-5 flex items-center justify-center gap-3">
                     <div className="text-center">
-                      <p className="mb-1 text-xs font-medium text-neutral-500">정가</p>
-                      <p className="text-2xl font-bold text-neutral-400 line-through md:text-3xl">
-                        25,000원
+                      <p className="mb-1 text-xs font-medium text-neutral-500">서비스 정가</p>
+                      <p className="text-xl font-bold text-neutral-400 line-through md:text-3xl">
+                        45,000원
                       </p>
                     </div>
                     <div className="text-2xl font-bold text-neutral-300 md:text-3xl">→</div>
                     <div className="text-center">
-                      <p className="mb-1 text-xs font-medium text-neutral-500">베타 테스터</p>
-                      <p className="text-4xl font-bold text-neutral-900 md:text-5xl">0원</p>
+                      <p className="mb-1 text-xs font-medium text-neutral-500">
+                        사전 운영 기간 한정
+                      </p>
+                      <p className="text-5xl font-bold text-neutral-900 md:text-5xl">0원</p>
                     </div>
                   </div>
 
@@ -474,19 +476,19 @@ export default function Home() {
                     <ul className="space-y-2.5 text-sm text-neutral-600">
                       <li className="flex items-start gap-2.5">
                         <span className="mt-0.5 text-neutral-900">•</span>
-                        <span>사진 10장까지 완전 무료 제작</span>
+                        <span>영상 수령 전에도, 후에도, 완전히 무료</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="mt-0.5 text-neutral-900">•</span>
-                        <span>AI 화질 복원 & 컬러라이제이션</span>
+                        <span>결제 정보 입력 없이 바로 서비스 진행</span>
+                      </li>
+                      <li className="flex items-start gap-2.5">
+                        <span className="mt-0.5 text-neutral-900">•</span>
+                        <span>AI 화질 복원 & 영상화</span>
                       </li>
                       <li className="flex items-start gap-2.5">
                         <span className="mt-0.5 text-neutral-900">•</span>
                         <span>감성 영상 제작 및 카카오톡 전송</span>
-                      </li>
-                      <li className="flex items-start gap-2.5">
-                        <span className="mt-0.5 text-neutral-900">•</span>
-                        <span>결제 정보 입력 없이 바로 체험</span>
                       </li>
                     </ul>
                   </div>
@@ -498,13 +500,13 @@ export default function Home() {
                 <Button
                   size="lg"
                   onClick={scrollToDemo}
-                  className="h-14 w-full rounded-xl bg-neutral-900 text-lg font-semibold text-white transition-all hover:bg-neutral-800 md:h-16 md:text-xl"
+                  className="font-regular h-14 w-full rounded-xl bg-neutral-900 text-lg text-xl text-white transition-all hover:bg-neutral-800 md:h-16 md:text-xl"
                 >
                   지금 무료로 만들어보기
                 </Button>
 
                 <p className="text-center text-sm text-neutral-500">
-                  베타 기간 종료 시 유료로 전환됩니다
+                  사전 운영 기간 종료시 즉시 유료로 전환됩니다
                 </p>
               </div>
             </div>
