@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Image as ImageIcon } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
 
 interface ShareLandingProps {
@@ -22,75 +22,83 @@ export default function ShareLanding({
   onAddPhotos,
 }: ShareLandingProps) {
   return (
-    <section className="min-h-screen flex flex-col justify-center bg-gradient-to-b from-white to-neutral-50 py-12">
-      <div className="container mx-auto px-4">
-        <div className="max-w-md mx-auto space-y-8">
-          {/* 환영 메시지 */}
-          <div className="text-center space-y-3">
-            <h1 className="text-3xl font-bold font-display leading-tight">
-              {creatorNickname}이 영상을 위한
-              <br />
-              사진을 모으고 있어요
-            </h1>
-            <p className="text-lg text-neutral-600">{groupName}</p>
-          </div>
+    <section className="flex min-h-[100dvh] flex-col justify-between bg-white px-4 py-12">
+      <div className="flex flex-1 items-center justify-center">
+        <div className="mx-auto w-full max-w-lg space-y-10">
+          {/* 메인 메시지 */}
+          <div className="space-y-6 text-center">
+            <div className="space-y-2">
+              <h1 className="font-display text-4xl leading-tight font-bold text-neutral-900">
+                {creatorNickname}님과 모으는
+              </h1>
+              <p className="text-2xl leading-relaxed text-neutral-600">
+                부모님의 청춘,
+                <br />
+                우리의 이야기
+              </p>
+            </div>
 
-          {/* 사진 개수 통계 카드 */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-200">
-            <div className="flex items-center justify-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0">
-                <ImageIcon className="w-7 h-7 text-neutral-700" />
-              </div>
-              <div className="text-center">
-                <p className="text-sm text-neutral-600 mb-1">현재</p>
-                <p className="text-3xl font-bold text-neutral-900">
-                  {photoCount}개의 사진
-                </p>
-                <p className="text-sm text-neutral-600 mt-1">이 모였어요</p>
-              </div>
+            <div className="py-4">
+              <p className="text-lg font-medium text-neutral-800">{groupName}</p>
+              <p className="mt-2 text-sm text-neutral-500">
+                영상으로 남길 <span className="font-semibold text-neutral-700">{photoCount}개</span>
+                의 순간
+              </p>
             </div>
           </div>
 
           {/* 최근 사진 미리보기 */}
           {recentPhotos.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-center font-display">
-                최근 추가된 사진
-              </h3>
-              <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-5">
+              <div className="grid grid-cols-3 gap-3">
                 {recentPhotos.slice(0, 6).map((photo) => (
                   <div
                     key={photo.id}
-                    className="aspect-square rounded-lg overflow-hidden bg-neutral-100 shadow-sm"
+                    className="aspect-square overflow-hidden rounded-xl bg-neutral-100"
                   >
                     <img
                       src={photo.url}
                       alt={photo.file_name}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+                      className="h-full w-full object-cover"
                     />
                   </div>
                 ))}
               </div>
+              <p className="text-center text-xs text-neutral-400">함께 모은 소중한 순간들</p>
             </div>
           )}
 
           {/* CTA 버튼 */}
-          <div className="flex flex-col gap-3">
-            <Button
-              onClick={onViewPhotos}
-              size="lg"
-              className="w-full bg-neutral-900 hover:bg-neutral-800 h-14 text-base"
-            >
-              사진 보기 ({photoCount})
-            </Button>
+          <div className="flex flex-col gap-3 pt-4">
             <Button
               onClick={onAddPhotos}
               size="lg"
-              variant="outline"
-              className="w-full border-neutral-300 hover:bg-neutral-50 h-14 text-base"
+              className="h-14 w-full rounded-xl bg-neutral-900 text-base font-semibold shadow-sm hover:bg-neutral-800"
             >
-              사진 추가하기
+              옛 사진 추가하기
             </Button>
+            {photoCount > 0 && (
+              <Button
+                onClick={onViewPhotos}
+                size="lg"
+                variant="outline"
+                className="h-14 w-full rounded-xl border-neutral-300 text-base font-medium hover:bg-neutral-50"
+              >
+                모든 사진 보기 ({photoCount})
+              </Button>
+            )}
+          </div>
+
+          {/* 스크롤 힌트 */}
+          <div className="flex justify-center pt-6">
+            <button
+              onClick={onAddPhotos}
+              className="flex flex-col items-center gap-1 text-neutral-400 transition-colors hover:text-neutral-600"
+              aria-label="아래로 스크롤"
+            >
+              <span className="text-xs">아래로</span>
+              <ChevronDown className="h-5 w-5 animate-bounce" />
+            </button>
           </div>
         </div>
       </div>
