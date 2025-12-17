@@ -1,24 +1,88 @@
 'use client';
 
+import type React from 'react';
+
 import { useState } from 'react';
-import Header from '@/components/landing/Header';
-import HeroSection from '@/components/landing/HeroSection';
-import ServiceDescription from '@/components/landing/ServiceDescription';
-import ReviewsSection from '@/components/landing/ReviewsSection';
-import ProcessSteps from '@/components/landing/ProcessSteps';
-import PricingSection from '@/components/landing/PricingSection';
-import BrandStory from '@/components/landing/BrandStory';
-import Footer from '@/components/landing/Footer';
+import Script from 'next/script';
+import { Button } from '@/components/ui/button';
+import {
+  Upload,
+  Play,
+  ImageIcon,
+  Palette,
+  Video,
+  MessageCircle,
+  ChevronDown,
+  Check,
+} from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import Marquee from 'react-fast-marquee';
 import CreateGroupDialog from '@/components/landing/CreateGroupDialog';
 
 export default function Home() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'single' | 'story' | 'premium'>('story');
+  const [expandedPlan, setExpandedPlan] = useState<'single' | 'story' | 'premium' | null>('story');
+  ('use client');
 
-  const openDialog = () => setDialogOpen(true);
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const fileArray = Array.from(files);
+      fileArray.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setUploadedImages((prev) => [...prev, event.target?.result as string]);
+          setShowForm(true);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+    if (uploadedImages.length === 1) {
+      setShowForm(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (phoneNumber && agreedToTerms) {
+      setIsSubmitted(true);
+    }
+  };
+
+  const scrollToDemo = () => {
+    setDialogOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-white">
-      <Header />
+      {/* Header */}
+      <header className="fixed top-0 right-0 left-0 z-50 border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center">
+            <div className="flex items-center gap-3">
+              <img src="/favicon/logo.png" alt="Life Is Short Logo" className="h-10 w-10" />
+              <span className="font-display text-lg font-semibold text-neutral-900">
+                Life Is Short
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
       <main className="pt-16">
         {/* Hero + Demo Section */}
         <section className="container mx-auto px-4 py-6 sm:px-6 md:py-20 lg:px-8">
@@ -852,7 +916,41 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <Footer />
+
+      {/* Footer */}
+      <footer className="border-t border-neutral-100 bg-neutral-50">
+        <div className="container mx-auto px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-8 grid gap-8 md:grid-cols-3">
+              <div>
+                <h3 className="font-display mb-3 text-lg font-semibold">Life is Short</h3>
+                <p className="text-sm leading-relaxed text-neutral-600">
+                  부모님의 소중한 추억을
+                  <br />
+                  AI로 되살립니다
+                </p>
+              </div>
+              <div>
+                <h4 className="font-display mb-3 text-sm font-semibold">문의</h4>
+                <p className="text-sm text-neutral-600">이메일: wondolee28@gmail.com</p>
+              </div>
+              <div>
+                <h4 className="font-display mb-3 text-sm font-semibold">서비스</h4>
+                <ul className="space-y-2 text-sm text-neutral-600">
+                  <li>사진 복원</li>
+                  <li>영상 제작</li>
+                  <li>카카오톡 전송</li>
+                </ul>
+              </div>
+            </div>
+            <div className="border-t border-neutral-200 pt-8 text-center">
+              <p className="text-sm text-neutral-500">© 2025 Life is Short. All rights reserved.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* 그룹 생성 다이얼로그 */}
       <CreateGroupDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   );
