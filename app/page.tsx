@@ -151,20 +151,6 @@ export default function Home() {
                     부모님들께, <br className="hidden md:block" />
                     누구도 선물한 적 없는 부모님의 젊은 시절을, 직접 선물해보세요.
                   </p>
-                  <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
-                    뜻깊은 부모님의 <span className="font-semibold text-neutral-900">생신</span>에,{' '}
-                    <br></br>
-                    특별한{' '}
-                    <span className="font-semibold text-neutral-900">
-                      환갑, 칠순, 팔순 잔치
-                    </span>에, <br></br>
-                    가족 모두 모인 <span> </span>
-                    <span className="font-semibold text-neutral-900">
-                      어버이날과 추석, 신년
-                    </span>에 <br></br>그 어느 순간이라도 감동을 전할 수 있습니다.
-                    <br />
-                    <br></br>부모님을 아이처럼 웃음짓게 해드릴 선물, 젊음.
-                  </p>
                 </div>
               </div>
             </div>
@@ -290,7 +276,7 @@ export default function Home() {
                 <h2 className="font-display mb-4 text-3xl font-bold md:text-5xl">
                   그저 사진들을 <br className="inline md:hidden"></br>폰으로 찍어 올려만 주시면 돼요
                 </h2>
-                <p className="text-xl text-neutral-600">
+                <p className="text-lg break-keep text-neutral-600">
                   나머지는 전부 저희가 맡아 세상에 단 하나 뿐인 선물로 만들어드려요.
                 </p>
               </div>
@@ -391,10 +377,6 @@ export default function Home() {
                 <div className="rounded-3xl border border-neutral-200 bg-neutral-50 p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="order-2 space-y-3 text-center md:order-1 md:text-left">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3 py-1.5">
-                        <MessageCircle className="h-4 w-4 text-neutral-700" />
-                        <span className="text-sm font-medium">카카오톡 전송</span>
-                      </div>
                       <h3 className="font-display text-xl font-bold md:text-4xl">
                         영상은 물론, 복원된 사진까지 <br></br>최대 화질로 모두 보내드려요
                       </h3>
@@ -452,8 +434,8 @@ export default function Home() {
               {/* 가격 카드 */}
               <div className="mb-5 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-10">
                 {/* 가격 비교 */}
-                <div className="mb-6">
-                  <div className="mb-5 flex items-center justify-center gap-3">
+                <div className="mb-3">
+                  <div className="mt-2 mb-5 flex items-center justify-center gap-3">
                     <div className="text-center">
                       <p className="mb-1 text-xs font-medium text-neutral-500">서비스 정가</p>
                       <p className="text-xl font-bold text-neutral-400 line-through md:text-3xl">
@@ -469,7 +451,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="rounded-xl bg-neutral-50 p-5">
+                  <div className="rounded-xl bg-neutral-100 p-5">
                     <p className="mb-3 text-center text-sm font-semibold text-neutral-700">
                       포함된 서비스
                     </p>
@@ -506,7 +488,7 @@ export default function Home() {
                 </Button>
 
                 <p className="text-center text-sm text-neutral-500">
-                  사전 운영 기간 종료시 즉시 유료로 전환됩니다
+                  사전 운영 기간 종료 후 즉시 유료로 전환됩니다
                 </p>
               </div>
             </div>
@@ -880,15 +862,15 @@ export default function Home() {
                   이용해보기로 마음 먹었습니다. 한두 시간 정도를 투자하여 여러 차례 영상화 작업을
                   시도해본 뒤, 어머니께 영상을 보여드렸습니다. 제가 평소에 장난기가 많아서, 다소
                   장난스럽게 영상을 만들었던 게 제 첫 작품입니다. 어머니께서 처음엔 놀라시더니 몇
-                  번이나 그걸 돌려보시고, 당신의 카카오톡으로 보내달라고까지 하시더라고요. 소장하고
-                  싶으시다면서요.
+                  번이나 그걸 돌려보시고, 카카오톡으로 보내달라고까지 하시더라고요. 영상을 직접
+                  소장하고 싶으시다고 하셨습니다.
                 </p>
                 <br></br>
                 <p>
                   <p className="font-semibold text-neutral-900">저는 "이거다" 싶었습니다.</p>제
-                  부모님 뿐만 아니라 다른 이 땅의 부모님들께도 가치를, 웃음을 전할 수 있는 방법.
-                  저는 곧바로 팀원과 함께 서비스를 본격적으로 기획했고, 끝내 이렇게 여러분들께
-                  인사드리고 있습니다.{' '}
+                  부모님 뿐만 아니라 이 땅의 다른 부모님들께도 가치를, 웃음을 전할 수 있는 방법.
+                  저는 곧바로 팀원과 함께 서비스를 기획하기 시작했고, 몇 주 간의 노력 끝에 끝내
+                  이렇게 여러분들께 인사드리고 있습니다.{' '}
                 </p>
                 <br></br>
                 <p>
