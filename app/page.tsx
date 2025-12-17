@@ -880,9 +880,9 @@ export default function Home() {
                 <br></br>
                 <p>
                   이 서비스가 어쩌다가 세상에 태어났을까요?
-                  <p className="font-semibold text-neutral-900">
+                  <span className="font-semibold text-neutral-900">
                     사실, 저희 어머니께서 참 좋아하시더라고요.
-                  </p>
+                  </span>
                 </p>
                 <br></br>
                 <p>
