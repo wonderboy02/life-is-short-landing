@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build:analyze": "cross-env ANALYZE=true next build --webpack",
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
@@ -68,12 +69,14 @@
     "zod": "3.25.76"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.0.10",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "^10.1.0",
     "postcss": "^8.5",
     "prettier": "^3.7.4",
     "prettier-plugin-tailwindcss": "^0.7.2",
