@@ -887,9 +887,9 @@ export default function Home() {
                 <br></br>
                 <p>
                   어머니와 함께 핸드폰 갤러리를 돌아보던 어느 주말, 어머니께서 말씀하셨습니다.
-                  <p className="text-neutral-600 italic">
+                  <span className="text-neutral-600 italic">
                     "아 이때 영상이 있었으면 참 좋았을 텐데."
-                  </p>
+                  </span>
                 </p>
                 <br></br>
                 <p>
