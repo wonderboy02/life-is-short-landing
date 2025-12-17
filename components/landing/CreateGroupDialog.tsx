@@ -25,10 +25,7 @@ interface CreateGroupDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export default function CreateGroupDialog({
-  open,
-  onOpenChange,
-}: CreateGroupDialogProps) {
+export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDialogProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -74,7 +71,7 @@ export default function CreateGroupDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold font-display">
+          <DialogTitle className="font-display text-2xl font-bold">
             그때 그 시절 앨범 만들기
           </DialogTitle>
           <DialogDescription className="text-base">
@@ -82,7 +79,7 @@ export default function CreateGroupDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4 space-y-5">
           {/* 생성자 닉네임 */}
           <div className="space-y-2">
             <Label htmlFor="creatorNickname" className="text-base">
@@ -97,13 +94,9 @@ export default function CreateGroupDialog({
               disabled={isLoading}
             />
             {errors.creatorNickname && (
-              <p className="text-sm text-red-600">
-                {errors.creatorNickname.message}
-              </p>
+              <p className="text-sm text-red-600">{errors.creatorNickname.message}</p>
             )}
-            <p className="text-xs text-neutral-500">
-              옛 사진을 모으실 분의 닉네임을 입력해주세요
-            </p>
+            <p className="text-xs text-neutral-500">옛 사진을 모으실 분의 닉네임을 입력해주세요</p>
           </div>
 
           {/* 그룹 이름 */}
@@ -119,9 +112,7 @@ export default function CreateGroupDialog({
               {...register('name')}
               disabled={isLoading}
             />
-            {errors.name && (
-              <p className="text-sm text-red-600">{errors.name.message}</p>
-            )}
+            {errors.name && <p className="text-sm text-red-600">{errors.name.message}</p>}
           </div>
 
           {/* 비밀번호 */}
@@ -137,9 +128,7 @@ export default function CreateGroupDialog({
               {...register('password')}
               disabled={isLoading}
             />
-            {errors.password && (
-              <p className="text-sm text-red-600">{errors.password.message}</p>
-            )}
+            {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
             <p className="text-xs text-neutral-500">
               이 비밀번호는 사진 삭제 시 사용됩니다. 잊지 않도록 주의하세요.
             </p>
@@ -148,7 +137,7 @@ export default function CreateGroupDialog({
           {/* 제출 버튼 */}
           <Button
             type="submit"
-            className="w-full h-12 text-base bg-neutral-900 hover:bg-neutral-800"
+            className="h-12 w-full bg-neutral-900 text-base hover:bg-neutral-800"
             disabled={isLoading}
           >
             {isLoading ? '생성 중...' : '앨범 만들기'}
