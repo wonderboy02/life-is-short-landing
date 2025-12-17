@@ -1,9 +1,8 @@
 'use client';
 
-import type React from 'react';
-
-import { useState } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import Script from 'next/script';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
   Upload,
@@ -31,7 +30,58 @@ export default function Home() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'single' | 'story' | 'premium'>('story');
   const [expandedPlan, setExpandedPlan] = useState<'single' | 'story' | 'premium' | null>('story');
-  ('use client');
+
+  // Hero animation states
+  const [isAnimationComplete, setIsAnimationComplete] = useState(false);
+  const [showProcessing, setShowProcessing] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const [processingMessageIndex, setProcessingMessageIndex] = useState(0);
+  const [photosDisappeared, setPhotosDisappeared] = useState(false);
+
+  const heroSectionRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // 수동 스크롤 계산 (state로 관리)
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!gridRef.current || !videoContainerRef.current) {
+        return;
+      }
+
+      const viewportHeight = window.innerHeight;
+      const scrollY = window.scrollY;
+
+      // 페이지 내 절대 위치
+      const gridTop = gridRef.current.offsetTop;
+      const videoTop = videoContainerRef.current.offsetTop;
+
+      // 진행도 0: 그리드 상단이 뷰포트 상단에서 20% 위치
+      const startScroll = gridTop - viewportHeight * 0.2;
+
+      // 진행도 1: 비디오 상단이 뷰포트 상단에서 50% 위치 (화면 중앙)
+      const endScroll = videoTop - viewportHeight * 0.5;
+
+      // 진행도 계산
+      const progress = (scrollY - startScroll) / (endScroll - startScroll);
+      const clampedProgress = Math.max(0, Math.min(1, progress));
+
+      setScrollProgress(clampedProgress);
+
+      // 사진이 완전히 사라진 후 (진행도 >= 1) 상태 고정
+      if (clampedProgress >= 1 && !photosDisappeared) {
+        setPhotosDisappeared(true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // 초기 실행
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [photosDisappeared]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -66,6 +116,44 @@ export default function Home() {
     setDialogOpen(true);
   };
 
+  // Processing messages
+  const processingMessages = [
+    '영상 처리중...',
+    'AI가 작업하고 있어요...',
+    '추억을 되살리는 중...',
+    '곧 완성됩니다...',
+  ];
+
+  // Monitor scroll progress for animation completion
+  useEffect(() => {
+    if (scrollProgress >= 0.9 && !isAnimationComplete) {
+      setIsAnimationComplete(true);
+      setShowProcessing(true);
+    }
+  }, [scrollProgress, isAnimationComplete, photosDisappeared]);
+
+  // Processing message rotation
+  useEffect(() => {
+    if (!showProcessing || showVideo) return;
+
+    const interval = setInterval(() => {
+      setProcessingMessageIndex((prev) => (prev + 1) % processingMessages.length);
+    }, 800);
+
+    return () => clearInterval(interval);
+  }, [showProcessing, showVideo, processingMessages.length]);
+
+  // Show video after 2 seconds of processing
+  useEffect(() => {
+    if (!showProcessing) return;
+
+    const timer = setTimeout(() => {
+      setShowVideo(true);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [showProcessing]);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
@@ -73,7 +161,13 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center">
             <div className="flex items-center gap-3">
-              <img src="/favicon/logo.png" alt="Life Is Short Logo" className="h-10 w-10" />
+              <Image
+                src="/favicon/logo.png"
+                alt="Life Is Short Logo"
+                width={40}
+                height={40}
+                priority
+              />
               <span className="font-display text-lg font-semibold text-neutral-900">
                 Life Is Short
               </span>
@@ -85,46 +179,110 @@ export default function Home() {
       {/* Main Content */}
       <main className="pt-16">
         {/* Hero + Demo Section */}
-        <section className="container mx-auto px-4 py-6 sm:px-6 md:py-20 lg:px-8">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-12 grid items-center gap-8 md:mb-16 md:grid-cols-2 md:gap-30">
-              {/* Left: Visual Placeholder */}
-              <div className="order-2 md:order-1">
-                <div className="aspect-square overflow-hidden rounded-2xl bg-neutral-100 md:aspect-[4/5]">
+        <section ref={heroSectionRef} className="container mx-auto px-4 py-6 sm:px-6">
+          <div className="mx-auto max-w-md">
+            {/* Text Content */}
+            <div className="mb-16 space-y-6 text-left">
+              <h1 className="font-display text-4xl leading-tight font-bold tracking-tight">
+                <span className="block">앨범 속에</span>
+                <span className="block">잠자던 사진들이</span>
+                <span className="block">단 하나뿐인 선물로.</span>
+              </h1>
+              <p className="text-base text-pretty text-neutral-600">
+                부모님의 청춘 시절, 그날에 멈춰버린 사진이<br></br>
+                최신 AI 와 전문가의 손길로 움직이는 영상이 되어 태어납니다.
+              </p>
+            </div>
+
+            {/* Photo Grid */}
+            <div ref={gridRef} className="mx-auto mb-16" style={{ maxWidth: '350px' }}>
+              <div className="grid grid-cols-3 gap-2">
+                {Array.from({ length: 9 }).map((_, index) => {
+                  // Row and column position
+                  const row = Math.floor(index / 3);
+                  const col = index % 3;
+
+                  // Calculate distance from center
+                  const centerRow = 1;
+                  const centerCol = 1;
+                  const deltaRow = row - centerRow;
+                  const deltaCol = col - centerCol;
+
+                  // Mobile-optimized values
+                  const cellSize = 110;
+                  const moveDistance = 300;
+
+                  // 스타일 직접 계산
+                  const translateX = scrollProgress * (-deltaCol * cellSize);
+                  const translateY = scrollProgress * (-deltaRow * cellSize + moveDistance);
+
+                  // opacity 계산: 한번 사라지면 계속 0 유지
+                  const opacity = photosDisappeared
+                    ? 0
+                    : scrollProgress < 0.6
+                      ? 1
+                      : 1 - (scrollProgress - 0.6) / 0.4;
+                  const scale = 1 - scrollProgress * 0.1;
+
+                  return (
+                    <div
+                      key={index}
+                      className="relative aspect-square overflow-hidden rounded-lg bg-neutral-100"
+                      style={{
+                        transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
+                        opacity: opacity,
+                        transition: 'none',
+                        willChange: 'transform, opacity',
+                      }}
+                    >
+                      <Image
+                        src="/placeholder_1.png"
+                        alt={`Photo ${index + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 110px, 110px"
+                        className="object-cover"
+                        priority
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 스크롤 유도 인디케이터 */}
+              <div className="mt-8 flex flex-col items-center gap-2 text-neutral-400">
+                <p className="text-sm">영상 제작하기</p>
+                <ChevronDown className="h-6 w-6 animate-bounce" />
+              </div>
+            </div>
+
+            {/* Video Container */}
+            <div
+              ref={videoContainerRef}
+              className="mx-auto flex items-center justify-center"
+              style={{ width: '80vw', maxWidth: '350px', aspectRatio: '1 / 1' }}
+            >
+              {!showVideo && showProcessing && (
+                <div className="text-center">
+                  <p className="text-lg font-semibold text-neutral-900">
+                    {processingMessages[processingMessageIndex]}
+                  </p>
+                </div>
+              )}
+
+              {showVideo && (
+                <div className="h-full w-full overflow-hidden rounded-2xl bg-neutral-100">
                   <video
+                    ref={videoRef}
                     src="/hero_example_merged.mp4"
-                    autoPlay
                     loop
                     muted
                     playsInline
+                    autoPlay
+                    preload="auto"
                     className="h-full w-full object-cover"
                   />
                 </div>
-              </div>
-
-              {/* Right: Text Content */}
-              <div className="order-1 space-y-6 md:order-2">
-                <h1 className="font-display text-4xl leading-tight font-bold tracking-tight sm:text-5xl md:text-6xl">
-                  <span className="animate-fadeInUp animate-delay-1000 block">당신의 손끝에서</span>
-                  <span className="animate-fadeInUp animate-delay-1500 block">다시 빛나는</span>
-                  <span className="animate-fadeInUp animate-delay-2000 block">
-                    부모님의 찬란한 청춘
-                  </span>
-                </h1>
-                <p className="animate-fadeInUp animate-delay-2500 text-lg text-pretty text-neutral-600 md:text-2xl">
-                  우리가 그러하듯, <br></br>부모님들께도 소중한 젊음이 있었습니다. <br></br>
-                  이제는 사진 속에서 그 젊음을 꺼내어 선물해봅시다.
-                </p>
-                {!showUpload ? (
-                  <Button
-                    size="lg"
-                    onClick={scrollToDemo}
-                    className="animate-fadeInUp animate-delay-3000 bg-neutral-900 px-10 py-6 text-xl text-white hover:bg-neutral-700"
-                  >
-                    바로 제작하기
-                  </Button>
-                ) : null}
-              </div>
+              )}
             </div>
           </div>
         </section>
@@ -304,11 +462,14 @@ export default function Home() {
                 <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-20">
                   <div className="grid items-center gap-6 md:grid-cols-2 md:gap-12">
                     <div className="relative mx-auto w-48 md:mx-0 md:w-64">
-                      <div className="aspect-[2/3] overflow-hidden rounded-xl shadow-md">
-                        <img
+                      <div className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-md">
+                        <Image
                           src="/process_1.jpg"
                           alt="사진 촬영"
-                          className="h-full w-full object-cover"
+                          fill
+                          sizes="(max-width: 768px) 192px, 256px"
+                          className="object-cover"
+                          loading="lazy"
                         />
                       </div>
                       {/* Step number overlay */}
@@ -356,11 +517,14 @@ export default function Home() {
                       </p>
                     </div>
                     <div className="relative order-1 mx-auto w-48 md:order-2 md:mx-0 md:ml-auto md:w-64">
-                      <div className="aspect-[2/3] overflow-hidden rounded-xl shadow-md">
-                        <img
+                      <div className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-md">
+                        <Image
                           src="/process_2.jpeg"
                           alt="AI 화질 복원"
-                          className="h-full w-full object-cover"
+                          fill
+                          sizes="(max-width: 768px) 192px, 256px"
+                          className="object-cover"
+                          loading="lazy"
                         />
                       </div>
                       <div className="absolute -top-3 -right-3 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
@@ -423,11 +587,14 @@ export default function Home() {
                       </p>
                     </div>
                     <div className="relative order-1 mx-auto w-48 md:order-2 md:mx-0 md:ml-auto md:w-64">
-                      <div className="aspect-[2/3] overflow-hidden rounded-xl shadow-md">
-                        <img
+                      <div className="relative aspect-[2/3] overflow-hidden rounded-xl shadow-md">
+                        <Image
                           src="/kakao.png"
                           alt="카카오톡 전송"
-                          className="h-full w-full object-cover"
+                          fill
+                          sizes="(max-width: 768px) 192px, 256px"
+                          className="object-cover"
+                          loading="lazy"
                         />
                       </div>
                       <div className="absolute -top-3 -right-3 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 text-xl font-bold text-white shadow-lg">
@@ -878,19 +1045,13 @@ export default function Home() {
                   선물했습니다. 그게 저희 팀의 커다란 자부심 중 하나이기도 하고요.
                 </p>
                 <br></br>
-                <p>
-                  이 서비스가 어쩌다가 세상에 태어났을까요?
-                  <p className="font-semibold text-neutral-900">
-                    사실, 저희 어머니께서 참 좋아하시더라고요.
-                  </p>
+                <p>이 서비스가 어쩌다가 세상에 태어났을까요?</p>
+                <p className="font-semibold text-neutral-900">
+                  사실, 저희 어머니께서 참 좋아하시더라고요.
                 </p>
                 <br></br>
-                <p>
-                  어머니와 함께 핸드폰 갤러리를 돌아보던 어느 주말, 어머니께서 말씀하셨습니다.
-                  <p className="text-neutral-600 italic">
-                    "아 이때 영상이 있었으면 참 좋았을 텐데."
-                  </p>
-                </p>
+                <p>어머니와 함께 핸드폰 갤러리를 돌아보던 어느 주말, 어머니께서 말씀하셨습니다.</p>
+                <p className="text-neutral-600 italic">"아 이때 영상이 있었으면 참 좋았을 텐데."</p>
                 <br></br>
                 <p>
                   그때 저는 제가 능숙하게 다룰 줄 아는 인공지능을 이용해보기로 마음 먹었습니다. 한두
@@ -900,10 +1061,10 @@ export default function Home() {
                   기뻐하셨습니다. 몇 번씩이고 영상을 돌려보시더라고요.
                 </p>
                 <br></br>
+                <p className="font-semibold text-neutral-900">"이거다" 싶었습니다.</p>
                 <p>
-                  <p className="font-semibold text-neutral-900">"이거다" 싶었습니다.</p>제 부모님
-                  뿐만 아니라 다른 사람들에게도 가치를, 만족을 줄 수 있는 방법. 저는 곧바로 팀원과
-                  함께 서비스를 기획했고, 끝내 이렇게 여러분들께 인사드리고 있습니다.{' '}
+                  제 부모님 뿐만 아니라 다른 사람들에게도 가치를, 만족을 줄 수 있는 방법. 저는
+                  곧바로 팀원과 함께 서비스를 기획했고, 끝내 이렇게 여러분들께 인사드리고 있습니다.
                 </p>
                 <br></br>
                 <p>
