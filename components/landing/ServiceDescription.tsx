@@ -15,7 +15,7 @@ export default function ServiceDescription() {
           <h2 className="font-display mb-8 text-center text-3xl font-bold text-neutral-900 md:mb-12 md:text-4xl">
             저희의 서비스를 소개할게요.
           </h2>
-          <div className="rounded-3xl p-8 text-center md:p-12">
+          <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
             <div className="space-y-6">
               <motion.p
                 className="leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed"
