@@ -125,6 +125,8 @@ export default async function SharePage({ params }: Props) {
           initialPhotos={initialPhotos}
           shareUrl={shareUrl}
           shareCode={code}
+          createdAt={groupData.createdAt}
+          initialVideoStatus={groupData.videoStatus}
         />
       </div>
     </div>

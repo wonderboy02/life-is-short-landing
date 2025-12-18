@@ -3,11 +3,13 @@
 export interface Group {
   id: string;
   comment: string;
+  contact: string;
   password_hash: string;
-  share_code: string;
+  share_code: string | null;
   creator_nickname: string;
   created_at: string;
   updated_at: string;
+  video_status: 'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null;
 }
 
 export interface Photo {
@@ -45,7 +47,13 @@ export interface GroupVerifyResponse {
   groupId: string;
   comment: string;
   creatorNickname: string;
+  createdAt: string;
+  videoStatus: 'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null;
   token: string;
+}
+
+export interface VideoRequestResponse {
+  videoStatus: string;
 }
 
 export interface PhotoUploadResponse {

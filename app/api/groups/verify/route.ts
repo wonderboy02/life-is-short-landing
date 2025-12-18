@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     // 그룹 조회
     const { data: group, error } = await supabaseAdmin
       .from('groups')
-      .select('id, comment, creator_nickname')
+      .select('id, comment, creator_nickname, created_at, video_status')
       .eq('share_code', shareCode)
       .single();
 
@@ -63,6 +63,8 @@ export async function GET(req: NextRequest) {
         groupId: group.id,
         comment: group.comment,
         creatorNickname: group.creator_nickname,
+        createdAt: group.created_at,
+        videoStatus: group.video_status || null,
         token,
       },
     });

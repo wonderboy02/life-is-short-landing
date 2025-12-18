@@ -7,6 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -54,6 +62,9 @@ export default function AdminGroupDetailPage({ params }: Props) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [photoToDelete, setPhotoToDelete] = useState<PhotoWithUrl | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // 영상 상태 변경
+  const [isUpdatingVideoStatus, setIsUpdatingVideoStatus] = useState(false);
 
   useEffect(() => {
     fetchGroupDetail();
@@ -303,6 +314,72 @@ export default function AdminGroupDetailPage({ params }: Props) {
     return date.toLocaleString('ko-KR');
   };
 
+  const getVideoStatusBadge = (status: string | null) => {
+    const statusConfig = {
+      pending: { label: '대기', variant: 'secondary' as const },
+      requested: { label: '신청됨', variant: 'default' as const },
+      processing: { label: '처리중', variant: 'default' as const },
+      completed: { label: '완료', variant: 'default' as const },
+      failed: { label: '실패', variant: 'destructive' as const },
+    };
+
+    const config = statusConfig[(status || 'pending') as keyof typeof statusConfig] || statusConfig.pending;
+
+    return (
+      <Badge variant={config.variant}>
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const handleVideoStatusChange = async (newStatus: string) => {
+    setIsUpdatingVideoStatus(true);
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      const response = await fetch(`/api/admin/groups/${groupId}/video`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ video_status: newStatus }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // 그룹 상태 업데이트
+        setGroup((prev) =>
+          prev ? { ...prev, video_status: newStatus } : null
+        );
+
+        // 성공 피드백
+        const statusLabel = {
+          pending: '대기',
+          requested: '신청됨',
+          processing: '처리중',
+          completed: '완료',
+          failed: '실패',
+        }[newStatus] || newStatus;
+
+        alert(`✓ 영상 상태가 "${statusLabel}"(으)로 변경되었습니다.`);
+      } else {
+        alert('✗ ' + (result.error || '상태 변경에 실패했습니다.'));
+      }
+    } catch (err) {
+      console.error('영상 상태 변경 오류:', err);
+      alert('✗ 서버 오류가 발생했습니다.');
+    } finally {
+      setIsUpdatingVideoStatus(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -335,18 +412,52 @@ export default function AdminGroupDetailPage({ params }: Props) {
             <div className="space-y-1">
               <div>그룹 ID: <span className="font-mono text-xs">{group.id}</span></div>
               <div>공유 코드: <span className="font-mono font-semibold">{group.share_code}</span></div>
+              <div>생성자: {group.creator_nickname}</div>
+              <div>연락처: {group.contact}</div>
               <div>사진: {group.photo_count}장</div>
               <div className="text-xs">생성일: {formatDate(group.created_at)}</div>
             </div>
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-2">
-          <Button variant="default" onClick={handleCopyShareCode}>
-            공유 링크 복사
-          </Button>
-          <Button variant="outline" onClick={() => setEditDialogOpen(true)}>
-            그룹 정보 수정
-          </Button>
+        <CardContent className="space-y-4">
+          {/* 영상 상태 */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-neutral-700">
+              영상 제작 상태
+            </label>
+            <Select
+              value={group.video_status || 'pending'}
+              onValueChange={handleVideoStatusChange}
+              disabled={isUpdatingVideoStatus}
+            >
+              <SelectTrigger className="w-full" disabled={isUpdatingVideoStatus}>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="pending">대기</SelectItem>
+                <SelectItem value="requested">신청됨</SelectItem>
+                <SelectItem value="processing">처리중</SelectItem>
+                <SelectItem value="completed">완료</SelectItem>
+                <SelectItem value="failed">실패</SelectItem>
+              </SelectContent>
+            </Select>
+            {isUpdatingVideoStatus && (
+              <p className="text-xs text-neutral-500 flex items-center gap-1">
+                <span className="inline-block animate-spin">⏳</span>
+                상태 변경 중...
+              </p>
+            )}
+          </div>
+
+          {/* 액션 버튼들 */}
+          <div className="flex flex-wrap gap-2 pt-2">
+            <Button variant="default" onClick={handleCopyShareCode}>
+              공유 링크 복사
+            </Button>
+            <Button variant="outline" onClick={() => setEditDialogOpen(true)}>
+              그룹 정보 수정
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

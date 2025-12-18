@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { comment, creatorNickname, password } = validation.data;
+    const { comment, creatorNickname, contact, password } = validation.data;
 
     // 비밀번호 해싱
     const passwordHash = await hashPassword(password);
@@ -64,6 +64,7 @@ export async function POST(req: NextRequest) {
       .insert({
         comment,
         creator_nickname: creatorNickname,
+        contact,
         password_hash: passwordHash,
         share_code: shareCode,
       })

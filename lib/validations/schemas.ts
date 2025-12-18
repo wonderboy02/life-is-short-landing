@@ -14,6 +14,11 @@ export const createGroupSchema = z.object({
     .min(1, '생성자 닉네임을 입력해주세요')
     .max(50, '닉네임은 최대 50자까지 가능합니다')
     .trim(),
+  contact: z
+    .string()
+    .min(1, '연락처를 입력해주세요')
+    .max(100, '연락처는 최대 100자까지 가능합니다')
+    .trim(),
   password: z
     .string()
     .min(6, '비밀번호는 최소 6자 이상이어야 합니다')
