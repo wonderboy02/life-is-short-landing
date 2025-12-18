@@ -89,7 +89,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
             <Button
               size="lg"
               onClick={onCtaClick}
-              className="font-regular h-14 w-full rounded-xl bg-neutral-900 text-xl text-white transition-all hover:bg-neutral-800 md:h-16 md:text-xl"
+              className="font-regular h-14 w-full rounded-xl bg-neutral-800 text-xl text-white transition-all hover:bg-neutral-800 md:h-16 md:text-xl"
             >
               지금 무료로 만들어보기
             </Button>

@@ -7,8 +7,7 @@ export default function ProcessSection() {
         <div className="mx-auto max-w-6xl">
           <div className="mb-12 text-left md:mb-20">
             <h2 className="font-display mb-4 text-3xl font-bold md:text-5xl">
-              그저 사진들을 폰으로 찍어<br className="inline md:hidden"></br> 올려주시만 하면
-              끝이에요
+              사진들을 폰으로 찍어<br className="inline md:hidden"></br> 올려주시기만 하면 끝이에요
             </h2>
             <p className="text-lg text-neutral-600">
               나머지는 전부 저희가 맡아 세상에 단 하나뿐인 선물로 만들어드려요.
@@ -36,7 +35,7 @@ export default function ProcessSection() {
                   <h3 className="font-display text-xl font-bold md:text-4xl">
                     영상으로 바뀔 사진들이 한 곳에 모여요
                   </h3>
-                  <p className="text-base leading-relaxed text-neutral-600 md:text-xl">
+                  <p className="text-base leading-relaxed break-keep text-neutral-600 md:text-xl">
                     추억이 담긴 사진들은 훼손되거나, 빛바랜 경우가 많아요. 하지만 걱정하지 마세요.
                     그런 사진들도 휴대폰 카메라로 찍어서 보내주시면 저희가 검수를 도와드려요. 더
                     이상 고객님께서 신경쓰셔야 할 부분은 없답니다.
@@ -54,7 +53,7 @@ export default function ProcessSection() {
                     <br />
                     사진을 최상의 품질로 복원해요
                   </h3>
-                  <p className="text-base leading-relaxed text-neutral-600 md:text-xl">
+                  <p className="text-base leading-relaxed break-keep text-neutral-600 md:text-xl">
                     추억의 해상도는 생생해야 하는 법이에요. Google의 Nano banana Pro AI를 이용해
                     "업스케일링"이라는 과정을 거쳐요. 찢어져 사라진 부분, 흐려진 부분 등을 복원하고,
                     사진의 화질을 끌어올려요.

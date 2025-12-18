@@ -1,6 +1,6 @@
 export default function BrandStory() {
   return (
-    <section className="border-y border-neutral-100 bg-neutral-50 py-16 md:py-24">
+    <section className="border-y border-neutral-100 bg-neutral-50 py-16 break-keep md:py-24">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <div className="mb-8 text-center md:mb-12">
@@ -31,8 +31,8 @@ export default function BrandStory() {
             <br></br>
             <p>
               그때 제 머릿속에 아이디어가 스쳤습니다! 제가 능숙하게 다룰 줄 아는 인공지능을
-              이용해보기로 마음 먹었죠. 한두 시간 정도를 투자하여 이리저리 영상화 작업을 시도해본
-              뒤, 어머니께 보여드렸습니다. 제가 평소에 장난기가 많아서, 제 첫 작품은 다소 장난스럽게
+              이용해보기로 마음먹었죠. 한두 시간 정도를 투자하여 이리저리 영상화 작업을 시도해본 뒤,
+              어머니께 보여드렸습니다. 제가 평소에 장난기가 많아서, 제 첫 작품은 다소 장난스럽게
               만든 영상이었어요. 어머니께선 처음에는 놀라시더니 몇 번이나 그걸 돌려보시고,
               카카오톡으로 보내달라고까지 말씀하셨습니다. 영상을 직접 소장하고 싶으시다고요.
             </p>
