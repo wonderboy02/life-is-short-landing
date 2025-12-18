@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import HydrationLogger from './HydrationLogger';
-import CreateGroupDialog from './CreateGroupDialog';
 
 export default function HeroSection() {
   // Hero animation states
@@ -15,7 +14,6 @@ export default function HeroSection() {
   const [showCTA, setShowCTA] = useState(false);
   const [ctaOpacity, setCtaOpacity] = useState(0);
   const [indicatorOpacity, setIndicatorOpacity] = useState(1);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showPhotoGhost, setShowPhotoGhost] = useState(false);
 
   const heroSectionRef = useRef<HTMLDivElement>(null);
@@ -25,6 +23,14 @@ export default function HeroSection() {
 
   // 수동 스크롤 계산 (state로 관리)
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Scroll to pricing section
+  const scrollToPricing = () => {
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -335,7 +341,7 @@ export default function HeroSection() {
 
             {/* CTA Button */}
             <button
-              onClick={() => setIsDialogOpen(true)}
+              onClick={scrollToPricing}
               className="w-full rounded-xl bg-neutral-900 py-4 text-lg text-white transition-colors hover:bg-neutral-800 active:bg-neutral-700"
               style={{ minHeight: '56px' }}
             >
@@ -344,9 +350,6 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-
-      {/* Create Group Dialog */}
-      <CreateGroupDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </section>
   );
 }
