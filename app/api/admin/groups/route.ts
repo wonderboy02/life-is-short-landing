@@ -5,11 +5,14 @@ import type { ApiResponse } from '@/lib/supabase/types';
 
 export interface AdminGroupListItem {
   id: string;
-  name: string;
+  comment: string;
   share_code: string;
   created_at: string;
   updated_at: string;
   photo_count: number;
+  video_status: string;
+  creator_nickname: string;
+  contact: string;
 }
 
 /**
@@ -69,11 +72,14 @@ export async function GET(req: NextRequest) {
 
         return {
           id: group.id,
-          name: group.name,
+          comment: group.comment,
           share_code: group.share_code,
           created_at: group.created_at,
           updated_at: group.updated_at,
           photo_count: count || 0,
+          video_status: group.video_status || 'pending',
+          creator_nickname: group.creator_nickname,
+          contact: group.contact,
         } as AdminGroupListItem;
       })
     );

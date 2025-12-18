@@ -13,7 +13,7 @@ if (JWT_SECRET.length < 32) {
 
 export interface JWTPayload {
   groupId: string;
-  groupName: string;
+  comment: string;
 }
 
 export interface AdminJWTPayload {

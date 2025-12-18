@@ -5,6 +5,14 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +35,7 @@ export default function AdminDashboardPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [groupToDelete, setGroupToDelete] = useState<AdminGroupListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [updatingVideoStatus, setUpdatingVideoStatus] = useState<string | null>(null);
 
   useEffect(() => {
     fetchGroups();
@@ -40,7 +49,7 @@ export default function AdminDashboardPage() {
       setFilteredGroups(
         groups.filter(
           (group) =>
-            group.name.toLowerCase().includes(query) ||
+            group.comment.toLowerCase().includes(query) ||
             group.share_code.toLowerCase().includes(query)
         )
       );
@@ -137,6 +146,74 @@ export default function AdminDashboardPage() {
     });
   };
 
+  const getVideoStatusBadge = (status: string) => {
+    const statusConfig = {
+      pending: { label: '대기', variant: 'secondary' as const },
+      requested: { label: '신청됨', variant: 'default' as const },
+      processing: { label: '처리중', variant: 'default' as const },
+      completed: { label: '완료', variant: 'default' as const },
+      failed: { label: '실패', variant: 'destructive' as const },
+    };
+
+    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.pending;
+
+    return (
+      <Badge variant={config.variant}>
+        {config.label}
+      </Badge>
+    );
+  };
+
+  const handleVideoStatusChange = async (groupId: string, newStatus: string) => {
+    setUpdatingVideoStatus(groupId);
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      const response = await fetch(`/api/admin/groups/${groupId}/video`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ video_status: newStatus }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // 목록 업데이트
+        setGroups((prev) =>
+          prev.map((g) =>
+            g.id === groupId ? { ...g, video_status: newStatus } : g
+          )
+        );
+
+        // 성공 피드백
+        const statusLabel = {
+          pending: '대기',
+          requested: '신청됨',
+          processing: '처리중',
+          completed: '완료',
+          failed: '실패',
+        }[newStatus] || newStatus;
+
+        alert(`✓ 영상 상태가 "${statusLabel}"(으)로 변경되었습니다.`);
+      } else {
+        alert('✗ ' + (result.error || '상태 변경에 실패했습니다.'));
+      }
+    } catch (err) {
+      console.error('영상 상태 변경 오류:', err);
+      alert('✗ 서버 오류가 발생했습니다.');
+    } finally {
+      setUpdatingVideoStatus(null);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -156,6 +233,40 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* 통계 카드 */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>전체 앨범</CardDescription>
+            <CardTitle className="text-3xl">{groups.length}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>영상 신청됨</CardDescription>
+            <CardTitle className="text-3xl text-blue-600">
+              {groups.filter((g) => g.video_status === 'requested').length}
+            </CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>처리중</CardDescription>
+            <CardTitle className="text-3xl text-orange-600">
+              {groups.filter((g) => g.video_status === 'processing').length}
+            </CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>완료</CardDescription>
+            <CardTitle className="text-3xl text-green-600">
+              {groups.filter((g) => g.video_status === 'completed').length}
+            </CardTitle>
+          </CardHeader>
+        </Card>
+      </div>
+
       {/* 검색 */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
@@ -183,15 +294,44 @@ export default function AdminDashboardPage() {
           {filteredGroups.map((group) => (
             <Card key={group.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
-                <CardTitle className="font-display">{group.name}</CardTitle>
+                <CardTitle className="font-display">{group.comment}</CardTitle>
                 <CardDescription>
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     <div>공유 코드: <span className="font-mono font-semibold">{group.share_code}</span></div>
                     <div>사진: {group.photo_count}장</div>
                     <div className="text-xs">생성일: {formatDate(group.created_at)}</div>
                   </div>
                 </CardDescription>
               </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-neutral-700">
+                    영상 상태
+                  </label>
+                  <Select
+                    value={group.video_status}
+                    onValueChange={(value) => handleVideoStatusChange(group.id, value)}
+                    disabled={updatingVideoStatus === group.id}
+                  >
+                    <SelectTrigger className="w-full" disabled={updatingVideoStatus === group.id}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="pending">대기</SelectItem>
+                      <SelectItem value="requested">신청됨</SelectItem>
+                      <SelectItem value="processing">처리중</SelectItem>
+                      <SelectItem value="completed">완료</SelectItem>
+                      <SelectItem value="failed">실패</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {updatingVideoStatus === group.id && (
+                    <p className="text-xs text-neutral-500 flex items-center gap-1">
+                      <span className="inline-block animate-spin">⏳</span>
+                      상태 변경 중...
+                    </p>
+                  )}
+                </div>
+              </CardContent>
               <CardFooter className="flex gap-2">
                 <Button
                   variant="default"

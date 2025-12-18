@@ -2,10 +2,24 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Settings, X, Trash2, RefreshCw } from 'lucide-react';
+import { Settings, X, Trash2, RefreshCw, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function DevTools() {
+interface DevToolsProps {
+  onShowFirstVisitModal?: () => void;
+  testMode?: boolean;
+  onTestModeChange?: (enabled: boolean) => void;
+  onTestPhotoCountChange?: (count: number) => void;
+  onTestTimeOffsetChange?: (offset: number) => void;
+}
+
+export default function DevTools({
+  onShowFirstVisitModal,
+  testMode,
+  onTestModeChange,
+  onTestPhotoCountChange,
+  onTestTimeOffsetChange,
+}: DevToolsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Production 환경에서는 렌더링하지 않음
@@ -90,6 +104,114 @@ export default function DevTools() {
                 첫 방문 시 표시되는 영상 모달을 다시 볼 수 있어요
               </p>
             </div>
+
+            {/* 첫 방문 안내 모달 테스트 */}
+            {onShowFirstVisitModal && (
+              <div className="space-y-1">
+                <Button
+                  onClick={() => {
+                    onShowFirstVisitModal();
+                    toast.success('첫 방문 안내 모달 표시');
+                  }}
+                  variant="outline"
+                  className="w-full justify-start gap-2 h-10 bg-blue-50 hover:bg-blue-100 active:scale-95 transition-transform"
+                >
+                  <Sparkles className="w-4 h-4 text-blue-600" />
+                  <span className="text-blue-600">첫 방문 안내 모달 보기</span>
+                </Button>
+                <p className="text-xs text-neutral-500 pl-2">
+                  앨범 생성 후 표시되는 안내 모달을 테스트해요
+                </p>
+              </div>
+            )}
+
+            {/* 상태 테스트 모드 */}
+            {onTestModeChange && onTestPhotoCountChange && onTestTimeOffsetChange && (
+              <div className="border-t border-neutral-200 pt-3 mt-3">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xs font-semibold text-neutral-700">상태 테스트</p>
+                    <Button
+                      onClick={() => onTestModeChange(!testMode)}
+                      variant={testMode ? "default" : "outline"}
+                      size="sm"
+                      className="h-7 text-xs"
+                    >
+                      {testMode ? 'ON' : 'OFF'}
+                    </Button>
+                  </div>
+
+                  {testMode && (
+                    <div className="space-y-2">
+                      {/* 상태 1: 시간 O + 사진 부족 */}
+                      <Button
+                        onClick={() => {
+                          onTestPhotoCountChange(5);
+                          onTestTimeOffsetChange(0);
+                          toast.success('상태 1: 시간 남음 + 사진 부족');
+                        }}
+                        variant="outline"
+                        className="w-full justify-start h-8 text-xs"
+                      >
+                        1️⃣ 시간 O + 사진 부족
+                      </Button>
+
+                      {/* 상태 2: 시간 O + 사진 0장 */}
+                      <Button
+                        onClick={() => {
+                          onTestPhotoCountChange(0);
+                          onTestTimeOffsetChange(0);
+                          toast.success('상태 2: 시간 남음 + 사진 0장');
+                        }}
+                        variant="outline"
+                        className="w-full justify-start h-8 text-xs"
+                      >
+                        2️⃣ 시간 O + 사진 0장
+                      </Button>
+
+                      {/* 상태 3: 시간 O + 사진 충분 */}
+                      <Button
+                        onClick={() => {
+                          onTestPhotoCountChange(15);
+                          onTestTimeOffsetChange(0);
+                          toast.success('상태 3: 시간 남음 + 사진 충분');
+                        }}
+                        variant="outline"
+                        className="w-full justify-start h-8 text-xs"
+                      >
+                        3️⃣ 시간 O + 사진 충분
+                      </Button>
+
+                      {/* 상태 4: 시간 X + 사진 충분 */}
+                      <Button
+                        onClick={() => {
+                          onTestPhotoCountChange(15);
+                          onTestTimeOffsetChange(-80); // -80시간 (3일 넘김)
+                          toast.success('상태 4: 시간 마감 + 사진 충분');
+                        }}
+                        variant="outline"
+                        className="w-full justify-start h-8 text-xs"
+                      >
+                        4️⃣ 시간 X + 사진 충분
+                      </Button>
+
+                      {/* 상태 5: 시간 X + 사진 부족 */}
+                      <Button
+                        onClick={() => {
+                          onTestPhotoCountChange(5);
+                          onTestTimeOffsetChange(-80); // -80시간 (3일 넘김)
+                          toast.success('상태 5: 시간 마감 + 사진 부족');
+                        }}
+                        variant="outline"
+                        className="w-full justify-start h-8 text-xs"
+                      >
+                        5️⃣ 시간 X + 사진 부족
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* 업로더 닉네임 초기화 */}
             <div className="space-y-1">
