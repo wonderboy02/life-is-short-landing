@@ -65,7 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${groupData.creatorNickname}과 함께 만드는 타임머신`,
+    title: `${groupData.creatorNickname}님과 잠든 사진 깨우기`,
     description: `${groupData.creatorNickname}님과 만드는 추억 앨범`,
   };
 }
@@ -100,15 +100,17 @@ export default async function SharePage({ params }: Props) {
               <img src="/favicon/logo.png" alt="Life Is Short Logo" className="h-10 w-10" />
               {/* 서비스 이름 */}
               <div>
-                <h1 className="text-base font-semibold font-display text-neutral-900">
+                <h1 className="font-display text-base font-semibold text-neutral-900">
                   Life Is Short
                 </h1>
-                <p className="text-sm text-neutral-500">{groupData.creatorNickname}님과 만드는 추억 앨범</p>
+                <p className="text-sm text-neutral-500">
+                  {groupData.creatorNickname}님과 만드는 추억 앨범
+                </p>
               </div>
             </div>
             <div className="relative">
               {/* 공유 버튼 강조를 위한 pulse 효과 */}
-              <div className="absolute inset-0 animate-pulse bg-blue-100 rounded-md opacity-30 pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 animate-pulse rounded-md bg-blue-100 opacity-30" />
               <ShareUrlButton url={shareUrl} />
             </div>
           </div>
