@@ -68,6 +68,9 @@ export default function PhotoUpload({
     setUploaderNickname(nickname);
     localStorage.setItem(nicknameKey, nickname);
     setShowNicknameDialog(false);
+
+    // 닉네임 설정 후 자동으로 업로드 실행
+    handleUpload(nickname);
   };
 
   const handleChangeNickname = () => {
@@ -125,13 +128,15 @@ export default function PhotoUpload({
     );
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (providedNickname?: string) => {
     if (selectedFiles.length === 0) {
       toast.error('사진을 먼저 선택해주세요');
       return;
     }
 
-    if (!uploaderNickname.trim()) {
+    const nickname = providedNickname || uploaderNickname;
+
+    if (!nickname.trim()) {
       toast.error('닉네임을 설정해주세요');
       setShowNicknameDialog(true);
       return;
@@ -156,7 +161,7 @@ export default function PhotoUpload({
         const formData = new FormData();
         formData.append('file', file);
         formData.append('groupId', groupId);
-        formData.append('uploaderNickname', uploaderNickname.trim());
+        formData.append('uploaderNickname', nickname.trim());
         if (description.trim()) {
           formData.append('description', description.trim());
         }
