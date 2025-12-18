@@ -255,7 +255,7 @@ export default function HeroSection() {
               transition: 'opacity 0.3s ease-in-out',
             }}
           >
-            <p className="text-sm">영상 제작하기</p>
+            <p className="text-sm">화면을 밑으로 내려보세요!</p>
             <ChevronDown className="h-6 w-6 animate-bounce" />
           </div>
         </div>
