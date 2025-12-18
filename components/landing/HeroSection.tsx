@@ -215,9 +215,8 @@ export default function HeroSection() {
               const translateY = scrollProgress * (-deltaRow * cellSize + moveDistance);
 
               // opacity 계산: 0까지 완전히 사라짐
-              const opacity = scrollProgress < 0.6
-                ? 1
-                : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4);
+              const opacity =
+                scrollProgress < 0.6 ? 1 : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4);
               const scale = 1 - scrollProgress * 0.1;
 
               return (
@@ -321,27 +320,26 @@ export default function HeroSection() {
             transition: 'opacity 0.5s ease-in-out',
           }}
         >
-          <div className="w-full bg-white rounded-2xl shadow-lg p-8 space-y-6">
+          <div className="w-full space-y-6 rounded-2xl bg-white p-8 shadow-lg">
             {/* Headline */}
-            <h2 className="text-2xl font-bold text-center leading-tight">
-              단 3장의 사진으로<br />
-              특별한 영상 선물
+            <h2 className="text-center text-2xl leading-tight font-bold">
+              AI와 함께, 부모님의 옛 사진들을 움직이는 영상으로 만들어드립니다.
             </h2>
 
             {/* Value Props */}
-            <div className="space-y-3 text-center text-neutral-600">
-              <p className="text-sm">AI + 전문가 손길</p>
-              <p className="text-sm">평균 7일 제작</p>
-              <p className="text-sm">세상에 단 하나뿐인 선물</p>
+            <div className="space-y-1 text-center text-neutral-600">
+              <p className="text">구글의 영상화 AI + 전문가의 편집</p>
+              <p className="text">하루 만에 완료되는 작업</p>
+              <p className="text">세상에 단 하나뿐인 감동적인 선물</p>
             </div>
 
             {/* CTA Button */}
             <button
               onClick={() => setIsDialogOpen(true)}
-              className="w-full bg-neutral-900 text-white rounded-xl py-4 font-semibold text-base hover:bg-neutral-800 active:bg-neutral-700 transition-colors"
+              className="w-full rounded-xl bg-neutral-900 py-4 text-lg text-white transition-colors hover:bg-neutral-800 active:bg-neutral-700"
               style={{ minHeight: '56px' }}
             >
-              영상 제작 신청하기
+              지금 바로 신청하기
             </button>
           </div>
         </div>
