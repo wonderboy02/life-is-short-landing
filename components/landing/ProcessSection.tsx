@@ -37,8 +37,8 @@ export default function ProcessSection() {
                   </h3>
                   <p className="text-base leading-relaxed break-keep text-neutral-600 md:text-xl">
                     추억이 담긴 사진들은 훼손되거나, 빛바랜 경우가 많아요. 하지만 걱정하지 마세요.
-                    그런 사진들도 휴대폰 카메라로 찍어서 보내주시면 저희가 검수를 도와드려요. 더
-                    이상 고객님께서 신경쓰셔야 할 부분은 없답니다.
+                    그런 사진들도 휴대폰 카메라로 찍어서 보내주시기만 하면 돼요. 더 이상 고객님께서
+                    신경쓰셔야 할 부분은 없답니다.
                   </p>
                 </div>
               </div>

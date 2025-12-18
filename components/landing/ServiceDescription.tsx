@@ -9,6 +9,10 @@ export default function ServiceDescription() {
           <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
             <div className="space-y-6">
               <p className="text-lg leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed">
+                한 번 상상해보세요. 사진 속으로만 남은 자신의 청춘이, 영상으로 나타나 움직인다면
+                어떨까요?
+              </p>
+              <p className="text-lg leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed">
                 빛나는 청춘을 살아내신 부모님들의 옛 사진들을, <span> </span>
                 <br className="hidden md:block" />
                 <span className="font-semibold text-neutral-900"> 움직이는 영상</span>으로 변환하여
