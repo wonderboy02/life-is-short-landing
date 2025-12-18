@@ -95,11 +95,16 @@ export default async function SharePage({ params }: Props) {
       <header className="fixed top-0 right-0 left-0 z-50 border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <div>
-              <h1 className="text-base font-semibold font-display text-neutral-900">
-                {groupData.groupName}
-              </h1>
-              <p className="text-sm text-neutral-500">{groupData.creatorNickname}님과 만드는 추억 앨범</p>
+            <div className="flex items-center gap-3">
+              {/* 로고 */}
+              <img src="/favicon/logo.png" alt="Life Is Short Logo" className="h-10 w-10" />
+              {/* 서비스 이름 */}
+              <div>
+                <h1 className="text-base font-semibold font-display text-neutral-900">
+                  Life Is Short
+                </h1>
+                <p className="text-sm text-neutral-500">{groupData.creatorNickname}님과 만드는 추억 앨범</p>
+              </div>
             </div>
             <div className="relative">
               {/* 공유 버튼 강조를 위한 pulse 효과 */}
@@ -114,10 +119,14 @@ export default async function SharePage({ params }: Props) {
       <div className="bg-neutral-50">
         <SharePageClient
           groupId={groupData.groupId}
-          groupName={groupData.groupName}
+          comment={groupData.comment}
           creatorNickname={groupData.creatorNickname}
           token={groupData.token}
           initialPhotos={initialPhotos}
+          shareUrl={shareUrl}
+          shareCode={code}
+          createdAt={groupData.createdAt}
+          initialVideoStatus={groupData.videoStatus}
         />
       </div>
     </div>

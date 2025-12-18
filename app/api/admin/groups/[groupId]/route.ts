@@ -249,13 +249,13 @@ export async function PATCH(
     }
 
     const body = await req.json();
-    const { name, password } = body;
+    const { comment, password } = body;
 
     // 업데이트할 필드 준비
-    const updateData: { name?: string; password_hash?: string } = {};
+    const updateData: { comment?: string; password_hash?: string } = {};
 
-    if (name && typeof name === 'string' && name.trim()) {
-      updateData.name = name.trim();
+    if (comment && typeof comment === 'string' && comment.trim()) {
+      updateData.comment = comment.trim();
     }
 
     if (password && typeof password === 'string') {

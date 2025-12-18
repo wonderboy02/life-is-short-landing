@@ -2,70 +2,133 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
 import PhotoUploadClient from './PhotoUploadClient';
 import PhotoGridClient from './PhotoGridClient';
 import ShareLanding from '@/components/share/ShareLanding';
 import ServiceIntro from '@/components/share/ServiceIntroModal';
+import FirstVisitGuideModal from '@/components/share/FirstVisitGuideModal';
 import DevTools from '@/components/dev/DevTools';
 import { usePhotos } from '@/hooks/use-photos';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
 
 interface SharePageClientProps {
   groupId: string;
-  groupName: string;
+  comment: string;
   creatorNickname: string;
   token: string;
   initialPhotos: PhotoWithUrl[];
+  shareUrl: string;
+  shareCode: string;
+  createdAt: string;
+  initialVideoStatus: 'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null;
 }
 
 export default function SharePageClient({
   groupId,
-  groupName,
+  comment,
   creatorNickname,
   token,
   initialPhotos,
+  shareUrl,
+  shareCode,
+  createdAt,
+  initialVideoStatus,
 }: SharePageClientProps) {
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showFirstVisitModal, setShowFirstVisitModal] = useState(false);
+  const [shouldScrollAfterModalClose, setShouldScrollAfterModalClose] = useState(false);
+  const [shareLandingMounted, setShareLandingMounted] = useState(false);
   const { photos, isLoading, refetch } = usePhotos(groupId, initialPhotos);
+
+  // 영상 제작 상태
+  const [videoStatus, setVideoStatus] = useState<'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null>(initialVideoStatus);
+
+  // 개발 도구용 테스트 상태
+  const [testMode, setTestMode] = useState(false);
+  const [testPhotoCount, setTestPhotoCount] = useState<number>(0);
+  const [testTimeOffset, setTestTimeOffset] = useState<number>(0); // 시간 오프셋 (시간 단위)
 
   // Refs for smooth scrolling
   const shareLandingNodeRef = useRef<HTMLDivElement | null>(null);
   const photoGridRef = useRef<HTMLDivElement>(null);
   const photoUploadRef = useRef<HTMLDivElement>(null);
 
-  // 페이지 진입 시 공유 안내 토스트 - 매번 표시
+  // 공통 스크롤 함수 - ShareLanding의 상단을 헤더 바로 아래에 위치시킴
+  const scrollToShareLanding = useCallback(() => {
+    if (!shareLandingNodeRef.current) return;
+
+    const headerHeight = 64; // h-16 = 64px
+    const elementTop = shareLandingNodeRef.current.getBoundingClientRect().top;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const targetPosition = scrollTop + elementTop - headerHeight;
+
+    window.scrollTo({
+      top: targetPosition,
+      behavior: 'smooth'
+    });
+  }, []);
+
+  // ref callback - ref 저장 및 마운트 상태 업데이트
+  const shareLandingRef = useCallback((node: HTMLDivElement | null) => {
+    shareLandingNodeRef.current = node;
+    if (node) {
+      setShareLandingMounted(true);
+    }
+  }, []);
+
+  // 앨범 생성 직후 확인 및 모달 표시
   useEffect(() => {
     if (!isLoading) {
-      const timer = setTimeout(() => {
-        toast.info('가족과 함께 사진을 모아보세요!\n오른쪽 위 공유 버튼을 눌러보세요 👉', {
-          duration: Infinity, // X 버튼으로만 닫기
-        });
-      }, 800);
+      const justCreatedCode = localStorage.getItem('album-just-created');
 
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading]);
-
-  // 재방문자 자동 스크롤 - ref callback 패턴
-  const shareLandingRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      shareLandingNodeRef.current = node;
-
-      if (node && !isLoading) {
-        const visitKey = `service-intro-visited-${groupId}`;
-        const hasVisited = localStorage.getItem(visitKey);
-
-        if (hasVisited) {
-          // requestAnimationFrame으로 다음 렌더링 사이클에 스크롤
-          requestAnimationFrame(() => {
-            node.scrollIntoView({ behavior: 'smooth' });
-          });
-        }
+      // 앨범을 방금 생성했고, 현재 페이지가 그 앨범이면 모달 표시
+      if (justCreatedCode === shareCode) {
+        setShowFirstVisitModal(true);
+        // 플래그 제거 (한 번만 표시)
+        localStorage.removeItem('album-just-created');
       }
-    },
-    [groupId, isLoading]
-  );
+    }
+  }, [shareCode, isLoading]);
+
+  // 첫 방문 모달이 닫힐 때 스크롤 준비
+  useEffect(() => {
+    if (!showFirstVisitModal && shouldScrollAfterModalClose) {
+      const visitKey = `service-intro-visited-${groupId}`;
+      localStorage.setItem(visitKey, 'true');
+
+      // 모달 닫기 애니메이션 완료 후 스크롤
+      setTimeout(() => {
+        scrollToShareLanding();
+      }, 400);
+
+      setShouldScrollAfterModalClose(false);
+    }
+  }, [showFirstVisitModal, shouldScrollAfterModalClose, groupId, scrollToShareLanding]);
+
+  // 모달 열림 추적
+  useEffect(() => {
+    if (showFirstVisitModal) {
+      setShouldScrollAfterModalClose(true);
+    }
+  }, [showFirstVisitModal]);
+
+  // 재방문자 자동 스크롤 - 로딩 완료 후 실행
+  useEffect(() => {
+    // 로딩 완료 && 모달 표시 안 함 && ShareLanding 마운트됨
+    if (!isLoading && !showFirstVisitModal && shareLandingMounted) {
+      const visitKey = `service-intro-visited-${groupId}`;
+      const hasVisited = localStorage.getItem(visitKey);
+
+      if (hasVisited) {
+        // DOM 렌더링 완료 보장
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            scrollToShareLanding();
+          }, 100);
+        });
+      }
+    }
+  }, [isLoading, showFirstVisitModal, shareLandingMounted, groupId, scrollToShareLanding]);
 
   const handleUploadSuccess = () => {
     // 전체 업로드 완료 시 사진 목록 최종 새로고침
@@ -84,13 +147,14 @@ export default function SharePageClient({
     });
   };
 
-  const scrollToMain = () => {
+  const scrollToMain = useCallback(() => {
     // localStorage에 방문 기록 저장
     const visitKey = `service-intro-visited-${groupId}`;
     localStorage.setItem(visitKey, 'true');
 
-    shareLandingNodeRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    // 공통 함수 사용
+    scrollToShareLanding();
+  }, [groupId, scrollToShareLanding]);
 
   const scrollToPhotos = () => {
     photoGridRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -98,6 +162,49 @@ export default function SharePageClient({
 
   const scrollToUpload = () => {
     photoUploadRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // 영상 제작 요청 핸들러
+  const handleRequestVideo = async () => {
+    try {
+      const response = await fetch(`/api/groups/${groupId}/video`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setVideoStatus('requested');
+        return { success: true };
+      } else {
+        return { success: false, error: result.error };
+      }
+    } catch (error) {
+      console.error('영상 제작 요청 오류:', error);
+      return { success: false, error: '서버 오류가 발생했습니다.' };
+    }
+  };
+
+  const handleGenerateVideo = async () => {
+    try {
+      const response = await fetch(`/api/groups/${groupId}/video`, {
+        method: 'POST',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('영상 제작이 신청되었습니다. 관리자가 확인 후 제작을 진행합니다.');
+      } else {
+        alert(result.error || '영상 제작 신청에 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('영상 제작 신청 오류:', error);
+      alert('서버 오류가 발생했습니다.');
+    }
   };
 
   if (isLoading) {
@@ -110,21 +217,43 @@ export default function SharePageClient({
 
   return (
     <>
+      {/* 첫 방문 안내 모달 */}
+      <FirstVisitGuideModal
+        open={showFirstVisitModal}
+        onOpenChange={setShowFirstVisitModal}
+        shareUrl={shareUrl}
+      />
+
       {/* 개발 도구 (개발 환경 전용) */}
-      <DevTools />
+      <DevTools
+        onShowFirstVisitModal={() => setShowFirstVisitModal(true)}
+        testMode={testMode}
+        onTestModeChange={setTestMode}
+        onTestPhotoCountChange={setTestPhotoCount}
+        onTestTimeOffsetChange={setTestTimeOffset}
+      />
 
       {/* 서비스 소개 섹션 */}
-      <ServiceIntro onScrollToMain={scrollToMain} />
+      <ServiceIntro onScrollToMain={scrollToMain} creatorNickname={creatorNickname} comment={comment} />
 
       {/* 랜딩 섹션 */}
-      <div ref={shareLandingRef} className="scroll-mt-16">
+      <div ref={shareLandingRef}>
         <ShareLanding
           creatorNickname={creatorNickname}
-          groupName={groupName}
-          photoCount={photos.length}
+          comment={comment}
+          photoCount={testMode ? testPhotoCount : photos.length}
           recentPhotos={photos.slice(0, 6)}
           onViewPhotos={scrollToPhotos}
           onAddPhotos={scrollToUpload}
+          onRequestVideo={handleRequestVideo}
+          videoStatus={videoStatus}
+          createdAt={
+            testMode
+              ? new Date(
+                  new Date(createdAt).getTime() + testTimeOffset * 60 * 60 * 1000
+                ).toISOString()
+              : createdAt
+          }
         />
       </div>
 

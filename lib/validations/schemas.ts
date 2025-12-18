@@ -4,15 +4,20 @@ import { z } from 'zod';
  * 그룹 생성 스키마
  */
 export const createGroupSchema = z.object({
-  name: z
+  comment: z
     .string()
-    .min(1, '그룹 이름을 입력해주세요')
-    .max(100, '그룹 이름은 최대 100자까지 가능합니다')
+    .min(1, '가족들에게 한마디를 입력해주세요')
+    .max(200, '한마디는 최대 200자까지 가능합니다')
     .trim(),
   creatorNickname: z
     .string()
     .min(1, '생성자 닉네임을 입력해주세요')
     .max(50, '닉네임은 최대 50자까지 가능합니다')
+    .trim(),
+  contact: z
+    .string()
+    .min(1, '연락처를 입력해주세요')
+    .max(100, '연락처는 최대 100자까지 가능합니다')
     .trim(),
   password: z
     .string()

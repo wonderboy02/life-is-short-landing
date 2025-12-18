@@ -16,7 +16,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
 
   if (isBetaTest) {
     return (
-      <section className="container mx-auto px-4 py-20 sm:px-6 md:py-32 lg:px-8">
+      <section id="pricing" className="container mx-auto px-4 py-20 sm:px-6 md:py-32 lg:px-8">
         <HydrationLogger componentName="PricingSection (Beta)" />
         <div className="mx-auto max-w-2xl">
           {/* 얼리버드 배지 */}
@@ -95,7 +95,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
             </Button>
 
             <p className="text-center text-sm text-neutral-500">
-              사전 운영 기간 종류 후 즉시 유료로 전환됩니다
+              사전 운영 기간 종료 후 즉시 유료로 전환됩니다
             </p>
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
 
   // 정식 가격 섹션
   return (
-    <section className="container mx-auto bg-gradient-to-b from-white to-neutral-50 px-4 py-16 sm:px-6 md:py-24 lg:px-8">
+    <section id="pricing" className="container mx-auto bg-gradient-to-b from-white to-neutral-50 px-4 py-16 sm:px-6 md:py-24 lg:px-8">
       <HydrationLogger componentName="PricingSection (정식)" />
       <div className="mx-auto max-w-2xl">
         <div className="mb-12 text-center">

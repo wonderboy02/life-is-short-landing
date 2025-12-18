@@ -16,31 +16,37 @@ export type Database = {
     Tables: {
       groups: {
         Row: {
+          comment: string
+          contact: string
           created_at: string
           creator_nickname: string
           id: string
-          name: string
           password_hash: string
           share_code: string | null
           updated_at: string
+          video_status: string | null
         }
         Insert: {
+          comment: string
+          contact?: string
           created_at?: string
           creator_nickname?: string
           id?: string
-          name: string
           password_hash: string
           share_code?: string | null
           updated_at?: string
+          video_status?: string | null
         }
         Update: {
+          comment?: string
+          contact?: string
           created_at?: string
           creator_nickname?: string
           id?: string
-          name?: string
           password_hash?: string
           share_code?: string | null
           updated_at?: string
+          video_status?: string | null
         }
         Relationships: []
       }
