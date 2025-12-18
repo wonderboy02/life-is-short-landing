@@ -166,7 +166,7 @@ export default function HeroSection() {
               const cellSize = 110;
               const moveDistance = 300;
 
-              // 5초 후 초기 위치로 희미하게 표시
+              // 8.6초 후: 초기 위치에 희미하게 표시 (transition 없이 즉시)
               if (showPhotoGhost) {
                 return (
                   <div
@@ -175,7 +175,7 @@ export default function HeroSection() {
                     style={{
                       transform: 'translate(0px, 0px) scale(1)',
                       opacity: 0.08,
-                      transition: 'opacity 1s ease-in-out, transform 1s ease-in-out',
+                      transition: 'none',
                     }}
                   >
                     <img
@@ -188,7 +188,29 @@ export default function HeroSection() {
                 );
               }
 
-              // 스크롤 기반 애니메이션
+              // 3.6초 후 영상이 뜬 후: opacity 0으로 고정 (스크롤 무시)
+              if (showVideo) {
+                return (
+                  <div
+                    key={index}
+                    className="aspect-square overflow-hidden rounded-lg bg-neutral-100"
+                    style={{
+                      transform: 'translate(0px, 0px) scale(1)',
+                      opacity: 0,
+                      transition: 'none',
+                    }}
+                  >
+                    <img
+                      src={`/hero/${index + 1}.webp`}
+                      alt={`Photo ${index + 1}`}
+                      loading={index < 3 ? 'eager' : 'lazy'}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                );
+              }
+
+              // 스크롤 중: 스크롤 기반 애니메이션
               const translateX = scrollProgress * (-deltaCol * cellSize);
               const translateY = scrollProgress * (-deltaRow * cellSize + moveDistance);
 
