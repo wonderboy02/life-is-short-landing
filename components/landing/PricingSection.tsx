@@ -29,14 +29,14 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
 
           {/* 메인 카피 */}
           <h2 className="font-display mb-4 text-center text-3xl leading-tight font-bold tracking-tight text-neutral-900 md:text-5xl">
-            세상 어디에도 없던
+            부모님의 청춘,
             <br />
-            특별한 경험을 무료로
+            이제는 선물할 수 있습니다
           </h2>
 
           {/* 서브 카피 */}
           <p className="mb-10 text-center text-base leading-relaxed text-neutral-600 md:text-lg">
-            부모님의 청춘을 온전히 선물할 수 있는 유일한 서비스.
+            잠든 앨범 속 사진이 세상에 하나뿐인 영상으로.
             <br className="md:hidden" /> 지금 누구보다 먼저, 부모님께 감동을 선물하세요.
           </p>
 
