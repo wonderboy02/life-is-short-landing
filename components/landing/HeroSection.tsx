@@ -317,6 +317,17 @@ export default function HeroSection() {
           </div>
         </div>
 
+        {/* Video Caption */}
+        <p
+          className="mt-3 text-center text-sm text-neutral-500"
+          style={{
+            opacity: showVideo ? 1 : 0,
+            transition: 'opacity 0.5s ease-in-out',
+          }}
+        >
+          저희 팀이 직접 제작했던 예시 영상입니다
+        </p>
+
         {/* CTA Card - always rendered for space, opacity controlled */}
         <div
           className="mx-auto mt-8"
