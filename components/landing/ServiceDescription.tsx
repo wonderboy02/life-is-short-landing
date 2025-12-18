@@ -9,11 +9,10 @@ export default function ServiceDescription() {
           <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
             <div className="space-y-6">
               <p className="text-lg leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed">
-                빛나는 청춘을 살아내신 부모님들의 옛 사진들을 <span> </span>
+                빛나는 청춘을 살아내신 부모님들의 옛 사진들을, <span> </span>
                 <br className="hidden md:block" />
-                최신 AI 기술을 통해
-                <span className="font-semibold text-neutral-900"> 움직이는 영상</span>으로
-                제작해드리는 서비스입니다.
+                <span className="font-semibold text-neutral-900"> 움직이는 영상</span>으로 변환하여
+                부모님을 위한 최고의 선물로 빚어드리는 서비스입니다.
               </p>
               <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
                 기술의 한계로 인해{' '}
@@ -22,21 +21,7 @@ export default function ServiceDescription() {
                 </span>{' '}
                 부모님들께,
                 <br className="hidden md:block" />
-                아름다웠던 삶의 궤적에 빛을 더해 선물해보세요.
-              </p>
-              <p className="text-lg leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed">
-                뜻깊은 부모님의 <span className="font-semibold text-neutral-900">생신</span>에,{' '}
-                <br></br>
-                특별한{' '}
-                <span className="font-semibold text-neutral-900">
-                  환갑, 칠순, 팔순 잔치
-                </span>에, <br></br>
-                부모님 두 분의{' '}
-                <span className="font-semibold text-neutral-900">결혼기념일</span>에, <br></br>
-                가족 모두 모인 <span> </span>
-                <span className="font-semibold text-neutral-900">
-                  어버이날과 추석, 신년
-                </span>에 <br></br>그 어느 순간이라도 감동을 선물해보세요
+                누구도 선물한 적 없는 부모님의 젊은 시절을, 직접 선물해보세요.
               </p>
             </div>
           </div>
