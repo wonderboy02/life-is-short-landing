@@ -1,29 +1,30 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { ToasterProvider } from "@/components/providers/toaster-provider"
-import "./globals.css"
+import type React from 'react';
+import type { Metadata } from 'next';
+import { ToasterProvider } from '@/components/providers/toaster-provider';
+import GlobalLoader from '@/components/GlobalLoader';
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: "추억을 다시, 영상으로 | AI 사진 영상 변환",
-  description: "AI가 오래된 사진에 생명을 불어넣습니다",
-  generator: "v0.app",
+  title: '추억을 다시, 영상으로 | AI 사진 영상 변환',
+  description: 'AI가 오래된 사진에 생명을 불어넣습니다',
   icons: {
-    icon: "/favicon/icon.png",
-    apple: "/favicon/apple-icon.png",
+    icon: '/favicon/icon.png',
+    apple: '/favicon/apple-icon.png',
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="ko">
       <body className="antialiased">
+        <GlobalLoader />
         {children}
         <ToasterProvider />
       </body>
     </html>
-  )
+  );
 }
