@@ -42,7 +42,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
 
   // 그룹 수정
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editName, setEditName] = useState('');
+  const [editComment, setEditComment] = useState('');
   const [editPassword, setEditPassword] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -86,7 +86,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
 
       if (result.success && result.data) {
         setGroup(result.data);
-        setEditName(result.data.name);
+        setEditComment(result.data.comment);
       } else {
         setError(result.error || '그룹 정보를 불러올 수 없습니다.');
       }
@@ -111,7 +111,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
   };
 
   const handleUpdateGroup = async () => {
-    if (!editName.trim() && !editPassword.trim()) {
+    if (!editComment.trim() && !editPassword.trim()) {
       alert('수정할 내용을 입력하세요.');
       return;
     }
@@ -125,9 +125,9 @@ export default function AdminGroupDetailPage({ params }: Props) {
         return;
       }
 
-      const body: { name?: string; password?: string } = {};
-      if (editName.trim() && editName !== group?.name) {
-        body.name = editName.trim();
+      const body: { comment?: string; password?: string } = {};
+      if (editComment.trim() && editComment !== group?.comment) {
+        body.comment = editComment.trim();
       }
       if (editPassword.trim()) {
         body.password = editPassword.trim();
@@ -330,7 +330,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
       {/* 그룹 정보 카드 */}
       <Card>
         <CardHeader>
-          <CardTitle className="font-display">{group.name}</CardTitle>
+          <CardTitle className="font-display">{group.comment}</CardTitle>
           <CardDescription>
             <div className="space-y-1">
               <div>그룹 ID: <span className="font-mono text-xs">{group.id}</span></div>
@@ -486,12 +486,12 @@ export default function AdminGroupDetailPage({ params }: Props) {
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">그룹 이름</Label>
+              <Label htmlFor="edit-comment">가족들에게 한마디</Label>
               <Input
-                id="edit-name"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="그룹 이름"
+                id="edit-comment"
+                value={editComment}
+                onChange={(e) => setEditComment(e.target.value)}
+                placeholder="가족들에게 한마디"
               />
             </div>
             <div className="space-y-2">

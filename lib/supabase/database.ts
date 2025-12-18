@@ -16,28 +16,28 @@ export type Database = {
     Tables: {
       groups: {
         Row: {
+          comment: string
           created_at: string
           creator_nickname: string
           id: string
-          name: string
           password_hash: string
           share_code: string | null
           updated_at: string
         }
         Insert: {
+          comment: string
           created_at?: string
           creator_nickname?: string
           id?: string
-          name: string
           password_hash: string
           share_code?: string | null
           updated_at?: string
         }
         Update: {
+          comment?: string
           created_at?: string
           creator_nickname?: string
           id?: string
-          name?: string
           password_hash?: string
           share_code?: string | null
           updated_at?: string

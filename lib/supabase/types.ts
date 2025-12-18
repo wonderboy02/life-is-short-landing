@@ -2,7 +2,7 @@
 
 export interface Group {
   id: string;
-  name: string;
+  comment: string;
   password_hash: string;
   share_code: string;
   creator_nickname: string;
@@ -37,13 +37,13 @@ export interface ApiResponse<T = unknown> {
 export interface GroupCreateResponse {
   shareCode: string;
   groupId: string;
-  groupName: string;
+  comment: string;
   creatorNickname: string;
 }
 
 export interface GroupVerifyResponse {
   groupId: string;
-  groupName: string;
+  comment: string;
   creatorNickname: string;
   token: string;
 }

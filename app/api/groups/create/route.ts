@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, creatorNickname, password } = validation.data;
+    const { comment, creatorNickname, password } = validation.data;
 
     // 비밀번호 해싱
     const passwordHash = await hashPassword(password);
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     const { data: group, error } = await supabaseAdmin
       .from('groups')
       .insert({
-        name,
+        comment,
         creator_nickname: creatorNickname,
         password_hash: passwordHash,
         share_code: shareCode,
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
       data: {
         shareCode: group.share_code,
         groupId: group.id,
-        groupName: group.name,
+        comment: group.comment,
         creatorNickname: group.creator_nickname,
       },
     });

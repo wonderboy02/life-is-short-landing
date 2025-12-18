@@ -2,31 +2,36 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
 import PhotoUploadClient from './PhotoUploadClient';
 import PhotoGridClient from './PhotoGridClient';
 import ShareLanding from '@/components/share/ShareLanding';
 import ServiceIntro from '@/components/share/ServiceIntroModal';
+import FirstVisitGuideModal from '@/components/share/FirstVisitGuideModal';
 import DevTools from '@/components/dev/DevTools';
 import { usePhotos } from '@/hooks/use-photos';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
 
 interface SharePageClientProps {
   groupId: string;
-  groupName: string;
+  comment: string;
   creatorNickname: string;
   token: string;
   initialPhotos: PhotoWithUrl[];
+  shareUrl: string;
+  shareCode: string;
 }
 
 export default function SharePageClient({
   groupId,
-  groupName,
+  comment,
   creatorNickname,
   token,
   initialPhotos,
+  shareUrl,
+  shareCode,
 }: SharePageClientProps) {
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showFirstVisitModal, setShowFirstVisitModal] = useState(false);
   const { photos, isLoading, refetch } = usePhotos(groupId, initialPhotos);
 
   // Refs for smooth scrolling
@@ -34,18 +39,19 @@ export default function SharePageClient({
   const photoGridRef = useRef<HTMLDivElement>(null);
   const photoUploadRef = useRef<HTMLDivElement>(null);
 
-  // 페이지 진입 시 공유 안내 토스트 - 매번 표시
+  // 앨범 생성 직후 확인 및 모달 표시
   useEffect(() => {
     if (!isLoading) {
-      const timer = setTimeout(() => {
-        toast.info('가족과 함께 사진을 모아보세요!\n오른쪽 위 공유 버튼을 눌러보세요 👉', {
-          duration: Infinity, // X 버튼으로만 닫기
-        });
-      }, 800);
+      const justCreatedCode = localStorage.getItem('album-just-created');
 
-      return () => clearTimeout(timer);
+      // 앨범을 방금 생성했고, 현재 페이지가 그 앨범이면 모달 표시
+      if (justCreatedCode === shareCode) {
+        setShowFirstVisitModal(true);
+        // 플래그 제거 (한 번만 표시)
+        localStorage.removeItem('album-just-created');
+      }
     }
-  }, [isLoading]);
+  }, [shareCode, isLoading]);
 
   // 재방문자 자동 스크롤 - ref callback 패턴
   const shareLandingRef = useCallback(
@@ -110,17 +116,24 @@ export default function SharePageClient({
 
   return (
     <>
+      {/* 첫 방문 안내 모달 */}
+      <FirstVisitGuideModal
+        open={showFirstVisitModal}
+        onOpenChange={setShowFirstVisitModal}
+        shareUrl={shareUrl}
+      />
+
       {/* 개발 도구 (개발 환경 전용) */}
-      <DevTools />
+      <DevTools onShowFirstVisitModal={() => setShowFirstVisitModal(true)} />
 
       {/* 서비스 소개 섹션 */}
-      <ServiceIntro onScrollToMain={scrollToMain} />
+      <ServiceIntro onScrollToMain={scrollToMain} creatorNickname={creatorNickname} comment={comment} />
 
       {/* 랜딩 섹션 */}
       <div ref={shareLandingRef} className="scroll-mt-16">
         <ShareLanding
           creatorNickname={creatorNickname}
-          groupName={groupName}
+          comment={comment}
           photoCount={photos.length}
           recentPhotos={photos.slice(0, 6)}
           onViewPhotos={scrollToPhotos}

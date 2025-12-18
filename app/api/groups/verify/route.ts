@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
     // 그룹 조회
     const { data: group, error } = await supabaseAdmin
       .from('groups')
-      .select('id, name, creator_nickname')
+      .select('id, comment, creator_nickname')
       .eq('share_code', shareCode)
       .single();
 
@@ -54,14 +54,14 @@ export async function GET(req: NextRequest) {
     // JWT 생성 (사진 업로드용)
     const token = generateToken({
       groupId: group.id,
-      groupName: group.name,
+      comment: group.comment,
     });
 
     return NextResponse.json<ApiResponse<GroupVerifyResponse>>({
       success: true,
       data: {
         groupId: group.id,
-        groupName: group.name,
+        comment: group.comment,
         creatorNickname: group.creator_nickname,
         token,
       },

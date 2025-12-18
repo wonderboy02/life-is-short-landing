@@ -5,7 +5,7 @@ import type { ApiResponse } from '@/lib/supabase/types';
 
 export interface AdminGroupListItem {
   id: string;
-  name: string;
+  comment: string;
   share_code: string;
   created_at: string;
   updated_at: string;
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
 
         return {
           id: group.id,
-          name: group.name,
+          comment: group.comment,
           share_code: group.share_code,
           created_at: group.created_at,
           updated_at: group.updated_at,

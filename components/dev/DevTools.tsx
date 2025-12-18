@@ -2,10 +2,14 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Settings, X, Trash2, RefreshCw } from 'lucide-react';
+import { Settings, X, Trash2, RefreshCw, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function DevTools() {
+interface DevToolsProps {
+  onShowFirstVisitModal?: () => void;
+}
+
+export default function DevTools({ onShowFirstVisitModal }: DevToolsProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   // Production 환경에서는 렌더링하지 않음
@@ -90,6 +94,26 @@ export default function DevTools() {
                 첫 방문 시 표시되는 영상 모달을 다시 볼 수 있어요
               </p>
             </div>
+
+            {/* 첫 방문 안내 모달 테스트 */}
+            {onShowFirstVisitModal && (
+              <div className="space-y-1">
+                <Button
+                  onClick={() => {
+                    onShowFirstVisitModal();
+                    toast.success('첫 방문 안내 모달 표시');
+                  }}
+                  variant="outline"
+                  className="w-full justify-start gap-2 h-10 bg-blue-50 hover:bg-blue-100 active:scale-95 transition-transform"
+                >
+                  <Sparkles className="w-4 h-4 text-blue-600" />
+                  <span className="text-blue-600">첫 방문 안내 모달 보기</span>
+                </Button>
+                <p className="text-xs text-neutral-500 pl-2">
+                  앨범 생성 후 표시되는 안내 모달을 테스트해요
+                </p>
+              </div>
+            )}
 
             {/* 업로더 닉네임 초기화 */}
             <div className="space-y-1">

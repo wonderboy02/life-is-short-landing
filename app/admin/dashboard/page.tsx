@@ -40,7 +40,7 @@ export default function AdminDashboardPage() {
       setFilteredGroups(
         groups.filter(
           (group) =>
-            group.name.toLowerCase().includes(query) ||
+            group.comment.toLowerCase().includes(query) ||
             group.share_code.toLowerCase().includes(query)
         )
       );
@@ -183,7 +183,7 @@ export default function AdminDashboardPage() {
           {filteredGroups.map((group) => (
             <Card key={group.id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
-                <CardTitle className="font-display">{group.name}</CardTitle>
+                <CardTitle className="font-display">{group.comment}</CardTitle>
                 <CardDescription>
                   <div className="space-y-1">
                     <div>공유 코드: <span className="font-mono font-semibold">{group.share_code}</span></div>

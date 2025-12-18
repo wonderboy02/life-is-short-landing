@@ -6,7 +6,7 @@ import type { PhotoWithUrl } from '@/lib/supabase/types';
 
 interface ShareLandingProps {
   creatorNickname: string;
-  groupName: string;
+  comment: string;
   photoCount: number;
   recentPhotos: PhotoWithUrl[];
   onViewPhotos: () => void;
@@ -15,7 +15,7 @@ interface ShareLandingProps {
 
 export default function ShareLanding({
   creatorNickname,
-  groupName,
+  comment,
   photoCount,
   recentPhotos,
   onViewPhotos,
@@ -39,7 +39,7 @@ export default function ShareLanding({
             </div>
 
             <div className="py-4">
-              <p className="text-lg font-medium text-neutral-800">{groupName}</p>
+              <p className="text-lg font-medium text-neutral-800">{comment}</p>
               <p className="mt-2 text-sm text-neutral-500">
                 영상으로 남길 <span className="font-semibold text-neutral-700">{photoCount}개</span>
                 의 순간
