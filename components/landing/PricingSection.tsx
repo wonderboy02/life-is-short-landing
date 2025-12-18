@@ -95,7 +95,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
             </Button>
 
             <p className="text-center text-sm text-neutral-500">
-              사전 운영 기간 종류 후 즉시 유료로 전환됩니다
+              사전 운영 기간 종료 후 즉시 유료로 전환됩니다
             </p>
           </div>
         </div>
