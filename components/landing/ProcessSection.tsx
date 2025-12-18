@@ -45,7 +45,7 @@ export default function ProcessSection() {
             <div className="flex items-center gap-4 py-4">
               <div className="flex-1 border-t-2 border-neutral-300"></div>
               <span className="text-sm font-medium whitespace-nowrap text-neutral-600">
-                나머지는 저희 팀에게 맡겨주세요
+                이제부터는 저희 팀에게 맡겨주세요
               </span>
               <div className="flex-1 border-t-2 border-neutral-300"></div>
             </div>
