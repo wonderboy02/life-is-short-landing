@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import HydrationLogger from './HydrationLogger';
-import CreateGroupDialog from './CreateGroupDialog';
 
 export default function HeroSection() {
   // Hero animation states
@@ -15,7 +14,6 @@ export default function HeroSection() {
   const [showCTA, setShowCTA] = useState(false);
   const [ctaOpacity, setCtaOpacity] = useState(0);
   const [indicatorOpacity, setIndicatorOpacity] = useState(1);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [showPhotoGhost, setShowPhotoGhost] = useState(false);
 
   const heroSectionRef = useRef<HTMLDivElement>(null);
@@ -25,6 +23,14 @@ export default function HeroSection() {
 
   // 수동 스크롤 계산 (state로 관리)
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Scroll to pricing section
+  const scrollToPricing = () => {
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -65,10 +71,10 @@ export default function HeroSection() {
 
   // Processing messages
   const processingMessages = [
-    '영상 처리중...',
-    'AI가 작업하고 있어요...',
-    '추억을 되살리는 중...',
-    '곧 완성됩니다...',
+    '사진의 화질을 올리고 있어요',
+    'AI가 영상으로 변환 중이에요...',
+    '정성을 담아 후보정하고 있어요...',
+    '영상을 보내드리고 있어요...',
   ];
 
   // Monitor scroll progress for animation completion
@@ -215,9 +221,8 @@ export default function HeroSection() {
               const translateY = scrollProgress * (-deltaRow * cellSize + moveDistance);
 
               // opacity 계산: 0까지 완전히 사라짐
-              const opacity = scrollProgress < 0.6
-                ? 1
-                : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4);
+              const opacity =
+                scrollProgress < 0.6 ? 1 : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4);
               const scale = 1 - scrollProgress * 0.1;
 
               return (
@@ -250,7 +255,7 @@ export default function HeroSection() {
               transition: 'opacity 0.3s ease-in-out',
             }}
           >
-            <p className="text-sm">영상 제작하기</p>
+            <p className="text-sm">화면을 밑으로 내려보세요!</p>
             <ChevronDown className="h-6 w-6 animate-bounce" />
           </div>
         </div>
@@ -301,7 +306,7 @@ export default function HeroSection() {
           >
             <video
               ref={videoRef}
-              src="/hero_example_merged.mp4"
+              src="/hero_video.mp4"
               loop
               muted
               playsInline
@@ -312,6 +317,17 @@ export default function HeroSection() {
           </div>
         </div>
 
+        {/* Video Caption */}
+        <p
+          className="mt-3 text-center text-sm text-neutral-500"
+          style={{
+            opacity: showVideo ? 1 : 0,
+            transition: 'opacity 0.5s ease-in-out',
+          }}
+        >
+          저희 팀이 직접 제작했던 예시 영상입니다
+        </p>
+
         {/* CTA Card - always rendered for space, opacity controlled */}
         <div
           className="mx-auto mt-8"
@@ -321,34 +337,30 @@ export default function HeroSection() {
             transition: 'opacity 0.5s ease-in-out',
           }}
         >
-          <div className="w-full bg-white rounded-2xl shadow-lg p-8 space-y-6">
+          <div className="w-full space-y-6 rounded-2xl bg-white p-8 shadow-lg">
             {/* Headline */}
-            <h2 className="text-2xl font-bold text-center leading-tight">
-              단 3장의 사진으로<br />
-              특별한 영상 선물
+            <h2 className="text-center text-2xl leading-tight font-bold">
+              AI와 함께, 부모님의 옛 사진들을 움직이는 영상으로 만들어드립니다.
             </h2>
 
             {/* Value Props */}
-            <div className="space-y-3 text-center text-neutral-600">
-              <p className="text-sm">AI + 전문가 손길</p>
-              <p className="text-sm">평균 7일 제작</p>
-              <p className="text-sm">세상에 단 하나뿐인 선물</p>
+            <div className="space-y-1 text-center text-neutral-600">
+              <p className="text">구글의 영상화 AI + 전문가의 편집</p>
+              <p className="text">하루 만에 완료되는 작업</p>
+              <p className="text">세상에 단 하나뿐인 감동적인 선물</p>
             </div>
 
             {/* CTA Button */}
             <button
-              onClick={() => setIsDialogOpen(true)}
-              className="w-full bg-neutral-900 text-white rounded-xl py-4 font-semibold text-base hover:bg-neutral-800 active:bg-neutral-700 transition-colors"
+              onClick={scrollToPricing}
+              className="w-full rounded-xl bg-neutral-900 py-4 text-lg text-white transition-colors hover:bg-neutral-800 active:bg-neutral-700"
               style={{ minHeight: '56px' }}
             >
-              영상 제작 신청하기
+              지금 바로 신청하기
             </button>
           </div>
         </div>
       </div>
-
-      {/* Create Group Dialog */}
-      <CreateGroupDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </section>
   );
 }
