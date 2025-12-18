@@ -306,7 +306,7 @@ export default function HeroSection() {
           >
             <video
               ref={videoRef}
-              src="/hero_example_merged.mp4"
+              src="/hero_video.mp4"
               loop
               muted
               playsInline
