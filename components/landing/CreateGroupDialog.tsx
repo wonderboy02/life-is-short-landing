@@ -18,7 +18,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { createGroupSchema } from '@/lib/validations/schemas';
 import { toast } from 'sonner';
-import { Sparkles, X, User, MessageCircle, Lock, Camera } from 'lucide-react';
+import { X, User, MessageCircle, Lock } from 'lucide-react';
+import Image from 'next/image';
 
 type FormData = z.infer<typeof createGroupSchema>;
 
@@ -49,9 +50,8 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
     resolver: zodResolver(createGroupSchema),
   });
 
-  const handleSuggestedComment = () => {
-    const randomComment = SUGGESTED_COMMENTS[Math.floor(Math.random() * SUGGESTED_COMMENTS.length)];
-    setValue('comment', randomComment);
+  const handleSuggestedComment = (comment: string) => {
+    setValue('comment', comment);
   };
 
   const onSubmit = async (data: FormData) => {
@@ -103,10 +103,16 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
             <X className="h-5 w-5 text-neutral-600" />
           </button>
 
-          {/* Icon */}
+          {/* Logo */}
           <div className="mb-4 flex justify-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-lg">
-              <Camera className="h-8 w-8 text-neutral-900" />
+              <Image
+                src="/favicon/logo.png"
+                alt="Life is Short Logo"
+                width={48}
+                height={48}
+                className="h-12 w-12"
+              />
             </div>
           </div>
 
@@ -148,23 +154,10 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
 
             {/* 가족들에게 한마디 */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="comment" className="flex items-center gap-2 text-base">
-                  <MessageCircle className="h-4 w-4 text-neutral-600" />
-                  가족들에게 한마디
-                </Label>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSuggestedComment}
-                  disabled={isLoading}
-                  className="h-8 gap-1 text-xs text-neutral-600 hover:text-neutral-900"
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                  추천 한마디
-                </Button>
-              </div>
+              <Label htmlFor="comment" className="flex items-center gap-2 text-base">
+                <MessageCircle className="h-4 w-4 text-neutral-600" />
+                가족들에게 한마디
+              </Label>
               <Textarea
                 id="comment"
                 placeholder="예: 아버지, 청춘의 모습이 궁금해요"
@@ -173,8 +166,24 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
                 disabled={isLoading}
               />
               {errors.comment && <p className="text-sm text-red-600">{errors.comment.message}</p>}
+
+              {/* 추천 문구 칩들 */}
+              <div className="flex flex-wrap gap-2">
+                {SUGGESTED_COMMENTS.map((comment, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => handleSuggestedComment(comment)}
+                    disabled={isLoading}
+                    className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs text-neutral-700 transition-colors hover:border-neutral-300 hover:bg-neutral-50 active:bg-neutral-100 disabled:opacity-50"
+                  >
+                    {comment}
+                  </button>
+                ))}
+              </div>
+
               <p className="text-xs text-neutral-500">
-                가족들에게 전하고 싶은 따뜻한 한마디를 남겨주세요
+                가족과 함께 사진을 모을 때 이 문구가 표시됩니다
               </p>
             </div>
 
