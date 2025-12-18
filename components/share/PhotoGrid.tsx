@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { Trash2, User } from 'lucide-react';
+import { Trash2, User, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
 import DeletePhotoDialog from './DeletePhotoDialog';
+import ImageViewerModal from './ImageViewerModal';
 
 interface PhotoGridProps {
   photos: PhotoWithUrl[];
@@ -22,6 +23,7 @@ export default function PhotoGrid({
 }: PhotoGridProps) {
   const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   if (photos.length === 0) {
     return (
@@ -42,44 +44,40 @@ export default function PhotoGrid({
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
-        {displayedPhotos.map((photo) => (
+      <div className="grid grid-cols-3 gap-2">
+        {displayedPhotos.map((photo, index) => (
           <div
             key={photo.id}
-            className="group relative aspect-square rounded-xl overflow-hidden bg-neutral-100 shadow-sm hover:shadow-md transition-shadow"
+            className="group relative aspect-square rounded-xl overflow-hidden bg-neutral-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => setSelectedImageIndex(index)}
           >
             {/* 사진 */}
             <Image
               src={photo.url}
               alt={photo.file_name}
               fill
-              className="object-cover"
+              className="object-cover pointer-events-none"
               sizes="(max-width: 640px) 50vw, 33vw"
             />
 
-            {/* 호버 오버레이 */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200" />
-
-            {/* 삭제 버튼 */}
+            {/* 메뉴 버튼 (삭제) */}
             <button
-              onClick={() => setSelectedPhotoId(photo.id)}
-              className="absolute top-2 right-2 w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg"
-              title="사진 삭제"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedPhotoId(photo.id);
+              }}
+              className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors shadow-md backdrop-blur-sm"
+              aria-label="메뉴"
             >
-              <Trash2 className="w-4 h-4" />
+              <MoreVertical className="w-4 h-4" />
             </button>
 
-            {/* 업로더 닉네임 + 설명 */}
-            <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 space-y-1">
-              <div className="bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 w-fit">
+            {/* 업로더 닉네임 */}
+            <div className="absolute bottom-2 left-2 right-2 pointer-events-none">
+              <div className="bg-black/60 text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1 w-fit backdrop-blur-sm">
                 <User className="w-3 h-3" />
                 <span>{photo.uploader_nickname}</span>
               </div>
-              {photo.description && (
-                <div className="bg-black/70 text-white text-xs px-2 py-1 rounded-md line-clamp-2">
-                  {photo.description}
-                </div>
-              )}
             </div>
           </div>
         ))}
@@ -111,6 +109,21 @@ export default function PhotoGrid({
           onDeleteSuccess={() => {
             setSelectedPhotoId(null);
             onDeleteSuccess?.();
+          }}
+        />
+      )}
+
+      {/* 이미지 뷰어 모달 */}
+      {selectedImageIndex !== null && (
+        <ImageViewerModal
+          images={photos.map((photo) => ({
+            url: photo.url,
+            alt: photo.file_name,
+          }))}
+          initialIndex={selectedImageIndex}
+          open={selectedImageIndex !== null}
+          onOpenChange={(open) => {
+            if (!open) setSelectedImageIndex(null);
           }}
         />
       )}

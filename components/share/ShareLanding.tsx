@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, Clock, Image } from 'lucide-react';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
+import ImageViewerModal from './ImageViewerModal';
 
 interface ShareLandingProps {
   creatorNickname: string;
@@ -30,6 +31,7 @@ export default function ShareLanding({
 }: ShareLandingProps) {
   const [isRequesting, setIsRequesting] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   const MIN_PHOTOS = 10;
   const DEADLINE_HOURS = 72; // 3일
@@ -258,44 +260,43 @@ export default function ShareLanding({
 
           {/* 최근 사진 미리보기 */}
           {recentPhotos.length > 0 && (
-            <div className="space-y-5">
-              <div className="grid grid-cols-3 gap-3">
-                {recentPhotos.slice(0, 6).map((photo) => (
+            <div className="space-y-3">
+              <div className="grid grid-cols-3 gap-2">
+                {recentPhotos.slice(0, 6).map((photo, index) => (
                   <div
                     key={photo.id}
-                    className="aspect-square overflow-hidden rounded-xl bg-neutral-100"
+                    className="aspect-square overflow-hidden rounded-lg bg-neutral-100 cursor-pointer transition-transform active:scale-95"
+                    onClick={() => setSelectedImageIndex(index)}
                   >
                     <img
                       src={photo.url}
                       alt={photo.file_name}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover pointer-events-none"
                     />
                   </div>
                 ))}
               </div>
-              <p className="text-center text-xs text-neutral-400">함께 모은 소중한 순간들</p>
+              {/* 사진 모두보기 텍스트 링크 */}
+              <div className="flex justify-center">
+                <button
+                  onClick={onViewPhotos}
+                  className="text-sm text-neutral-600 hover:text-neutral-900 underline underline-offset-2 transition-colors"
+                >
+                  사진 모두보기 ({photoCount})
+                </button>
+              </div>
             </div>
           )}
 
           {/* CTA 버튼 */}
-          <div className="flex flex-col gap-3 pt-4">
+          <div className="flex flex-col gap-3 pt-6">
             <Button
               onClick={onAddPhotos}
               size="lg"
               className="h-14 w-full rounded-xl bg-neutral-900 text-base font-semibold shadow-sm hover:bg-neutral-800"
             >
-              옛 사진 추가하기
+              내가 가진 사진 모으기
             </Button>
-            {photoCount > 0 && (
-              <Button
-                onClick={onViewPhotos}
-                size="lg"
-                variant="outline"
-                className="h-14 w-full rounded-xl border-neutral-300 text-base font-medium hover:bg-neutral-50"
-              >
-                모든 사진 보기 ({photoCount})
-              </Button>
-            )}
           </div>
 
           {/* 스크롤 힌트 */}
@@ -311,6 +312,21 @@ export default function ShareLanding({
           </div>
         </div>
       </div>
+
+      {/* 이미지 뷰어 모달 */}
+      {selectedImageIndex !== null && (
+        <ImageViewerModal
+          images={recentPhotos.slice(0, 6).map((photo) => ({
+            url: photo.url,
+            alt: photo.file_name,
+          }))}
+          initialIndex={selectedImageIndex}
+          open={selectedImageIndex !== null}
+          onOpenChange={(open) => {
+            if (!open) setSelectedImageIndex(null);
+          }}
+        />
+      )}
     </section>
   );
 }
