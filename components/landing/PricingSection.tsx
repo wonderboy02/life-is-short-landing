@@ -23,9 +23,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
           <div className="mb-10 flex justify-center">
             <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-5 py-2.5">
               <span className="text-xl">✨</span>
-              <span className="text-sm font-semibold text-neutral-700">
-                얼리 테스터 모집 중
-              </span>
+              <span className="text-sm font-semibold text-neutral-700">서비스 사전 운영 중</span>
             </div>
           </div>
 
@@ -38,48 +36,48 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
 
           {/* 서브 카피 */}
           <p className="mb-10 text-center text-base leading-relaxed text-neutral-600 md:text-lg">
-            부모님의 청춘을 되살리는 유일한 서비스.
-            <br className="md:hidden" /> 지금 베타 테스터로 먼저 경험하세요.
+            부모님의 청춘을 온전히 선물할 수 있는 유일한 서비스.
+            <br className="md:hidden" /> 지금 누구보다 먼저, 부모님께 감동을 선물하세요.
           </p>
 
           {/* 가격 카드 */}
           <div className="mb-5 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-10">
             {/* 가격 비교 */}
-            <div className="mb-6">
+            <div className="mb-2">
               <div className="mb-5 flex items-center justify-center gap-3">
                 <div className="text-center">
-                  <p className="mb-1 text-xs font-medium text-neutral-500">정가</p>
+                  <p className="mb-1 text-xs font-medium text-neutral-500">서비스 정가</p>
                   <p className="text-2xl font-bold text-neutral-400 line-through md:text-3xl">
-                    25,000원
+                    45,000원
                   </p>
                 </div>
-                <div className="text-2xl font-bold text-neutral-300 md:text-3xl">→</div>
+                <div className="mt-3 ml-1 text-4xl font-bold text-neutral-300 md:text-5xl">→</div>
                 <div className="text-center">
-                  <p className="mb-1 text-xs font-medium text-neutral-500">베타 테스터</p>
-                  <p className="text-4xl font-bold text-neutral-900 md:text-5xl">0원</p>
+                  <p className="mb-1 text-xs font-medium text-neutral-500">사전 운영 기간 한정</p>
+                  <p className="text-5xl font-bold text-neutral-700 md:text-6xl">0원</p>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-neutral-50 p-5">
-                <p className="mb-3 text-center text-sm font-semibold text-neutral-700">
+              <div className="rounded-xl bg-neutral-100 p-5">
+                <p className="text-md mb-3 text-center font-semibold text-neutral-700">
                   포함된 서비스
                 </p>
                 <ul className="space-y-2.5 text-sm text-neutral-600">
                   <li className="flex items-start gap-2.5">
                     <span className="mt-0.5 text-neutral-900">•</span>
-                    <span>사진 10장까지 완전 무료 제작</span>
+                    <span>영상 수령 전에도, 후에도, 완전한 무료 서비스</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <span className="mt-0.5 text-neutral-900">•</span>
-                    <span>AI 화질 복원 & 컬러라이제이션</span>
+                    <span>결제 정보 입력 없이, 바로 서비스 진행</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <span className="mt-0.5 text-neutral-900">•</span>
+                    <span>AI 화질 복원 & 영상화</span>
                   </li>
                   <li className="flex items-start gap-2.5">
                     <span className="mt-0.5 text-neutral-900">•</span>
                     <span>감성 영상 제작 및 카카오톡 전송</span>
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <span className="mt-0.5 text-neutral-900">•</span>
-                    <span>결제 정보 입력 없이 바로 체험</span>
                   </li>
                 </ul>
               </div>
@@ -91,13 +89,13 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
             <Button
               size="lg"
               onClick={onCtaClick}
-              className="h-14 w-full rounded-xl bg-neutral-900 text-lg font-semibold text-white transition-all hover:bg-neutral-800 md:h-16 md:text-xl"
+              className="font-regular h-14 w-full rounded-xl bg-neutral-900 text-xl text-white transition-all hover:bg-neutral-800 md:h-16 md:text-xl"
             >
               지금 무료로 만들어보기
             </Button>
 
             <p className="text-center text-sm text-neutral-500">
-              베타 기간 종료 시 유료로 전환됩니다
+              사전 운영 기간 종류 후 즉시 유료로 전환됩니다
             </p>
           </div>
         </div>
@@ -274,9 +272,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
                 <ul className="mb-5 space-y-2.5 text-sm">
                   <li className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                    <span className="text-neutral-700">
-                      여러 추억을 하나의 감동적인 스토리로
-                    </span>
+                    <span className="text-neutral-700">여러 추억을 하나의 감동적인 스토리로</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
@@ -284,9 +280,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                    <span className="text-neutral-700">
-                      AI 화질 복원 및 자연스러운 컬러 추가
-                    </span>
+                    <span className="text-neutral-700">AI 화질 복원 및 자연스러운 컬러 추가</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
@@ -336,9 +330,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
                   {selectedPlan === 'premium' && <Check className="h-4 w-4 text-white" />}
                 </div>
                 <div>
-                  <h3 className="flex items-center gap-2 text-lg font-semibold">
-                    프리미엄 패키지
-                  </h3>
+                  <h3 className="flex items-center gap-2 text-lg font-semibold">프리미엄 패키지</h3>
                   <p className="text-sm text-neutral-500">가장 큰 감동</p>
                 </div>
               </div>
@@ -370,9 +362,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
                 <ul className="mb-5 space-y-2.5 text-sm">
                   <li className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                    <span className="text-neutral-700">
-                      더 많은 추억, 더 긴 감동의 2분 영상
-                    </span>
+                    <span className="text-neutral-700">더 많은 추억, 더 긴 감동의 2분 영상</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
@@ -380,9 +370,7 @@ export default function PricingSection({ isBetaTest, onCtaClick }: PricingSectio
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
-                    <span className="text-neutral-700">
-                      AI 화질 복원 및 자연스러운 컬러 추가
-                    </span>
+                    <span className="text-neutral-700">AI 화질 복원 및 자연스러운 컬러 추가</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-green-600" />
