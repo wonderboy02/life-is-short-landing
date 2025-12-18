@@ -71,10 +71,10 @@ export default function HeroSection() {
 
   // Processing messages
   const processingMessages = [
-    '영상 처리중...',
-    'AI가 작업하고 있어요...',
-    '추억을 되살리는 중...',
-    '곧 완성됩니다...',
+    '사진의 화질을 올리고 있어요',
+    'AI가 영상으로 변환 중이에요...',
+    '정성을 담아 후보정하고 있어요...',
+    '영상을 보내드리고 있어요...',
   ];
 
   // Monitor scroll progress for animation completion
