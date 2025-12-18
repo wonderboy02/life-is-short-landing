@@ -545,15 +545,10 @@ export default function AdminGroupDetailPage({ params }: Props) {
                   {!selectionMode && (
                     <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 p-2">
                       {/* 업로더 정보 */}
-                      <div className="text-white text-xs text-center space-y-1 mb-2">
+                      <div className="text-white text-xs text-center mb-2">
                         <div className="font-semibold">
                           👤 {photo.uploader_nickname}
                         </div>
-                        {photo.description && (
-                          <div className="bg-black bg-opacity-50 px-2 py-1 rounded text-xs line-clamp-2 max-w-full">
-                            {photo.description}
-                          </div>
-                        )}
                       </div>
                       {/* 액션 버튼 */}
                       <div className="flex gap-2">

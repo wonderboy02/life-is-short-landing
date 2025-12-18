@@ -4,19 +4,18 @@ import { useState, useRef, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Upload, X, Loader2, Edit2, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
 import UploaderDialog from './UploaderDialog';
+import ImageViewerModal from './ImageViewerModal';
 
 type UploadStatus = 'pending' | 'uploading' | 'success' | 'failed';
 
 interface FileWithDescription {
   id: string; // 고유 ID
   file: File;
-  description: string;
   previewUrl: string;
   uploadStatus: UploadStatus;
   error?: string;
@@ -40,6 +39,7 @@ export default function PhotoUpload({
   const [isPendingUpload, setIsPendingUpload] = useState(false); // 업로드 대기 중인지 추적
   const [selectedFiles, setSelectedFiles] = useState<FileWithDescription[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const firstSuccessTriggeredRef = useRef(false);
 
@@ -101,7 +101,6 @@ export default function PhotoUpload({
     const filesWithDescription = validFiles.map((file) => ({
       id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // 고유 ID 생성
       file,
-      description: '',
       previewUrl: URL.createObjectURL(file), // 미리보기 URL 생성
       uploadStatus: 'pending' as UploadStatus,
     }));
@@ -123,14 +122,6 @@ export default function PhotoUpload({
       }
       return prev.filter((f) => f.id !== id);
     });
-  };
-
-  const handleDescriptionChange = (id: string, description: string) => {
-    setSelectedFiles((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, description } : item
-      )
-    );
   };
 
   const handleUpload = async (providedNickname?: string) => {
@@ -162,15 +153,12 @@ export default function PhotoUpload({
     try {
       // 병렬 업로드 - 각 파일을 동시에 처리
       const uploadPromises = selectedFiles.map(async (item) => {
-        const { id, file, description } = item;
+        const { id, file } = item;
 
         const formData = new FormData();
         formData.append('file', file);
         formData.append('groupId', groupId);
         formData.append('uploaderNickname', nickname.trim());
-        if (description.trim()) {
-          formData.append('description', description.trim());
-        }
 
         try {
           const response = await fetch('/api/photos/upload', {
@@ -321,84 +309,57 @@ export default function PhotoUpload({
               <p className="text-lg font-semibold text-neutral-800">
                 {selectedFiles.length}개의 추억을 준비했어요
               </p>
-              <p className="text-sm text-neutral-500 mt-1">
-                사진마다 이야기를 남겨보세요
-              </p>
             </div>
 
-            <div className="max-h-[600px] overflow-y-auto space-y-4 px-1">
-              {selectedFiles.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-xl overflow-hidden border border-neutral-200 hover:border-neutral-300 transition-colors"
-                >
-                  {/* 이미지 미리보기 + 상태 + 삭제 버튼 */}
-                  <div className="relative aspect-video bg-neutral-100">
+            <div className="max-h-[600px] overflow-y-auto">
+              <div className="grid grid-cols-3 gap-3">
+                {selectedFiles.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="relative bg-white rounded-lg overflow-hidden border border-neutral-200 hover:border-neutral-300 transition-colors aspect-square cursor-pointer"
+                    onClick={() => setSelectedImageIndex(index)}
+                  >
+                    {/* 이미지 미리보기 */}
                     <img
                       src={item.previewUrl}
                       alt={item.file.name}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover pointer-events-none"
                     />
 
                     {/* 상태 뱃지 */}
-                    <div className="absolute top-3 left-3">
+                    <div className="absolute top-2 left-2 pointer-events-none">
                       {item.uploadStatus === 'uploading' && (
-                        <div className="flex items-center gap-1.5 bg-blue-500/90 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                          업로드 중
+                        <div className="flex items-center gap-1 bg-blue-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+                          <Loader2 className="w-3 h-3 animate-spin" />
                         </div>
                       )}
                       {item.uploadStatus === 'success' && (
-                        <div className="flex items-center gap-1.5 bg-green-500/90 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
-                          완료
+                        <div className="flex items-center gap-1 bg-green-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+                          <CheckCircle2 className="w-3 h-3" />
                         </div>
                       )}
                       {item.uploadStatus === 'failed' && (
-                        <div className="flex items-center gap-1.5 bg-red-500/90 text-white text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">
-                          <XCircle className="w-3.5 h-3.5" />
-                          실패
+                        <div className="flex items-center gap-1 bg-red-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+                          <XCircle className="w-3 h-3" />
                         </div>
                       )}
                     </div>
 
                     {/* 삭제 버튼 */}
                     <button
-                      onClick={() => handleRemoveFile(item.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveFile(item.id);
+                      }}
                       disabled={isUploading}
-                      className="absolute top-3 right-3 w-9 h-9 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm disabled:opacity-50"
+                      className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm disabled:opacity-50"
                       aria-label="사진 제거"
                     >
-                      <X className="w-5 h-5" />
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
-
-                  {/* 사진 설명 입력 */}
-                  <div className="p-4">
-                    <Textarea
-                      placeholder="이 사진의 이야기를 들려주세요... (선택)"
-                      value={item.description}
-                      onChange={(e) =>
-                        handleDescriptionChange(item.id, e.target.value)
-                      }
-                      disabled={isUploading}
-                      className="text-sm resize-none border-neutral-200 focus:border-neutral-400 rounded-lg"
-                      rows={2}
-                      maxLength={200}
-                    />
-                    <div className="flex items-center justify-between mt-2">
-                      <p className="text-xs text-neutral-400 truncate flex-1">
-                        {item.file.name}
-                      </p>
-                      {item.description && (
-                        <p className="text-xs text-neutral-400 ml-2">
-                          {item.description.length}/200
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -427,6 +388,21 @@ export default function PhotoUpload({
         open={showNicknameDialog}
         onConfirm={handleNicknameConfirm}
       />
+
+      {/* 이미지 뷰어 모달 */}
+      {selectedImageIndex !== null && (
+        <ImageViewerModal
+          images={selectedFiles.map((item) => ({
+            url: item.previewUrl,
+            alt: item.file.name,
+          }))}
+          initialIndex={selectedImageIndex}
+          open={selectedImageIndex !== null}
+          onOpenChange={(open) => {
+            if (!open) setSelectedImageIndex(null);
+          }}
+        />
+      )}
     </>
   );
 }
