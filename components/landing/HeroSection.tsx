@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import HydrationLogger from './HydrationLogger';
+import CreateGroupDialog from './CreateGroupDialog';
 
 export default function HeroSection() {
   // Hero animation states
@@ -11,6 +12,11 @@ export default function HeroSection() {
   const [showVideo, setShowVideo] = useState(false);
   const [processingMessageIndex, setProcessingMessageIndex] = useState(0);
   const [photosDisappeared, setPhotosDisappeared] = useState(false);
+  const [showCTA, setShowCTA] = useState(false);
+  const [ctaOpacity, setCtaOpacity] = useState(0);
+  const [indicatorOpacity, setIndicatorOpacity] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [showPhotoGhost, setShowPhotoGhost] = useState(false);
 
   const heroSectionRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -79,12 +85,12 @@ export default function HeroSection() {
 
     const interval = setInterval(() => {
       setProcessingMessageIndex((prev) => (prev + 1) % processingMessages.length);
-    }, 800);
+    }, 900);
 
     return () => clearInterval(interval);
   }, [showProcessing, showVideo, processingMessages.length]);
 
-  // Show video after 2 seconds of processing
+  // Show video after 3.6 seconds of processing
   useEffect(() => {
     if (!showProcessing) return;
 
@@ -94,10 +100,36 @@ export default function HeroSection() {
       if (videoRef.current) {
         videoRef.current.play();
       }
-    }, 2000);
+    }, 3600);
 
     return () => clearTimeout(timer);
   }, [showProcessing]);
+
+  // Show CTA when video appears
+  useEffect(() => {
+    if (showVideo) {
+      setShowCTA(true);
+      setCtaOpacity(1);
+    }
+  }, [showVideo]);
+
+  // Show photo ghost 5 seconds after video appears
+  useEffect(() => {
+    if (!showVideo) return;
+
+    const timer = setTimeout(() => {
+      setShowPhotoGhost(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [showVideo]);
+
+  // Fade out indicator when animation completes
+  useEffect(() => {
+    if (scrollProgress >= 0.9) {
+      setIndicatorOpacity(0);
+    }
+  }, [scrollProgress]);
 
   return (
     <section ref={heroSectionRef} className="container mx-auto px-4 py-6 sm:px-6">
@@ -134,16 +166,36 @@ export default function HeroSection() {
               const cellSize = 110;
               const moveDistance = 300;
 
-              // 스타일 직접 계산
+              // 5초 후 초기 위치로 희미하게 표시
+              if (showPhotoGhost) {
+                return (
+                  <div
+                    key={index}
+                    className="aspect-square overflow-hidden rounded-lg bg-neutral-100"
+                    style={{
+                      transform: 'translate(0px, 0px) scale(1)',
+                      opacity: 0.08,
+                      transition: 'opacity 1s ease-in-out, transform 1s ease-in-out',
+                    }}
+                  >
+                    <img
+                      src={`/hero/${index + 1}.webp`}
+                      alt={`Photo ${index + 1}`}
+                      loading={index < 3 ? 'eager' : 'lazy'}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                );
+              }
+
+              // 스크롤 기반 애니메이션
               const translateX = scrollProgress * (-deltaCol * cellSize);
               const translateY = scrollProgress * (-deltaRow * cellSize + moveDistance);
 
-              // opacity 계산: 한번 사라지면 계속 0 유지
-              const opacity = photosDisappeared
-                ? 0
-                : scrollProgress < 0.6
-                  ? 1
-                  : 1 - (scrollProgress - 0.6) / 0.4;
+              // opacity 계산: 0까지 완전히 사라짐
+              const opacity = scrollProgress < 0.6
+                ? 1
+                : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4);
               const scale = 1 - scrollProgress * 0.1;
 
               return (
@@ -158,7 +210,7 @@ export default function HeroSection() {
                   }}
                 >
                   <img
-                    src="/placeholder_1.png"
+                    src={`/hero/${index + 1}.webp`}
                     alt={`Photo ${index + 1}`}
                     loading={index < 3 ? 'eager' : 'lazy'}
                     className="h-full w-full object-cover"
@@ -169,7 +221,13 @@ export default function HeroSection() {
           </div>
 
           {/* 스크롤 유도 인디케이터 */}
-          <div className="mt-8 flex flex-col items-center gap-2 text-neutral-400">
+          <div
+            className="mt-8 flex flex-col items-center gap-2 text-neutral-400"
+            style={{
+              opacity: indicatorOpacity,
+              transition: 'opacity 0.3s ease-in-out',
+            }}
+          >
             <p className="text-sm">영상 제작하기</p>
             <ChevronDown className="h-6 w-6 animate-bounce" />
           </div>
@@ -184,31 +242,91 @@ export default function HeroSection() {
             maxWidth: '350px',
             aspectRatio: '1 / 1',
             minHeight: '280px',
+            position: 'relative',
           }}
         >
+          {/* Processing Message */}
           {!showVideo && showProcessing && (
-            <div className="text-center">
-              <p className="text-lg font-semibold text-neutral-900">
-                {processingMessages[processingMessageIndex]}
-              </p>
+            <div className="absolute inset-0 flex items-center justify-center text-center">
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-lg font-semibold text-neutral-900">
+                  {processingMessages[processingMessageIndex]}
+                </p>
+                {/* Progress Dots */}
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-2 w-2 rounded-full transition-all duration-300"
+                      style={{
+                        backgroundColor: index <= processingMessageIndex ? '#171717' : '#e5e5e5',
+                        transform: index <= processingMessageIndex ? 'scale(1.2)' : 'scale(1)',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           )}
-          {showVideo && (
-            <div className="h-full w-full overflow-hidden rounded-2xl bg-neutral-100">
-              <video
-                ref={videoRef}
-                src="/hero_example_merged.mp4"
-                loop
-                muted
-                playsInline
-                autoPlay
-                preload="auto"
-                className="h-full w-full object-cover"
-              />
+
+          {/* Video - Always rendered for preloading */}
+          <div
+            className="h-full w-full overflow-hidden rounded-2xl bg-neutral-100"
+            style={{
+              opacity: showVideo ? 1 : 0,
+              transition: 'opacity 0.3s ease-in-out',
+            }}
+          >
+            <video
+              ref={videoRef}
+              src="/hero_example_merged.mp4"
+              loop
+              muted
+              playsInline
+              autoPlay
+              preload="auto"
+              className="h-full w-full object-cover"
+            />
+          </div>
+        </div>
+
+        {/* CTA Card - always rendered for space, opacity controlled */}
+        <div
+          className="mx-auto mt-8"
+          style={{
+            maxWidth: '350px',
+            opacity: ctaOpacity,
+            transition: 'opacity 0.5s ease-in-out',
+          }}
+        >
+          <div className="w-full bg-white rounded-2xl shadow-lg p-8 space-y-6">
+            {/* Headline */}
+            <h2 className="text-2xl font-bold text-center leading-tight">
+              단 3장의 사진으로<br />
+              특별한 영상 선물
+            </h2>
+
+            {/* Value Props */}
+            <div className="space-y-3 text-center text-neutral-600">
+              <p className="text-sm">AI + 전문가 손길</p>
+              <p className="text-sm">평균 7일 제작</p>
+              <p className="text-sm">세상에 단 하나뿐인 선물</p>
             </div>
-          )}
+
+            {/* CTA Button */}
+            <button
+              onClick={() => setIsDialogOpen(true)}
+              className="w-full bg-neutral-900 text-white rounded-xl py-4 font-semibold text-base hover:bg-neutral-800 active:bg-neutral-700 transition-colors"
+              style={{ minHeight: '56px' }}
+            >
+              영상 제작 신청하기
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Create Group Dialog */}
+      <CreateGroupDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </section>
   );
 }

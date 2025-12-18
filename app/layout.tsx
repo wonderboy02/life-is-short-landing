@@ -1,6 +1,7 @@
 import type React from 'react';
 import type { Metadata } from 'next';
 import { ToasterProvider } from '@/components/providers/toaster-provider';
+import GlobalLoader from '@/components/GlobalLoader';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="antialiased">
+        <GlobalLoader />
         {children}
         <ToasterProvider />
       </body>
