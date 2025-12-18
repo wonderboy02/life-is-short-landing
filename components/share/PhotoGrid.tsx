@@ -60,24 +60,21 @@ export default function PhotoGrid({
               sizes="(max-width: 640px) 50vw, 33vw"
             />
 
-            {/* 호버 오버레이 */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 pointer-events-none" />
-
-            {/* 삭제 버튼 */}
+            {/* 메뉴 버튼 (삭제) */}
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedPhotoId(photo.id);
               }}
-              className="absolute top-2 right-2 z-10 w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg"
-              title="사진 삭제"
+              className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors shadow-md backdrop-blur-sm"
+              aria-label="메뉴"
             >
-              <Trash2 className="w-4 h-4" />
+              <MoreVertical className="w-4 h-4" />
             </button>
 
             {/* 업로더 닉네임 */}
-            <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-              <div className="bg-black/70 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 w-fit">
+            <div className="absolute bottom-2 left-2 right-2 pointer-events-none">
+              <div className="bg-black/60 text-white text-[10px] px-2 py-1 rounded-full flex items-center gap-1 w-fit backdrop-blur-sm">
                 <User className="w-3 h-3" />
                 <span>{photo.uploader_nickname}</span>
               </div>
@@ -119,7 +116,7 @@ export default function PhotoGrid({
       {/* 이미지 뷰어 모달 */}
       {selectedImageIndex !== null && (
         <ImageViewerModal
-          images={displayedPhotos.map((photo) => ({
+          images={photos.map((photo) => ({
             url: photo.url,
             alt: photo.file_name,
           }))}

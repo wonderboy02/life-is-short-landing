@@ -5,7 +5,7 @@ import { flushSync } from 'react-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Upload, X, Loader2, Edit2, CheckCircle2, XCircle } from 'lucide-react';
+import { Upload, X, Loader2, Edit2, CheckCircle2, XCircle, MoreVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
 import UploaderDialog from './UploaderDialog';
@@ -326,37 +326,40 @@ export default function PhotoUpload({
                       className="w-full h-full object-cover pointer-events-none"
                     />
 
-                    {/* 상태 뱃지 */}
-                    <div className="absolute top-2 left-2 pointer-events-none">
-                      {item.uploadStatus === 'uploading' && (
-                        <div className="flex items-center gap-1 bg-blue-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        </div>
-                      )}
-                      {item.uploadStatus === 'success' && (
-                        <div className="flex items-center gap-1 bg-green-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
-                          <CheckCircle2 className="w-3 h-3" />
-                        </div>
-                      )}
-                      {item.uploadStatus === 'failed' && (
-                        <div className="flex items-center gap-1 bg-red-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
-                          <XCircle className="w-3 h-3" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* 삭제 버튼 */}
+                    {/* 메뉴 버튼 (삭제) */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRemoveFile(item.id);
                       }}
                       disabled={isUploading}
-                      className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm disabled:opacity-50"
-                      aria-label="사진 제거"
+                      className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm disabled:opacity-50 shadow-md"
+                      aria-label="삭제"
                     >
-                      <X className="w-4 h-4" />
+                      <MoreVertical className="w-4 h-4" />
                     </button>
+
+                    {/* 상태 뱃지 */}
+                    <div className="absolute bottom-2 left-2 pointer-events-none">
+                      {item.uploadStatus === 'uploading' && (
+                        <div className="flex items-center gap-1 bg-blue-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          <span>업로드 중</span>
+                        </div>
+                      )}
+                      {item.uploadStatus === 'success' && (
+                        <div className="flex items-center gap-1 bg-green-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+                          <CheckCircle2 className="w-3 h-3" />
+                          <span>완료</span>
+                        </div>
+                      )}
+                      {item.uploadStatus === 'failed' && (
+                        <div className="flex items-center gap-1 bg-red-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+                          <XCircle className="w-3 h-3" />
+                          <span>실패</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
