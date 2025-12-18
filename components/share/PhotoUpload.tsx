@@ -37,6 +37,7 @@ export default function PhotoUpload({
 }: PhotoUploadProps) {
   const [uploaderNickname, setUploaderNickname] = useState('');
   const [showNicknameDialog, setShowNicknameDialog] = useState(false);
+  const [isPendingUpload, setIsPendingUpload] = useState(false); // 업로드 대기 중인지 추적
   const [selectedFiles, setSelectedFiles] = useState<FileWithDescription[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -69,11 +70,15 @@ export default function PhotoUpload({
     localStorage.setItem(nicknameKey, nickname);
     setShowNicknameDialog(false);
 
-    // 닉네임 설정 후 자동으로 업로드 실행
-    handleUpload(nickname);
+    // 업로드 버튼을 눌러서 다이얼로그가 뜬 경우에만 자동 업로드
+    if (isPendingUpload) {
+      setIsPendingUpload(false);
+      handleUpload(nickname);
+    }
   };
 
   const handleChangeNickname = () => {
+    setIsPendingUpload(false); // 닉네임 수정만 하는 경우
     setShowNicknameDialog(true);
   };
 
@@ -138,6 +143,7 @@ export default function PhotoUpload({
 
     if (!nickname.trim()) {
       toast.error('닉네임을 설정해주세요');
+      setIsPendingUpload(true); // 업로드 대기 중 플래그 설정
       setShowNicknameDialog(true);
       return;
     }
