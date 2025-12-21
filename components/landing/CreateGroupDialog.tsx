@@ -487,6 +487,7 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
               </p>
               <ul className="mt-2 list-disc pl-5 text-neutral-600">
                 <li>가족 추억 앨범 생성 및 관리</li>
+                <li>업로드된 사진을 활용한 추억 영상 제작</li>
                 <li>완성된 영상 전달을 위한 연락</li>
                 <li>본인 확인 및 부정 이용 방지</li>
               </ul>
@@ -497,10 +498,13 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
               <ul className="list-disc pl-5 text-neutral-600">
                 <li>
                   필수항목: 앨범 주인 닉네임, 가족 부탁 메시지, 연락처(전화번호 또는 카카오톡 ID),
-                  비밀번호
+                  비밀번호, 업로드된 사진 및 이미지
                 </li>
                 <li>자동수집항목: 서비스 이용 기록, 접속 로그, 쿠키, 접속 IP 정보</li>
               </ul>
+              <p className="mt-2 text-xs text-neutral-500">
+                ※ 업로드된 사진은 추억 영상 제작 목적으로만 사용되며, 다른 용도로 활용되지 않습니다.
+              </p>
             </div>
 
             <div>
@@ -513,9 +517,13 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
               </p>
               <ul className="mt-2 list-disc pl-5 text-neutral-600">
                 <li>앨범 주인 닉네임, 부탁 메시지: 앨범 삭제 시까지</li>
+                <li>업로드된 사진 및 제작된 영상: 최초 업로드일로부터 1년간 보관 후 자동 파기</li>
                 <li>연락처: 영상 전달 완료 후 즉시 파기</li>
                 <li>비밀번호: 앨범 삭제 시까지 (암호화 보관)</li>
               </ul>
+              <p className="mt-2 text-xs text-neutral-500">
+                ※ 사용자가 앨범을 직접 삭제할 경우, 모든 사진 및 영상은 즉시 파기됩니다.
+              </p>
             </div>
 
             <div>
