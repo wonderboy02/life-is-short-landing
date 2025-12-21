@@ -7,6 +7,7 @@ import ProcessSection from '@/components/landing/ProcessSection';
 import BrandStory from '@/components/landing/BrandStory';
 import PricingWithDialog from '@/components/landing/PricingWithDialog';
 import PageLoadLogger from '@/components/landing/PageLoadLogger';
+import FamilyCollaborationSection from '@/components/landing/FamilyCollaborationSection';
 
 // Heavy components - lazy load
 const ReviewsSection = dynamic(() => import('@/components/landing/ReviewsSection'), {
@@ -30,6 +31,9 @@ export default function Home() {
 
         {/* Reviews Section - Heavy (Marquee library), lazy loaded */}
         {!isBetaTest && <ReviewsSection />}
+
+        {/* Family Collaboration Section - Static */}
+        <FamilyCollaborationSection />
 
         {/* Process Section - Static */}
         <ProcessSection />
