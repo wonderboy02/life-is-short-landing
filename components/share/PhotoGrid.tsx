@@ -21,7 +21,7 @@ export default function PhotoGrid({
   groupId,
   onDeleteSuccess,
 }: PhotoGridProps) {
-  const [selectedPhotoId, setSelectedPhotoId] = useState<string | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<PhotoWithUrl | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
@@ -64,7 +64,7 @@ export default function PhotoGrid({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setSelectedPhotoId(photo.id);
+                setSelectedPhoto(photo);
               }}
               className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors shadow-md backdrop-blur-sm"
               aria-label="메뉴"
@@ -98,16 +98,16 @@ export default function PhotoGrid({
       )}
 
       {/* 삭제 다이얼로그 */}
-      {selectedPhotoId && (
+      {selectedPhoto && (
         <DeletePhotoDialog
-          photoId={selectedPhotoId}
+          photo={selectedPhoto}
           groupId={groupId}
-          open={!!selectedPhotoId}
+          open={!!selectedPhoto}
           onOpenChange={(open) => {
-            if (!open) setSelectedPhotoId(null);
+            if (!open) setSelectedPhoto(null);
           }}
           onDeleteSuccess={() => {
-            setSelectedPhotoId(null);
+            setSelectedPhoto(null);
             onDeleteSuccess?.();
           }}
         />
