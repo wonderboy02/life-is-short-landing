@@ -370,7 +370,7 @@ export default function PhotoUpload({
         {/* 업로드 버튼 */}
         {selectedFiles.length > 0 && (
           <Button
-            onClick={handleUpload}
+            onClick={() => handleUpload()}
             disabled={isUploading}
             className="w-full bg-neutral-900 hover:bg-neutral-800 h-14 text-base font-semibold rounded-xl shadow-sm"
           >
@@ -390,6 +390,7 @@ export default function PhotoUpload({
       <UploaderDialog
         open={showNicknameDialog}
         onConfirm={handleNicknameConfirm}
+        onOpenChange={setShowNicknameDialog}
       />
 
       {/* 이미지 뷰어 모달 */}

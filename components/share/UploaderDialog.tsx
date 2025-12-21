@@ -29,11 +29,13 @@ type FormData = z.infer<typeof uploaderSchema>;
 interface UploaderDialogProps {
   open: boolean;
   onConfirm: (nickname: string) => void;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export default function UploaderDialog({
   open,
   onConfirm,
+  onOpenChange,
 }: UploaderDialogProps) {
   const {
     register,
@@ -48,7 +50,7 @@ export default function UploaderDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md" showCloseButton={false}>
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
