@@ -13,10 +13,10 @@ export default function FamilyCollaborationSection() {
               </p>
             </div>
 
-            {/* Image Placeholder */}
+            {/* Share Link Example */}
             <div className="mx-auto mb-6">
               <img
-                src="/family-collaboration-placeholder.jpg"
+                src="/share_link_example.jpg"
                 alt="가족 협업 예시"
                 className="w-full border border-neutral-200 object-contain"
                 style={{ borderRadius: '15px' }}
