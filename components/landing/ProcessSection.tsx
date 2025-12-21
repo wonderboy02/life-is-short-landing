@@ -34,8 +34,11 @@ export default function ProcessSection() {
                 <div className="space-y-2 text-left">
                   <h3 className="font-display text-xl font-bold">사진을 찍어 업로드해주세요</h3>
                   <p className="text-sm leading-5 break-keep text-neutral-600">
-                    훼손된 사진, 빛바랜 사진도 문제 없어요.휴대폰 카메라로 찍어서 보내주시기만 하면
+                    훼손된 사진, 빛바랜 사진도 문제 없어요. 휴대폰 카메라로 찍어서 보내주시기만 하면
                     돼요.
+                  </p>
+                  <p className="text-sm leading-5 break-keep text-neutral-600 pt-2">
+                    <span className="font-semibold text-neutral-900">사진이 없으신가요?</span> 링크를 가족들과 공유해서 함께 사진을 모아보세요.
                   </p>
                 </div>
               </div>

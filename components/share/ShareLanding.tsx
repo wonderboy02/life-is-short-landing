@@ -119,12 +119,17 @@ export default function ShareLanding({
                       </p>
                     </div>
                     <div className="pt-2">
-                      <p className="text-xs text-neutral-500">
+                      <p className="text-sm text-neutral-500">
                         {timeLeft.days > 0 && `${timeLeft.days}일 `}
                         {timeLeft.hours > 0 && `${timeLeft.hours}시간 `}
                         {timeLeft.minutes > 0 && `${timeLeft.minutes}분 `}
                         남음
                       </p>
+                      <div className="pt-1">
+                        <p className="text-xs text-neutral-500">
+                          *마감 후 사진 업로드는 불가능합니다
+                        </p>
+                      </div>
                     </div>
                   </>
                 ) : /* 상태 2: 시간 O + 사진 0장 */
@@ -139,11 +144,16 @@ export default function ShareLanding({
                       </p>
                     </div>
                     <div className="pt-2">
-                      <p className="text-xs text-neutral-500">
+                      <p className="text-sm text-neutral-500">
                         {timeLeft.days > 0 && `${timeLeft.days}일 `}
                         {timeLeft.hours > 0 && `${timeLeft.hours}시간 `}
                         남음
                       </p>
+                      <div className="pt-1">
+                        <p className="text-xs text-neutral-500">
+                          *마감 후 사진 업로드는 불가능합니다
+                        </p>
+                      </div>
                     </div>
                   </>
                 ) : (
@@ -265,13 +275,13 @@ export default function ShareLanding({
                 {recentPhotos.slice(0, 6).map((photo, index) => (
                   <div
                     key={photo.id}
-                    className="aspect-square overflow-hidden rounded-lg bg-neutral-100 cursor-pointer transition-transform active:scale-95"
+                    className="aspect-square cursor-pointer overflow-hidden rounded-lg bg-neutral-100 transition-transform active:scale-95"
                     onClick={() => setSelectedImageIndex(index)}
                   >
                     <img
                       src={photo.url}
                       alt={photo.file_name}
-                      className="h-full w-full object-cover pointer-events-none"
+                      className="pointer-events-none h-full w-full object-cover"
                     />
                   </div>
                 ))}
@@ -280,7 +290,7 @@ export default function ShareLanding({
               <div className="flex justify-center">
                 <button
                   onClick={onViewPhotos}
-                  className="text-sm text-neutral-600 hover:text-neutral-900 underline underline-offset-2 transition-colors"
+                  className="text-sm text-neutral-600 underline underline-offset-2 transition-colors hover:text-neutral-900"
                 >
                   사진 모두보기 ({photoCount})
                 </button>
