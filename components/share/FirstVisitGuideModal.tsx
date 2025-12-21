@@ -64,7 +64,7 @@ export default function FirstVisitGuideModal({
             <div className="flex items-center gap-2">
               <label className="text-xs font-medium text-neutral-800 md:text-sm">앨범 링크</label>
               <span className="text-[9px] text-neutral-500 md:text-[10px]">
-                ※ 링크는 다시 찾을 수 없으니 꼭 보관해 주세요
+                ※ 링크는 다시 찾을 수 없으니 바로 가족들과 공유해 보세요!
               </span>
             </div>
             <div className="flex min-w-0 gap-1.5 sm:gap-2">
