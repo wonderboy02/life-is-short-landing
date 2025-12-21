@@ -16,12 +16,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { deletePhotoSchema } from '@/lib/validations/schemas';
 import { toast } from 'sonner';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, User, Calendar } from 'lucide-react';
+import type { PhotoWithUrl } from '@/lib/supabase/types';
 
 type FormData = z.infer<typeof deletePhotoSchema>;
 
 interface DeletePhotoDialogProps {
-  photoId: string;
+  photo: PhotoWithUrl;
   groupId: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -29,7 +30,7 @@ interface DeletePhotoDialogProps {
 }
 
 export default function DeletePhotoDialog({
-  photoId,
+  photo,
   groupId,
   open,
   onOpenChange,
@@ -52,7 +53,7 @@ export default function DeletePhotoDialog({
   const onSubmit = async (data: FormData) => {
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/photos/${photoId}`, {
+      const response = await fetch(`/api/photos/${photo.id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -76,24 +77,52 @@ export default function DeletePhotoDialog({
     }
   };
 
+  // 업로드 시간 포맷팅
+  const formatUploadTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    return `${year}년 ${month}월 ${day}일 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
+          <DialogTitle className="text-xl font-bold">
+            {photo.uploader_nickname} 님이 업로드한 사진
+          </DialogTitle>
+
+          {/* 사진 정보 */}
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center gap-2 text-sm text-neutral-600">
+              <Calendar className="w-4 h-4 text-neutral-500" />
+              <span>{formatUploadTime(photo.created_at)}</span>
             </div>
-            <DialogTitle className="text-xl font-bold">
-              사진 삭제
-            </DialogTitle>
           </div>
-          <DialogDescription className="text-base">
-            이 작업은 되돌릴 수 없습니다. 그룹 비밀번호를 입력해주세요.
-          </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+        {/* 삭제 옵션 */}
+        <div className="mt-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-red-900">
+                  사진을 삭제하시겠습니까?
+                </p>
+                <p className="text-xs text-red-700">
+                  이 작업은 되돌릴 수 없습니다. 삭제하려면 그룹 비밀번호를 입력해주세요.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* 비밀번호 */}
           <div className="space-y-2">
             <Label htmlFor="password" className="text-base">
@@ -134,6 +163,7 @@ export default function DeletePhotoDialog({
             </Button>
           </div>
         </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

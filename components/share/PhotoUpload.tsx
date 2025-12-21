@@ -326,7 +326,7 @@ export default function PhotoUpload({
                       className="w-full h-full object-cover pointer-events-none"
                     />
 
-                    {/* 메뉴 버튼 (삭제) */}
+                    {/* 삭제 버튼 */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -336,7 +336,7 @@ export default function PhotoUpload({
                       className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm disabled:opacity-50 shadow-md"
                       aria-label="삭제"
                     >
-                      <MoreVertical className="w-4 h-4" />
+                      <X className="w-4 h-4" />
                     </button>
 
                     {/* 상태 뱃지 */}
