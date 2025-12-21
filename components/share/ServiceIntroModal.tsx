@@ -61,8 +61,8 @@ export default function ServiceIntro({
                 <Upload className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="mb-1 text-lg font-semibold text-white">1. 사진 모으기</h3>
-                <p className="text-sm leading-relaxed text-neutral-300">
+                <h3 className="mb-1 text-base font-semibold text-white">1. 사진 모으기</h3>
+                <p className="text-xs leading-relaxed text-neutral-300">
                   가족, 친구들과 함께 옛 사진을 모아요
                 </p>
               </div>
@@ -73,8 +73,8 @@ export default function ServiceIntro({
                 <Palette className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="mb-1 text-lg font-semibold text-white">2. AI 복원</h3>
-                <p className="text-sm leading-relaxed text-neutral-300">
+                <h3 className="mb-1 text-base font-semibold text-white">2. AI 복원</h3>
+                <p className="text-xs leading-relaxed text-neutral-300">
                   흑백 사진을 컬러로, 흐린 사진을 선명하게 복원해요
                 </p>
               </div>
@@ -85,8 +85,8 @@ export default function ServiceIntro({
                 <Video className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h3 className="mb-1 text-lg font-semibold text-white">3. 영상 제작</h3>
-                <p className="text-sm leading-relaxed text-neutral-300">
+                <h3 className="mb-1 text-base font-semibold text-white">3. 영상 제작</h3>
+                <p className="text-xs leading-relaxed text-neutral-300">
                   음악과 함께 감동적인 추억 영상으로 완성돼요
                 </p>
               </div>
