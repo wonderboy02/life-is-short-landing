@@ -203,7 +203,7 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
                       </p>
                       <div className="overflow-hidden rounded-xl border border-neutral-200 shadow-sm">
                         <Image
-                          src="/create_group_example.png"
+                          src="/create_group_name.png"
                           alt="가족들이 보게 될 화면 미리보기"
                           width={200}
                           height={200}
@@ -260,7 +260,7 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
                       </p>
                       <div className="overflow-hidden rounded-xl border border-neutral-200 shadow-sm">
                         <Image
-                          src="/create_group_example.png"
+                          src="/create_group_coment.png"
                           alt="가족들이 보게 될 화면 미리보기"
                           width={200}
                           height={200}
