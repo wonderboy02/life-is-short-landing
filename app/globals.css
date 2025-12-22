@@ -251,15 +251,17 @@
   white-space: pre-line !important; /* 줄바꿈 지원 */
 }
 
-/* 닫기 버튼 - 오른쪽 고정 */
-[data-sonner-toast] button[data-button],
-[data-sonner-toast] button[data-close-button],
-[data-sonner-toast] .sonner-close-custom {
+/* 닫기 버튼 - 오른쪽 상단 고정 */
+[data-sonner-toaster] [data-sonner-toast] button[data-button],
+[data-sonner-toaster] [data-sonner-toast] button[data-close-button],
+[data-sonner-toaster] [data-sonner-toast] .sonner-close-custom,
+button[data-close-button] {
   position: absolute !important;
-  top: 50% !important;
+  top: 12px !important;
   right: 12px !important;
   left: auto !important;
-  transform: translateY(-50%) !important;
+  bottom: auto !important;
+  transform: none !important;
   background: transparent !important;
   border: none !important;
   color: rgb(163 163 163) !important;
@@ -268,6 +270,8 @@
   transition: all 0.15s !important;
   width: 20px !important;
   height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -275,16 +279,18 @@
   margin: 0 !important;
 }
 
-[data-sonner-toast] button[data-button]:hover,
-[data-sonner-toast] button[data-close-button]:hover,
-[data-sonner-toast] .sonner-close-custom:hover {
+[data-sonner-toaster] [data-sonner-toast] button[data-button]:hover,
+[data-sonner-toaster] [data-sonner-toast] button[data-close-button]:hover,
+[data-sonner-toaster] [data-sonner-toast] .sonner-close-custom:hover,
+button[data-close-button]:hover {
   background: rgb(229 229 229) !important;
   color: rgb(64 64 64) !important;
 }
 
-[data-sonner-toast] button[data-button] svg,
-[data-sonner-toast] button[data-close-button] svg,
-[data-sonner-toast] .sonner-close-custom svg {
+[data-sonner-toaster] [data-sonner-toast] button[data-button] svg,
+[data-sonner-toaster] [data-sonner-toast] button[data-close-button] svg,
+[data-sonner-toaster] [data-sonner-toast] .sonner-close-custom svg,
+button[data-close-button] svg {
   width: 14px !important;
   height: 14px !important;
 }
