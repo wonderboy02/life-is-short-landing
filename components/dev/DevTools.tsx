@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Settings, X, Trash2, RefreshCw, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
@@ -21,15 +21,31 @@ export default function DevTools({
   onTestTimeOffsetChange,
 }: DevToolsProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [forceKakao, setForceKakao] = useState(false);
+
+  // 카카오톡 시뮬레이션 상태 초기화
+  useEffect(() => {
+    const saved = localStorage.getItem('dev-force-kakao');
+    setForceKakao(saved === 'true');
+  }, []);
 
   // Production 환경에서는 렌더링하지 않음
   if (process.env.NODE_ENV === 'production') {
     return null;
   }
 
+  const toggleKakaoMode = () => {
+    const newValue = !forceKakao;
+    setForceKakao(newValue);
+    localStorage.setItem('dev-force-kakao', String(newValue));
+    toast.success(newValue ? '카카오톡 웹뷰 모드 활성화' : '카카오톡 웹뷰 모드 비활성화');
+    console.log(`[Dev] 카카오톡 웹뷰 모드: ${newValue}`);
+  };
+
   const clearAllLocalStorage = () => {
     const count = localStorage.length;
     localStorage.clear();
+    setForceKakao(false); // 상태도 초기화
     toast.success(`localStorage 전체 삭제됨 (${count}개 항목)`);
     console.log(`[Dev] localStorage 전체 삭제됨 (${count}개 항목)`);
   };
@@ -88,6 +104,27 @@ export default function DevTools({
           <div className="p-4 space-y-3">
             <div className="text-xs text-neutral-500 mb-3">
               개발 환경 전용 (Production에서는 숨김)
+            </div>
+
+            {/* 카카오톡 웹뷰 시뮬레이션 */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-lg bg-yellow-50">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-neutral-700">카카오톡 웹뷰</span>
+                  <span className="text-xs text-neutral-500">(공유 토스트 테스트)</span>
+                </div>
+                <Button
+                  onClick={toggleKakaoMode}
+                  variant={forceKakao ? "default" : "outline"}
+                  size="sm"
+                  className="h-7 text-xs min-w-[50px]"
+                >
+                  {forceKakao ? 'ON' : 'OFF'}
+                </Button>
+              </div>
+              <p className="text-xs text-neutral-500 pl-2">
+                카카오톡 전용 공유 안내 토스트를 테스트해요
+              </p>
             </div>
 
             {/* 서비스 소개 모달 초기화 */}

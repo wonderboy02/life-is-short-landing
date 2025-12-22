@@ -62,3 +62,24 @@ export function formatNameWithParticle(name: string): string {
   const particle = getParticle(name)
   return `${name}님${particle}`
 }
+
+/**
+ * 카카오톡 인앱 브라우저(웹뷰)인지 확인
+ * - Production: User Agent만 체크
+ * - Development: User Agent + localStorage 시뮬레이션 플래그 체크
+ * @returns {boolean} 카카오톡 웹뷰이면 true
+ */
+export function isKakaoTalkWebView(): boolean {
+  if (typeof navigator === 'undefined') return false
+
+  // 실제 User Agent 체크
+  const isRealKakao = /KAKAOTALK/i.test(navigator.userAgent)
+
+  // 개발 환경에서만 시뮬레이션 플래그 체크
+  if (process.env.NODE_ENV !== 'production') {
+    const forceKakao = typeof localStorage !== 'undefined' && localStorage.getItem('dev-force-kakao') === 'true'
+    return isRealKakao || forceKakao
+  }
+
+  return isRealKakao
+}
