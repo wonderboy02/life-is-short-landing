@@ -877,23 +877,25 @@ export default function AdminGroupDetailPage({ params }: Props) {
                                         ? 'secondary'
                                         : 'outline'
                                 }
+                                className="shrink-0"
                               >
                                 {task.status}
                               </Badge>
-                              <span className="flex-1 truncate">{task.prompt}</span>
+                              <span className="truncate max-w-[200px]" title={task.prompt}>
+                                {task.prompt}
+                              </span>
 
-                              {/* 완료된 영상 */}
-                              {task.status === 'completed' && task.generated_video_url && (
-                                <div className="relative group/video">
-                                  <Button
-                                    size="sm"
-                                    variant="default"
-                                    onClick={() => handlePlayVideo(task.generated_video_url!, task.id)}
-                                  >
-                                    영상 보기
-                                  </Button>
-                                  {/* 호버 옵션 */}
-                                  <div className="absolute right-0 top-full mt-1 hidden group-hover/video:flex gap-1 bg-white border rounded shadow-lg p-1 z-10">
+                              <div className="ml-auto flex items-center gap-2 shrink-0">
+                                {/* 완료된 영상 */}
+                                {task.status === 'completed' && task.generated_video_url && (
+                                  <div className="flex gap-1">
+                                    <Button
+                                      size="sm"
+                                      variant="default"
+                                      onClick={() => handlePlayVideo(task.generated_video_url!, task.id)}
+                                    >
+                                      영상 보기
+                                    </Button>
                                     <Button
                                       size="sm"
                                       variant="outline"
@@ -909,33 +911,10 @@ export default function AdminGroupDetailPage({ params }: Props) {
                                       삭제
                                     </Button>
                                   </div>
-                                </div>
-                              )}
+                                )}
 
-                              {/* Pending 또는 Processing Task */}
-                              {(task.status === 'pending' || task.status === 'processing') && (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleDeleteTask(task.id)}
-                                >
-                                  삭제
-                                </Button>
-                              )}
-
-                              {/* 실패한 Task */}
-                              {task.status === 'failed' && (
-                                <div className="flex items-center gap-2">
-                                  {task.error_message && (
-                                    <span className="text-xs text-red-600">{task.error_message}</span>
-                                  )}
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => handleRetryTask(task.id)}
-                                  >
-                                    재시도
-                                  </Button>
+                                {/* Pending 또는 Processing Task */}
+                                {(task.status === 'pending' || task.status === 'processing') && (
                                   <Button
                                     size="sm"
                                     variant="destructive"
@@ -943,8 +922,33 @@ export default function AdminGroupDetailPage({ params }: Props) {
                                   >
                                     삭제
                                   </Button>
-                                </div>
-                              )}
+                                )}
+
+                                {/* 실패한 Task */}
+                                {task.status === 'failed' && (
+                                  <>
+                                    {task.error_message && (
+                                      <span className="text-xs text-red-600 max-w-[150px] truncate" title={task.error_message}>
+                                        {task.error_message}
+                                      </span>
+                                    )}
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => handleRetryTask(task.id)}
+                                    >
+                                      재시도
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      onClick={() => handleDeleteTask(task.id)}
+                                    >
+                                      삭제
+                                    </Button>
+                                  </>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>
