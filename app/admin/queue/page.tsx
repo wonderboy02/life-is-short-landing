@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import ImageViewerModal from '@/components/share/ImageViewerModal';
 import {
   Select,
   SelectContent,
@@ -59,6 +60,9 @@ export default function AdminQueuePage() {
 
   // 필터
   const [filterStatus, setFilterStatus] = useState<string>('all');
+
+  // 사진 확대 모달
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetchQueue();
@@ -269,14 +273,15 @@ export default function AdminQueuePage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {queueData.items.map((item) => (
+                  {queueData.items.map((item, index) => (
                     <TableRow key={item.id}>
                       <TableCell>
                         {item.photo_url && (
                           <img
                             src={item.photo_url}
                             alt="Photo"
-                            className="w-16 h-16 object-cover rounded"
+                            className="w-16 h-16 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => setSelectedImageIndex(index)}
                           />
                         )}
                       </TableCell>
@@ -371,6 +376,23 @@ export default function AdminQueuePage() {
           )}
         </CardContent>
       </Card>
+
+      {/* 사진 확대 모달 */}
+      {selectedImageIndex !== null && queueData && (
+        <ImageViewerModal
+          images={queueData.items
+            .filter((item) => item.photo_url)
+            .map((item) => ({
+              url: item.photo_url!,
+              alt: item.prompt || 'Photo',
+            }))}
+          initialIndex={selectedImageIndex}
+          open={selectedImageIndex !== null}
+          onOpenChange={(open) => {
+            if (!open) setSelectedImageIndex(null);
+          }}
+        />
+      )}
     </div>
   );
 }
