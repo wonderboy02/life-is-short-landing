@@ -73,9 +73,16 @@ export default function AdminGroupDetailPage({ params }: Props) {
   // Task 큐에 추가
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState<Record<string, { prompt: string; repeat_count: number }>>({});
+  const [bulkPrompt, setBulkPrompt] = useState('');
+  const [bulkRepeatCount, setBulkRepeatCount] = useState(1);
 
   // 그룹 Task 현황
   const [groupTasks, setGroupTasks] = useState<GroupTasksResponse | null>(null);
+
+  // 영상 재생 모달
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
+  const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchGroupDetail();
@@ -419,6 +426,123 @@ export default function AdminGroupDetailPage({ params }: Props) {
     return Object.values(selectedTasks).reduce((sum, task) => sum + task.repeat_count, 0);
   };
 
+  const handleAddAllWithOne = () => {
+    if (!group) return;
+    const newTasks: Record<string, { prompt: string; repeat_count: number }> = {};
+    group.photos.forEach((photo) => {
+      newTasks[photo.id] = {
+        prompt: 'Generate video',
+        repeat_count: 1,
+      };
+    });
+    setSelectedTasks(newTasks);
+  };
+
+  const handleApplyBulkSettings = () => {
+    if (!group || !bulkPrompt.trim()) {
+      alert('프롬프트를 입력하세요.');
+      return;
+    }
+    const newTasks: Record<string, { prompt: string; repeat_count: number }> = {};
+    group.photos.forEach((photo) => {
+      newTasks[photo.id] = {
+        prompt: bulkPrompt,
+        repeat_count: bulkRepeatCount,
+      };
+    });
+    setSelectedTasks(newTasks);
+  };
+
+  const handlePlayVideo = (videoUrl: string, taskId: string) => {
+    setCurrentVideoUrl(videoUrl);
+    setCurrentTaskId(taskId);
+    setVideoModalOpen(true);
+  };
+
+  const handleDownloadVideo = async (videoUrl: string, taskId: string) => {
+    try {
+      const response = await fetch(videoUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `video-${taskId}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('다운로드 오류:', error);
+      alert('다운로드에 실패했습니다.');
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    if (!confirm('이 Task를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      const response = await fetch(`/api/admin/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('✓ Task가 삭제되었습니다.');
+        fetchGroupTasks();
+      } else {
+        alert('✗ ' + (result.error || 'Task 삭제에 실패했습니다.'));
+      }
+    } catch (error) {
+      console.error('Task 삭제 오류:', error);
+      alert('✗ 서버 오류가 발생했습니다.');
+    }
+  };
+
+  const handleRetryTask = async (taskId: string) => {
+    if (!confirm('이 Task를 재시도하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      const response = await fetch(`/api/admin/tasks/${taskId}/retry`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('✓ Task가 재시도 큐에 추가되었습니다.');
+        fetchGroupTasks();
+      } else {
+        alert('✗ ' + (result.error || 'Task 재시도에 실패했습니다.'));
+      }
+    } catch (error) {
+      console.error('Task 재시도 오류:', error);
+      alert('✗ 서버 오류가 발생했습니다.');
+    }
+  };
+
   const handleAddTasks = async () => {
     const tasksToAdd = Object.entries(selectedTasks)
       .filter(([_, task]) => task.repeat_count > 0 && task.prompt.trim())
@@ -489,10 +613,15 @@ export default function AdminGroupDetailPage({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* 뒤로가기 버튼 */}
-      <Button variant="outline" onClick={() => router.push('/admin/dashboard')}>
-        ← 대시보드로 돌아가기
-      </Button>
+      {/* 뒤로가기 및 네비게이션 버튼 */}
+      <div className="flex gap-2">
+        <Button variant="outline" onClick={() => router.push('/admin/dashboard')}>
+          ← 대시보드로 돌아가기
+        </Button>
+        <Button variant="outline" onClick={() => router.push('/admin/queue')}>
+          전체 큐 현황 보기
+        </Button>
+      </div>
 
       {/* 그룹 정보 카드 */}
       <Card>
@@ -607,7 +736,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
               등록된 사진이 없습니다.
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
               {group.photos.map((photo) => (
                 <div
                   key={photo.id}
@@ -724,15 +853,51 @@ export default function AdminGroupDetailPage({ params }: Props) {
                                 {task.status}
                               </Badge>
                               <span className="flex-1 truncate">{task.prompt}</span>
+
+                              {/* 완료된 영상 */}
                               {task.status === 'completed' && task.generated_video_url && (
-                                <Button size="sm" asChild>
-                                  <a href={task.generated_video_url} download>
-                                    다운로드
-                                  </a>
-                                </Button>
+                                <div className="relative group/video">
+                                  <Button
+                                    size="sm"
+                                    variant="default"
+                                    onClick={() => handlePlayVideo(task.generated_video_url!, task.id)}
+                                  >
+                                    영상 보기
+                                  </Button>
+                                  {/* 호버 옵션 */}
+                                  <div className="absolute right-0 top-full mt-1 hidden group-hover/video:flex gap-1 bg-white border rounded shadow-lg p-1 z-10">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => handleDownloadVideo(task.generated_video_url!, task.id)}
+                                    >
+                                      다운로드
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      onClick={() => handleDeleteTask(task.id)}
+                                    >
+                                      삭제
+                                    </Button>
+                                  </div>
+                                </div>
                               )}
-                              {task.error_message && (
-                                <span className="text-xs text-red-600">{task.error_message}</span>
+
+                              {/* 실패한 Task */}
+                              {task.status === 'failed' && (
+                                <div className="flex items-center gap-2">
+                                  {task.error_message && (
+                                    <span className="text-xs text-red-600">{task.error_message}</span>
+                                  )}
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleRetryTask(task.id)}
+                                  >
+                                    재시도
+                                  </Button>
+                                </div>
                               )}
                             </div>
                           ))}
@@ -797,6 +962,40 @@ export default function AdminGroupDetailPage({ params }: Props) {
               각 사진별로 프롬프트와 반복 횟수를 설정하세요
             </DialogDescription>
           </DialogHeader>
+
+          {/* 일괄 설정 */}
+          <div className="border rounded p-4 space-y-3 bg-neutral-50">
+            <h4 className="font-semibold text-sm">일괄 설정</h4>
+            <div className="flex gap-2 items-end">
+              <div className="flex-1 space-y-1">
+                <Label className="text-xs">모든 사진에 적용할 프롬프트</Label>
+                <Input
+                  placeholder="예: happy family moment"
+                  value={bulkPrompt}
+                  onChange={(e) => setBulkPrompt(e.target.value)}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">반복 횟수</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={10}
+                  className="w-20"
+                  value={bulkRepeatCount}
+                  onChange={(e) => setBulkRepeatCount(parseInt(e.target.value) || 1)}
+                />
+              </div>
+              <Button variant="default" onClick={handleApplyBulkSettings}>
+                모든 사진에 적용
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={handleAddAllWithOne}>
+                전부 1개씩 추가하기
+              </Button>
+            </div>
+          </div>
 
           <div className="space-y-4">
             {group && group.photos.map((photo) => (
@@ -884,6 +1083,33 @@ export default function AdminGroupDetailPage({ params }: Props) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* 영상 재생 모달 */}
+      <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
+        <DialogContent className="max-w-4xl w-full p-0">
+          <div className="relative w-full bg-black">
+            {currentVideoUrl && (
+              <video
+                src={currentVideoUrl}
+                controls
+                autoPlay
+                className="w-full h-auto max-h-[80vh]"
+              />
+            )}
+          </div>
+          <div className="p-4 flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => currentVideoUrl && currentTaskId && handleDownloadVideo(currentVideoUrl, currentTaskId)}
+            >
+              다운로드
+            </Button>
+            <Button variant="outline" onClick={() => setVideoModalOpen(false)}>
+              닫기
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
