@@ -322,11 +322,11 @@ export default function AdminQueuePage() {
                             </div>
                           )}
 
-                          {/* Pending/Processing 상태 */}
-                          {(item.status === 'pending' || item.status === 'processing') && (
+                          {/* Pending 상태만 삭제 가능 */}
+                          {item.status === 'pending' && (
                             <Button
                               size="sm"
-                              variant="outline"
+                              variant="destructive"
                               onClick={() => handleDeleteTask(item.id)}
                             >
                               삭제
