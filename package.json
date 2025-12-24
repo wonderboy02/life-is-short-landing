@@ -8,7 +8,10 @@
     "dev": "next dev",
     "lint": "eslint .",
     "start": "next start",
-    "gen:types": "npx supabase gen types typescript --project-id knxpbilyfdykcrxgzdcr > lib/supabase/database.ts"
+    "gen:types": "npx supabase gen types typescript --project-id knxpbilyfdykcrxgzdcr > lib/supabase/database.ts",
+    "test:worker": "node scripts/test-worker-api.js",
+    "test:admin": "node scripts/test-admin-api.js",
+    "test:workflow": "node scripts/test-full-workflow.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

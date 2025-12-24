@@ -34,7 +34,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import type { AdminGroupDetail } from '@/app/api/admin/groups/[groupId]/route';
-import type { PhotoWithUrl } from '@/lib/supabase/types';
+import type {
+  PhotoWithUrl,
+  GroupTasksResponse,
+  TaskAddRequest,
+} from '@/lib/supabase/types';
 
 interface Props {
   params: Promise<{ groupId: string }>;
@@ -66,8 +70,21 @@ export default function AdminGroupDetailPage({ params }: Props) {
   // 영상 상태 변경
   const [isUpdatingVideoStatus, setIsUpdatingVideoStatus] = useState(false);
 
+  // Task 큐에 추가
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
+  const [selectedTasks, setSelectedTasks] = useState<Record<string, { prompt: string; repeat_count: number }>>({});
+
+  // 그룹 Task 현황
+  const [groupTasks, setGroupTasks] = useState<GroupTasksResponse | null>(null);
+
   useEffect(() => {
     fetchGroupDetail();
+  }, [groupId]);
+
+  useEffect(() => {
+    fetchGroupTasks();
+    const interval = setInterval(fetchGroupTasks, 5000); // 5초마다
+    return () => clearInterval(interval);
   }, [groupId]);
 
   const fetchGroupDetail = async () => {
@@ -380,6 +397,79 @@ export default function AdminGroupDetailPage({ params }: Props) {
     }
   };
 
+  const fetchGroupTasks = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) return;
+
+      const response = await fetch(`/api/admin/groups/${groupId}/tasks`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setGroupTasks(result.data);
+      }
+    } catch (error) {
+      console.error('Group tasks 조회 오류:', error);
+    }
+  };
+
+  const getTotalTaskCount = () => {
+    return Object.values(selectedTasks).reduce((sum, task) => sum + task.repeat_count, 0);
+  };
+
+  const handleAddTasks = async () => {
+    const tasksToAdd = Object.entries(selectedTasks)
+      .filter(([_, task]) => task.repeat_count > 0 && task.prompt.trim())
+      .map(([photo_id, task]) => ({
+        photo_id,
+        prompt: task.prompt,
+        repeat_count: task.repeat_count,
+      }));
+
+    if (tasksToAdd.length === 0) {
+      alert('추가할 task가 없습니다.');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      const requestBody: TaskAddRequest = {
+        group_id: groupId,
+        tasks: tasksToAdd,
+      };
+
+      const response = await fetch('/api/admin/tasks/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert(`✓ ${result.data.total_items_added}개 task가 큐에 추가되었습니다!`);
+        setTaskDialogOpen(false);
+        setSelectedTasks({});
+        fetchGroupTasks(); // 새로고침
+      } else {
+        alert(`✗ ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Task 추가 오류:', error);
+      alert('✗ 서버 오류가 발생했습니다.');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -581,6 +671,82 @@ export default function AdminGroupDetailPage({ params }: Props) {
         </CardContent>
       </Card>
 
+      {/* Task 관리 버튼 */}
+      <div className="flex gap-2">
+        <Button variant="default" onClick={() => setTaskDialogOpen(true)}>
+          Task 큐에 추가
+        </Button>
+      </div>
+
+      {/* 그룹 Task 현황 */}
+      {groupTasks && (
+        <Card>
+          <CardHeader>
+            <CardTitle>비디오 생성 Task 현황</CardTitle>
+            <CardDescription>
+              전체 {groupTasks.stats.total}개 task
+              (Pending: {groupTasks.stats.pending}, Processing: {groupTasks.stats.processing}, Completed: {groupTasks.stats.completed}, Failed: {groupTasks.stats.failed})
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {groupTasks.photos.length === 0 ? (
+              <p className="text-neutral-500 text-sm">아직 생성된 task가 없습니다.</p>
+            ) : (
+              <div className="space-y-4">
+                {groupTasks.photos.map((photoGroup) => (
+                  <div key={photoGroup.photo_id} className="border rounded p-4">
+                    <div className="flex gap-4">
+                      {photoGroup.photo_url && (
+                        <img
+                          src={photoGroup.photo_url}
+                          alt="Photo"
+                          className="w-32 h-32 object-cover rounded"
+                        />
+                      )}
+                      <div className="flex-1">
+                        <h4 className="font-semibold mb-2">
+                          이 사진의 비디오 ({photoGroup.tasks.length}개)
+                        </h4>
+                        <div className="space-y-2">
+                          {photoGroup.tasks.map((task) => (
+                            <div key={task.id} className="flex items-center gap-2 text-sm">
+                              <Badge
+                                variant={
+                                  task.status === 'completed'
+                                    ? 'default'
+                                    : task.status === 'failed'
+                                      ? 'destructive'
+                                      : task.status === 'processing'
+                                        ? 'secondary'
+                                        : 'outline'
+                                }
+                              >
+                                {task.status}
+                              </Badge>
+                              <span className="flex-1 truncate">{task.prompt}</span>
+                              {task.status === 'completed' && task.generated_video_url && (
+                                <Button size="sm" asChild>
+                                  <a href={task.generated_video_url} download>
+                                    다운로드
+                                  </a>
+                                </Button>
+                              )}
+                              {task.error_message && (
+                                <span className="text-xs text-red-600">{task.error_message}</span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
       {/* 그룹 수정 다이얼로그 */}
       <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
         <DialogContent>
@@ -617,6 +783,79 @@ export default function AdminGroupDetailPage({ params }: Props) {
             </Button>
             <Button onClick={handleUpdateGroup} disabled={isUpdating}>
               {isUpdating ? '수정 중...' : '수정'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Task 큐에 추가 다이얼로그 */}
+      <Dialog open={taskDialogOpen} onOpenChange={setTaskDialogOpen}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Task 큐에 추가</DialogTitle>
+            <DialogDescription>
+              각 사진별로 프롬프트와 반복 횟수를 설정하세요
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {group && group.photos.map((photo) => (
+              <div key={photo.id} className="border rounded p-4">
+                <div className="flex gap-4">
+                  <img src={photo.url} alt={photo.file_name} className="w-24 h-24 object-cover rounded" />
+
+                  <div className="flex-1 space-y-2">
+                    <div>
+                      <Label>프롬프트</Label>
+                      <Input
+                        placeholder="예: happy family moment"
+                        value={selectedTasks[photo.id]?.prompt || ''}
+                        onChange={(e) =>
+                          setSelectedTasks((prev) => ({
+                            ...prev,
+                            [photo.id]: {
+                              ...prev[photo.id],
+                              prompt: e.target.value,
+                              repeat_count: prev[photo.id]?.repeat_count || 1,
+                            },
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Label>반복 횟수:</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={10}
+                        className="w-20"
+                        value={selectedTasks[photo.id]?.repeat_count || 0}
+                        onChange={(e) =>
+                          setSelectedTasks((prev) => ({
+                            ...prev,
+                            [photo.id]: {
+                              ...prev[photo.id],
+                              prompt: prev[photo.id]?.prompt || '',
+                              repeat_count: parseInt(e.target.value) || 0,
+                            },
+                          }))
+                        }
+                      />
+                      <span className="text-sm text-neutral-500">(0 = 추가 안 함)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setTaskDialogOpen(false)}>
+              취소
+            </Button>
+            <Button onClick={handleAddTasks}>
+              큐에 추가 ({getTotalTaskCount()}개 task)
             </Button>
           </DialogFooter>
         </DialogContent>
