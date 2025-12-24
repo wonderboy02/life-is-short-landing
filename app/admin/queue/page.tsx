@@ -114,6 +114,90 @@ export default function AdminQueuePage() {
     });
   };
 
+  const handleDeleteTask = async (taskId: string) => {
+    if (!confirm('이 Task를 삭제하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      const response = await fetch(`/api/admin/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('✓ Task가 삭제되었습니다.');
+        fetchQueue();
+      } else {
+        alert('✗ ' + (result.error || 'Task 삭제에 실패했습니다.'));
+      }
+    } catch (error) {
+      console.error('Task 삭제 오류:', error);
+      alert('✗ 서버 오류가 발생했습니다.');
+    }
+  };
+
+  const handleRetryTask = async (taskId: string) => {
+    if (!confirm('이 Task를 재시도하시겠습니까?')) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      const response = await fetch(`/api/admin/tasks/${taskId}/retry`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('✓ Task가 재시도 큐에 추가되었습니다.');
+        fetchQueue();
+      } else {
+        alert('✗ ' + (result.error || 'Task 재시도에 실패했습니다.'));
+      }
+    } catch (error) {
+      console.error('Task 재시도 오류:', error);
+      alert('✗ 서버 오류가 발생했습니다.');
+    }
+  };
+
+  const handleDownloadVideo = async (videoUrl: string, taskId: string) => {
+    try {
+      const response = await fetch(videoUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `video-${taskId}.mp4`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('다운로드 오류:', error);
+      alert('다운로드에 실패했습니다.');
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -217,18 +301,65 @@ export default function AdminQueuePage() {
                       </TableCell>
                       <TableCell className="text-xs">{formatDate(item.created_at)}</TableCell>
                       <TableCell>
-                        {item.status === 'completed' && item.generated_video_url && (
-                          <Button size="sm" asChild>
-                            <a href={item.generated_video_url} download>
-                              다운로드
-                            </a>
-                          </Button>
-                        )}
-                        {item.error_message && (
-                          <div className="text-xs text-red-600 max-w-xs truncate">
-                            {item.error_message}
-                          </div>
-                        )}
+                        <div className="flex flex-col gap-2">
+                          {/* Completed 상태 */}
+                          {item.status === 'completed' && item.generated_video_url && (
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="default"
+                                onClick={() => handleDownloadVideo(item.generated_video_url!, item.id)}
+                              >
+                                다운로드
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleDeleteTask(item.id)}
+                              >
+                                삭제
+                              </Button>
+                            </div>
+                          )}
+
+                          {/* Pending/Processing 상태 */}
+                          {(item.status === 'pending' || item.status === 'processing') && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteTask(item.id)}
+                            >
+                              삭제
+                            </Button>
+                          )}
+
+                          {/* Failed 상태 */}
+                          {item.status === 'failed' && (
+                            <>
+                              {item.error_message && (
+                                <div className="text-xs text-red-600 max-w-xs truncate mb-1">
+                                  {item.error_message}
+                                </div>
+                              )}
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleRetryTask(item.id)}
+                                >
+                                  재시도
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => handleDeleteTask(item.id)}
+                                >
+                                  삭제
+                                </Button>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
