@@ -140,54 +140,69 @@ export type Database = {
       }
       video_items: {
         Row: {
-          batch_id: string
           created_at: string
+          error_message: string | null
           generated_video_url: string | null
+          group_id: string | null
           id: string
-          is_email_sent: boolean | null
-          source_image_url: string
+          leased_until: string | null
+          photo_id: string | null
+          processing_completed_at: string | null
+          processing_started_at: string | null
+          prompt: string
+          retry_count: number
           status: Database["public"]["Enums"]["processing_status"] | null
           updated_at: string
-          user_id: string
           veo_operation_id: string | null
+          worker_id: string | null
         }
         Insert: {
-          batch_id: string
           created_at?: string
+          error_message?: string | null
           generated_video_url?: string | null
+          group_id?: string | null
           id?: string
-          is_email_sent?: boolean | null
-          source_image_url: string
+          leased_until?: string | null
+          photo_id?: string | null
+          processing_completed_at?: string | null
+          processing_started_at?: string | null
+          prompt?: string
+          retry_count?: number
           status?: Database["public"]["Enums"]["processing_status"] | null
           updated_at?: string
-          user_id: string
           veo_operation_id?: string | null
+          worker_id?: string | null
         }
         Update: {
-          batch_id?: string
           created_at?: string
+          error_message?: string | null
           generated_video_url?: string | null
+          group_id?: string | null
           id?: string
-          is_email_sent?: boolean | null
-          source_image_url?: string
+          leased_until?: string | null
+          photo_id?: string | null
+          processing_completed_at?: string | null
+          processing_started_at?: string | null
+          prompt?: string
+          retry_count?: number
           status?: Database["public"]["Enums"]["processing_status"] | null
           updated_at?: string
-          user_id?: string
           veo_operation_id?: string | null
+          worker_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "video_items_batch_id_fkey"
-            columns: ["batch_id"]
+            foreignKeyName: "video_items_group_id_fkey"
+            columns: ["group_id"]
             isOneToOne: false
-            referencedRelation: "video_batches"
+            referencedRelation: "groups"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "video_items_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "video_items_photo_id_fkey"
+            columns: ["photo_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "photos"
             referencedColumns: ["id"]
           },
         ]
