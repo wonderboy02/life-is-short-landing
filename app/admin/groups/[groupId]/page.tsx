@@ -39,6 +39,7 @@ import type {
   GroupTasksResponse,
   TaskAddRequest,
 } from '@/lib/supabase/types';
+import ImageViewerModal from '@/components/share/ImageViewerModal';
 
 interface Props {
   params: Promise<{ groupId: string }>;
@@ -76,6 +77,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
   const [bulkPrompt, setBulkPrompt] = useState('');
   const [bulkRepeatCount, setBulkRepeatCount] = useState(1);
   const [bulkDuration, setBulkDuration] = useState<number | undefined>(5); // 기본 5초
+  const [isAddingTasks, setIsAddingTasks] = useState(false); // 중복 클릭 방지
 
   // 그룹 Task 현황
   const [groupTasks, setGroupTasks] = useState<GroupTasksResponse | null>(null);
@@ -84,6 +86,9 @@ export default function AdminGroupDetailPage({ params }: Props) {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
   const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
+
+  // 사진 확대 모달
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetchGroupDetail();
@@ -547,6 +552,8 @@ export default function AdminGroupDetailPage({ params }: Props) {
   };
 
   const handleAddTasks = async () => {
+    if (isAddingTasks) return; // 중복 클릭 방지
+
     const tasksToAdd = Object.entries(selectedTasks)
       .filter(([_, task]) => task.repeat_count > 0 && task.prompt.trim())
       .map(([photo_id, task]) => ({
@@ -560,6 +567,8 @@ export default function AdminGroupDetailPage({ params }: Props) {
       alert('추가할 task가 없습니다.');
       return;
     }
+
+    setIsAddingTasks(true);
 
     try {
       const token = localStorage.getItem('admin_token');
@@ -595,6 +604,8 @@ export default function AdminGroupDetailPage({ params }: Props) {
     } catch (error) {
       console.error('Task 추가 오류:', error);
       alert('✗ 서버 오류가 발생했습니다.');
+    } finally {
+      setIsAddingTasks(false);
     }
   };
 
@@ -741,14 +752,18 @@ export default function AdminGroupDetailPage({ params }: Props) {
             </div>
           ) : (
             <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
-              {group.photos.map((photo) => (
+              {group.photos.map((photo, index) => (
                 <div
                   key={photo.id}
-                  className="relative group border rounded-lg overflow-hidden bg-neutral-100 aspect-square"
+                  className="relative group border rounded-lg overflow-hidden bg-neutral-100 aspect-square cursor-pointer"
+                  onClick={() => setSelectedImageIndex(index)}
                 >
                   {/* 선택 체크박스 */}
                   {selectionMode && (
-                    <div className="absolute top-2 left-2 z-10">
+                    <div
+                      className="absolute top-2 left-2 z-10"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <Checkbox
                         checked={selectedPhotos.has(photo.id)}
                         onCheckedChange={() => togglePhotoSelection(photo.id)}
@@ -766,7 +781,10 @@ export default function AdminGroupDetailPage({ params }: Props) {
 
                   {/* 호버 오버레이 */}
                   {!selectionMode && (
-                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 p-2">
+                    <div
+                      className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 p-2"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {/* 업로더 정보 */}
                       <div className="text-white text-xs text-center mb-2">
                         <div className="font-semibold">
@@ -778,14 +796,20 @@ export default function AdminGroupDetailPage({ params }: Props) {
                         <Button
                           size="sm"
                           variant="secondary"
-                          onClick={() => handleDownloadPhoto(photo)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownloadPhoto(photo);
+                          }}
                         >
                           다운로드
                         </Button>
                         <Button
                           size="sm"
                           variant="destructive"
-                          onClick={() => handleDeletePhoto(photo)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeletePhoto(photo);
+                          }}
                         >
                           삭제
                         </Button>
@@ -888,6 +912,17 @@ export default function AdminGroupDetailPage({ params }: Props) {
                                 </div>
                               )}
 
+                              {/* Pending 또는 Processing Task */}
+                              {(task.status === 'pending' || task.status === 'processing') && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleDeleteTask(task.id)}
+                                >
+                                  삭제
+                                </Button>
+                              )}
+
                               {/* 실패한 Task */}
                               {task.status === 'failed' && (
                                 <div className="flex items-center gap-2">
@@ -900,6 +935,13 @@ export default function AdminGroupDetailPage({ params }: Props) {
                                     onClick={() => handleRetryTask(task.id)}
                                   >
                                     재시도
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => handleDeleteTask(task.id)}
+                                  >
+                                    삭제
                                   </Button>
                                 </div>
                               )}
@@ -1101,11 +1143,11 @@ export default function AdminGroupDetailPage({ params }: Props) {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setTaskDialogOpen(false)}>
+            <Button variant="outline" onClick={() => setTaskDialogOpen(false)} disabled={isAddingTasks}>
               취소
             </Button>
-            <Button onClick={handleAddTasks}>
-              큐에 추가 ({getTotalTaskCount()}개 task)
+            <Button onClick={handleAddTasks} disabled={isAddingTasks}>
+              {isAddingTasks ? '추가 중...' : `큐에 추가 (${getTotalTaskCount()}개 task)`}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1161,6 +1203,21 @@ export default function AdminGroupDetailPage({ params }: Props) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* 사진 확대 모달 */}
+      {selectedImageIndex !== null && group && (
+        <ImageViewerModal
+          images={group.photos.map((photo) => ({
+            url: photo.url,
+            alt: photo.file_name,
+          }))}
+          initialIndex={selectedImageIndex}
+          open={selectedImageIndex !== null}
+          onOpenChange={(open) => {
+            if (!open) setSelectedImageIndex(null);
+          }}
+        />
+      )}
     </div>
   );
 }
