@@ -80,21 +80,58 @@ export async function POST(req: NextRequest) {
     // 프롬프트 템플릿 (모드에 따라 다름)
     const promptTemplate = existing_prompt?.trim()
       ? // Enhancement 모드: 기존 프롬프트 개선
-        `You are generating a VIDEO prompt from a photo.
+        `You are a prompt-writer for IMAGE-TO-VIDEO generation (I2V), optimized for high success rate.
 
-Base idea: "${existing_prompt}"
+Input:
+- User idea: "${existing_prompt}"
 
-Create a dynamic but plausible video by:
-- Choosing ONLY ONE primary motion focus:
-  (camera OR people OR environment)
-- Adding cinematic camera movement ONLY if it fits the photo
-- Describing clear, physical motion that could realistically occur
-- Avoiding impossible actions for the subjects in the photo
+Task:
+Create ONE enhanced I2V video prompt in ENGLISH that is dynamic but still plausible for the given photo.
 
-Make it lively and cinematic, but still believable for Image-to-Video.
+Rules (follow strictly):
+1) Be SIMPLE and DIRECT. Do NOT describe the image contents in detail. Focus on MOTION. (I2V)
+2) Choose a Motion Budget:
+   - Pick exactly 1 PRIMARY motion focus: {CAMERA | SUBJECT | ENVIRONMENT}
+   - Pick at most 1 SECONDARY motion focus (optional)
+   - Everything else must be constrained to stay stable.
+3) Use clear shot grammar in this order:
+   [SHOT/FRAMING] + [PRIMARY MOTION] + [SECONDARY MOTION] + [STABILITY CONSTRAINTS] + [STYLE]
+4) Prefer gentle camera moves (smooth dolly-in, slow pan, slight orbit). Avoid complex multi-axis camera moves.
+5) If you choose SUBJECT motion, keep it physically plausible from a still photo:
+   - Favor micro-to-medium actions (turn head slightly, blink, shift weight, raise hand slowly)
+   - Avoid fast actions (running, dancing) unless the photo clearly supports it.
+6) Add explicit constraints to reduce common I2V failures:
+   - preserve identity, preserve facial structure, no warping, no extra limbs/fingers, no jitter/flicker,
+     keep proportions, no text artifacts
+7) Output length target: 120–180 characters (not 100). Short but complete.
+8) Return ONLY the final prompt (no explanations, no lists).
 
-Keep under 120 characters.
-Return ONLY the video prompt in ENGLISH.`;
+Now generate the enhanced I2V prompt.`
+      : // Generation 모드: 새로운 프롬프트 생성
+        `You are a prompt-writer for IMAGE-TO-VIDEO generation (I2V), optimized for high success rate.
+
+Task:
+Analyze this photo and create ONE I2V video prompt in ENGLISH that is dynamic but still plausible.
+
+Rules (follow strictly):
+1) Be SIMPLE and DIRECT. Do NOT describe the image contents in detail. Focus on MOTION. (I2V)
+2) Choose a Motion Budget:
+   - Pick exactly 1 PRIMARY motion focus: {CAMERA | SUBJECT | ENVIRONMENT}
+   - Pick at most 1 SECONDARY motion focus (optional)
+   - Everything else must be constrained to stay stable.
+3) Use clear shot grammar in this order:
+   [SHOT/FRAMING] + [PRIMARY MOTION] + [SECONDARY MOTION] + [STABILITY CONSTRAINTS] + [STYLE]
+4) Prefer gentle camera moves (smooth dolly-in, slow pan, slight orbit). Avoid complex multi-axis camera moves.
+5) If you choose SUBJECT motion, keep it physically plausible from a still photo:
+   - Favor micro-to-medium actions (turn head slightly, blink, shift weight, raise hand slowly)
+   - Avoid fast actions (running, dancing) unless the photo clearly supports it.
+6) Add explicit constraints to reduce common I2V failures:
+   - preserve identity, preserve facial structure, no warping, no extra limbs/fingers, no jitter/flicker,
+     keep proportions, no text artifacts
+7) Output length target: 120–180 characters (not 100). Short but complete.
+8) Return ONLY the final prompt (no explanations, no lists).
+
+Now generate the I2V prompt based on what you see in the photo.`;
 
     // Gemini API 호출
     const result = await model.generateContent([
