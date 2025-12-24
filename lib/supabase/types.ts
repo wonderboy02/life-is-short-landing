@@ -88,6 +88,7 @@ export interface VideoTask {
   generated_video_url: string | null;
   veo_operation_id: string | null;
   is_email_sent: boolean | null;
+  frame_num: number | null; // 프레임 수 (24 * 초 + 1, null이면 기본값 121)
   created_at: string;
   updated_at: string;
 }
@@ -98,6 +99,7 @@ export interface TaskAddRequest {
     photo_id: string;
     prompt: string;
     repeat_count: number; // 1 이상
+    duration_seconds?: number; // 영상 길이 (초), null이면 기본값 5초
   }>;
 }
 
@@ -138,4 +140,5 @@ export interface WorkerNextTaskResponse {
   prompt: string;
   leased_until: string;
   photo_storage_path: string;
+  frame_num: number | null; // 프레임 수 (null이면 Worker가 기본값 121 사용)
 }
