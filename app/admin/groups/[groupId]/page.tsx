@@ -2,6 +2,7 @@
 
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -89,6 +90,10 @@ export default function AdminGroupDetailPage({ params }: Props) {
 
   // 사진 확대 모달
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  // AI 프롬프트 생성
+  const [generatingPrompts, setGeneratingPrompts] = useState<Set<string>>(new Set());
+  const [isGeneratingAll, setIsGeneratingAll] = useState(false);
 
   useEffect(() => {
     fetchGroupDetail();
@@ -548,6 +553,131 @@ export default function AdminGroupDetailPage({ params }: Props) {
     } catch (error) {
       console.error('Task 재시도 오류:', error);
       alert('✗ 서버 오류가 발생했습니다.');
+    }
+  };
+
+  const handleGeneratePrompt = async (photoId: string, photoUrl: string, existingPrompt?: string) => {
+    setGeneratingPrompts((prev) => new Set(prev).add(photoId));
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      const response = await fetch('/api/admin/generate-prompt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          photo_url: photoUrl,
+          existing_prompt: existingPrompt?.trim() || undefined,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success && result.data?.prompt) {
+        // 생성된 프롬프트를 입력 필드에 자동 채움
+        setSelectedTasks((prev) => ({
+          ...prev,
+          [photoId]: {
+            prompt: result.data.prompt,
+            repeat_count: prev[photoId]?.repeat_count || 1,
+            duration_seconds: prev[photoId]?.duration_seconds || 5,
+          },
+        }));
+      } else {
+        alert('✗ ' + (result.error || 'AI 프롬프트 생성에 실패했습니다.'));
+      }
+    } catch (error) {
+      console.error('AI 프롬프트 생성 오류:', error);
+      alert('✗ 서버 오류가 발생했습니다.');
+    } finally {
+      setGeneratingPrompts((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(photoId);
+        return newSet;
+      });
+    }
+  };
+
+  const handleGenerateAllPrompts = async () => {
+    if (!group || isGeneratingAll) return;
+
+    setIsGeneratingAll(true);
+
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) {
+        router.push('/admin');
+        return;
+      }
+
+      let successCount = 0;
+      let failCount = 0;
+
+      // 모든 사진에 대해 병렬로 프롬프트 생성
+      const promises = group.photos.map(async (photo) => {
+        setGeneratingPrompts((prev) => new Set(prev).add(photo.id));
+
+        try {
+          const existingPrompt = selectedTasks[photo.id]?.prompt;
+
+          const response = await fetch('/api/admin/generate-prompt', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              photo_url: photo.url,
+              existing_prompt: existingPrompt?.trim() || undefined,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (result.success && result.data?.prompt) {
+            setSelectedTasks((prev) => ({
+              ...prev,
+              [photo.id]: {
+                prompt: result.data.prompt,
+                repeat_count: prev[photo.id]?.repeat_count || 1,
+                duration_seconds: prev[photo.id]?.duration_seconds || 5,
+              },
+            }));
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } catch (error) {
+          console.error(`사진 ${photo.id} 프롬프트 생성 오류:`, error);
+          failCount++;
+        } finally {
+          setGeneratingPrompts((prev) => {
+            const newSet = new Set(prev);
+            newSet.delete(photo.id);
+            return newSet;
+          });
+        }
+      });
+
+      await Promise.all(promises);
+
+      if (failCount > 0) {
+        alert(`✓ ${successCount}개 성공, ✗ ${failCount}개 실패`);
+      } else {
+        alert(`✓ ${successCount}개의 AI 프롬프트가 생성되었습니다!`);
+      }
+    } catch (error) {
+      console.error('전체 AI 프롬프트 생성 오류:', error);
+      alert('✗ AI 프롬프트 생성 중 오류가 발생했습니다.');
+    } finally {
+      setIsGeneratingAll(false);
     }
   };
 
@@ -1062,6 +1192,14 @@ export default function AdminGroupDetailPage({ params }: Props) {
               <Button variant="outline" size="sm" onClick={handleAddAllWithOne}>
                 전부 1개씩 추가하기
               </Button>
+              <Button
+                variant="default"
+                size="sm"
+                onClick={handleGenerateAllPrompts}
+                disabled={isGeneratingAll}
+              >
+                {isGeneratingAll ? '🤖 AI 생성/개선 중...' : '✨ 모든 사진 AI 생성/개선'}
+              </Button>
             </div>
           </div>
 
@@ -1072,23 +1210,39 @@ export default function AdminGroupDetailPage({ params }: Props) {
                   <img src={photo.url} alt={photo.file_name} className="w-24 h-24 object-cover rounded" />
 
                   <div className="flex-1 space-y-2">
-                    <div>
+                    <div className="space-y-1">
                       <Label>프롬프트</Label>
-                      <Input
-                        placeholder="예: happy family moment"
-                        value={selectedTasks[photo.id]?.prompt || ''}
-                        onChange={(e) =>
-                          setSelectedTasks((prev) => ({
-                            ...prev,
-                            [photo.id]: {
-                              ...prev[photo.id],
-                              prompt: e.target.value,
-                              repeat_count: prev[photo.id]?.repeat_count || 1,
-                              duration_seconds: prev[photo.id]?.duration_seconds || 5,
-                            },
-                          }))
-                        }
-                      />
+                      <div className="relative">
+                        <Input
+                          placeholder="예: happy family moment (또는 빈 상태에서 ✨ 클릭)"
+                          value={selectedTasks[photo.id]?.prompt || ''}
+                          onChange={(e) =>
+                            setSelectedTasks((prev) => ({
+                              ...prev,
+                              [photo.id]: {
+                                ...prev[photo.id],
+                                prompt: e.target.value,
+                                repeat_count: prev[photo.id]?.repeat_count || 1,
+                                duration_seconds: prev[photo.id]?.duration_seconds || 5,
+                              },
+                            }))
+                          }
+                          className="pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleGeneratePrompt(photo.id, photo.url, selectedTasks[photo.id]?.prompt)}
+                          disabled={generatingPrompts.has(photo.id)}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 p-1 hover:bg-neutral-100 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          title={selectedTasks[photo.id]?.prompt ? 'AI로 프롬프트 개선하기' : 'AI로 프롬프트 생성하기'}
+                        >
+                          {generatingPrompts.has(photo.id) ? (
+                            <Loader2 className="w-5 h-5 text-neutral-500 animate-spin" />
+                          ) : (
+                            <Sparkles className="w-5 h-5 text-amber-500" />
+                          )}
+                        </button>
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-2">

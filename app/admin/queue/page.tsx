@@ -324,13 +324,15 @@ export default function AdminQueuePage() {
 
                           {/* Pending 상태만 삭제 가능 */}
                           {item.status === 'pending' && (
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => handleDeleteTask(item.id)}
-                            >
-                              삭제
-                            </Button>
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => handleDeleteTask(item.id)}
+                              >
+                                삭제
+                              </Button>
+                            </div>
                           )}
 
                           {/* Failed 상태 */}
