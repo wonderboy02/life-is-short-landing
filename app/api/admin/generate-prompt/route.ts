@@ -80,29 +80,21 @@ export async function POST(req: NextRequest) {
     // 프롬프트 템플릿 (모드에 따라 다름)
     const promptTemplate = existing_prompt?.trim()
       ? // Enhancement 모드: 기존 프롬프트 개선
-        `Analyze this photo and enhance the following video generation prompt.
+        `You are generating a VIDEO prompt from a photo.
 
-Current prompt: "${existing_prompt}"
+Base idea: "${existing_prompt}"
 
-Enhance it by:
-- Making it more specific and vivid based on what you see in the image
-- Adding relevant visual details and motion suggestions
-- Improving the descriptive language
-- Keeping it concise (under 100 characters)
-- Maintaining the original intent
+Create a dynamic but plausible video by:
+- Choosing ONLY ONE primary motion focus:
+  (camera OR people OR environment)
+- Adding cinematic camera movement ONLY if it fits the photo
+- Describing clear, physical motion that could realistically occur
+- Avoiding impossible actions for the subjects in the photo
 
-IMPORTANT: Return ONLY the enhanced prompt text in ENGLISH, without any explanation or additional text.`
-      : // Generation 모드: 새로운 프롬프트 생성
-        `Analyze this photo and generate a creative, concise prompt for AI video generation.
+Make it lively and cinematic, but still believable for Image-to-Video.
 
-Your prompt should:
-- Describe the main subjects and scene
-- Suggest interesting motion or animation
-- Capture the mood and atmosphere
-- Be specific about visual elements
-- Keep it under 100 characters
-
-IMPORTANT: Return ONLY the prompt text in ENGLISH, without any explanation or additional text.`;
+Keep under 120 characters.
+Return ONLY the video prompt in ENGLISH.`;
 
     // Gemini API 호출
     const result = await model.generateContent([
