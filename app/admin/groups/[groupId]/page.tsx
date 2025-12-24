@@ -913,8 +913,8 @@ export default function AdminGroupDetailPage({ params }: Props) {
                                   </div>
                                 )}
 
-                                {/* Pending 또는 Processing Task */}
-                                {(task.status === 'pending' || task.status === 'processing') && (
+                                {/* Pending Task만 삭제 가능 */}
+                                {task.status === 'pending' && (
                                   <Button
                                     size="sm"
                                     variant="destructive"
