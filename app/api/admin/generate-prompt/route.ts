@@ -58,9 +58,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Gemini AI 초기화
+    // Gemini AI 초기화 (System Instruction 추가)
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-2.0-flash-exp',
+      systemInstruction: `You are an expert I2V (Image-to-Video) prompt writer.
+
+CRITICAL RULES YOU MUST FOLLOW:
+1. DO NOT describe the photo. DO NOT list what you see.
+2. ONLY output a VIDEO GENERATION PROMPT with MOTION and CAMERA MOVEMENT.
+3. Focus on what MOVES, what CHANGES, how the CAMERA MOVES.
+4. Output format: Direct prompt only, no explanations.
+
+Example of WRONG output (photo description):
+"A person standing in a park with trees"
+
+Example of CORRECT output (video prompt):
+"Slow dolly-in on subject, gentle head turn, preserve facial features, cinematic lighting"`,
+    });
 
     // 이미지 데이터 가져오기
     const imageResponse = await fetch(photo_url);
@@ -80,58 +95,76 @@ export async function POST(req: NextRequest) {
     // 프롬프트 템플릿 (모드에 따라 다름)
     const promptTemplate = existing_prompt?.trim()
       ? // Enhancement 모드: 기존 프롬프트 개선
-        `You are a prompt-writer for IMAGE-TO-VIDEO generation (I2V), optimized for high success rate.
+        `⚠️ CRITICAL: This is IMAGE-TO-VIDEO generation. DO NOT describe the photo.
 
-Input:
-- User idea: "${existing_prompt}"
+User's concept: "${existing_prompt}"
 
-Task:
-Create ONE enhanced I2V video prompt in ENGLISH that is dynamic but still plausible for the given photo.
+Your task: Transform this into a DYNAMIC but PLAUSIBLE VIDEO PROMPT optimized for I2V.
 
-Rules (follow strictly):
-1) Be SIMPLE and DIRECT. Do NOT describe the image contents in detail. Focus on MOTION. (I2V)
-2) Choose a Motion Budget:
-   - Pick exactly 1 PRIMARY motion focus: {CAMERA | SUBJECT | ENVIRONMENT}
-   - Pick at most 1 SECONDARY motion focus (optional)
-   - Everything else must be constrained to stay stable.
-3) Use clear shot grammar in this order:
-   [SHOT/FRAMING] + [PRIMARY MOTION] + [SECONDARY MOTION] + [STABILITY CONSTRAINTS] + [STYLE]
-4) Prefer gentle camera moves (smooth dolly-in, slow pan, slight orbit). Avoid complex multi-axis camera moves.
-5) If you choose SUBJECT motion, keep it physically plausible from a still photo:
-   - Favor micro-to-medium actions (turn head slightly, blink, shift weight, raise hand slowly)
-   - Avoid fast actions (running, dancing) unless the photo clearly supports it.
-6) Add explicit constraints to reduce common I2V failures:
-   - preserve identity, preserve facial structure, no warping, no extra limbs/fingers, no jitter/flicker,
-     keep proportions, no text artifacts
-7) Output length target: 120–180 characters (not 100). Short but complete.
-8) Return ONLY the final prompt (no explanations, no lists).
+STRICT RULES:
+1) Choose a MOTION BUDGET:
+   - Select ONE primary motion only:
+     {CAMERA movement | SUBJECT movement | ENVIRONMENT movement}
+   - Optionally add ONE secondary motion
+   - Everything else must remain stable
+2) Avoid risky combinations:
+   - If CAMERA moves → SUBJECT motion must be minimal
+   - If SUBJECT motion is primary → camera must be simple
+   - Avoid facial expression changes unless SUBJECT motion is primary
+3) Prefer physically plausible motions from a still image:
+   - breathing, blinking, slight weight shift, gentle support
+   - slow dolly-in, slow pan, smooth zoom
+4) Always add constraints to reduce I2V failures:
+   preserve identity, preserve facial structure, no warping,
+   no extra limbs or fingers, no jitter or flicker
 
-Now generate the enhanced I2V prompt.`
+FORBIDDEN in output:
+✗ Photo descriptions ("a person standing", "beautiful scenery")
+✗ Static descriptions with no motion
+✗ Lists, explanations, or meta comments
+
+Output format (120–180 chars):
+[Shot / camera] + [primary motion] + [secondary motion] + [constraints], [style]
+
+Example output:
+"Slow dolly-in on family, subtle breathing and blinking, faces remain neutral, preserve identity, soft film grain"
+
+Now write the VIDEO PROMPT based on user's idea "${existing_prompt}":`
       : // Generation 모드: 새로운 프롬프트 생성
-        `You are a prompt-writer for IMAGE-TO-VIDEO generation (I2V), optimized for high success rate.
+        `⚠️ CRITICAL: This is IMAGE-TO-VIDEO generation. DO NOT describe the photo.
 
-Task:
-Analyze this photo and create ONE I2V video prompt in ENGLISH that is dynamic but still plausible.
+Your task: Create a DYNAMIC but PLAUSIBLE VIDEO PROMPT optimized for I2V.
 
-Rules (follow strictly):
-1) Be SIMPLE and DIRECT. Do NOT describe the image contents in detail. Focus on MOTION. (I2V)
-2) Choose a Motion Budget:
-   - Pick exactly 1 PRIMARY motion focus: {CAMERA | SUBJECT | ENVIRONMENT}
-   - Pick at most 1 SECONDARY motion focus (optional)
-   - Everything else must be constrained to stay stable.
-3) Use clear shot grammar in this order:
-   [SHOT/FRAMING] + [PRIMARY MOTION] + [SECONDARY MOTION] + [STABILITY CONSTRAINTS] + [STYLE]
-4) Prefer gentle camera moves (smooth dolly-in, slow pan, slight orbit). Avoid complex multi-axis camera moves.
-5) If you choose SUBJECT motion, keep it physically plausible from a still photo:
-   - Favor micro-to-medium actions (turn head slightly, blink, shift weight, raise hand slowly)
-   - Avoid fast actions (running, dancing) unless the photo clearly supports it.
-6) Add explicit constraints to reduce common I2V failures:
-   - preserve identity, preserve facial structure, no warping, no extra limbs/fingers, no jitter/flicker,
-     keep proportions, no text artifacts
-7) Output length target: 120–180 characters (not 100). Short but complete.
-8) Return ONLY the final prompt (no explanations, no lists).
+STRICT RULES:
+1) Choose a MOTION BUDGET:
+   - Select ONE primary motion only:
+     {CAMERA movement | SUBJECT movement | ENVIRONMENT movement}
+   - Optionally add ONE secondary motion
+   - Everything else must remain stable
+2) Avoid risky combinations:
+   - If CAMERA moves → SUBJECT motion must be minimal
+   - If SUBJECT motion is primary → camera must be simple
+   - Avoid facial expression changes unless SUBJECT motion is primary
+3) Prefer physically plausible motions:
+   - breathing, blinking, slight weight shift
+   - slow dolly-in, slow pan, smooth zoom
+4) Always add constraints:
+   preserve identity, preserve facial structure,
+   no warping, no extra limbs, no jitter or flicker
 
-Now generate the I2V prompt based on what you see in the photo.`;
+FORBIDDEN in output:
+✗ Photo descriptions
+✗ Static scenes
+✗ Lists or explanations
+
+Output format (120–180 chars):
+[Shot / camera] + [primary motion] + [secondary motion] + [constraints], [style]
+
+Example outputs:
+"Slow dolly-in, subject breathes and blinks subtly, face remains neutral, preserve identity, cinematic film grain"
+"Smooth pan across scene, fabric moves gently in wind, subjects remain still, no warping, nostalgic tone"
+
+Now write the VIDEO PROMPT:`;
 
     // Gemini API 호출
     const result = await model.generateContent([
@@ -145,7 +178,10 @@ Now generate the I2V prompt based on what you see in the photo.`;
     ]);
 
     const response = await result.response;
-    const generatedPrompt = response.text().trim();
+    let generatedPrompt = response.text().trim();
+
+    // 따옴표 제거 (앞뒤 쌍따옴표 또는 홑따옴표)
+    generatedPrompt = generatedPrompt.replace(/^["']|["']$/g, '');
 
     return NextResponse.json<ApiResponse>({
       success: true,
