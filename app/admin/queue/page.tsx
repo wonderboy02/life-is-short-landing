@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import ImageViewerModal from '@/components/share/ImageViewerModal';
 import {
+  Dialog,
+  DialogContent,
+} from '@/components/ui/dialog';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -63,6 +67,10 @@ export default function AdminQueuePage() {
 
   // 사진 확대 모달
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  // 영상 재생 모달
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetchQueue();
@@ -202,6 +210,11 @@ export default function AdminQueuePage() {
     }
   };
 
+  const handlePlayVideo = (videoUrl: string) => {
+    setCurrentVideoUrl(videoUrl);
+    setVideoModalOpen(true);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -313,6 +326,13 @@ export default function AdminQueuePage() {
                               <Button
                                 size="sm"
                                 variant="default"
+                                onClick={() => handlePlayVideo(item.generated_video_url!)}
+                              >
+                                영상 보기
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
                                 onClick={() => handleDownloadVideo(item.generated_video_url!, item.id)}
                               >
                                 다운로드
@@ -393,6 +413,27 @@ export default function AdminQueuePage() {
           }}
         />
       )}
+
+      {/* 영상 재생 모달 */}
+      <Dialog open={videoModalOpen} onOpenChange={setVideoModalOpen}>
+        <DialogContent className="max-w-4xl w-full p-0">
+          <div className="relative w-full bg-black">
+            {currentVideoUrl && (
+              <video
+                src={currentVideoUrl}
+                controls
+                autoPlay
+                className="w-full h-auto max-h-[80vh]"
+              />
+            )}
+          </div>
+          <div className="p-4 flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setVideoModalOpen(false)}>
+              닫기
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
