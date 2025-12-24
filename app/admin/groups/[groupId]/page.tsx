@@ -72,9 +72,10 @@ export default function AdminGroupDetailPage({ params }: Props) {
 
   // Task 큐에 추가
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
-  const [selectedTasks, setSelectedTasks] = useState<Record<string, { prompt: string; repeat_count: number }>>({});
+  const [selectedTasks, setSelectedTasks] = useState<Record<string, { prompt: string; repeat_count: number; duration_seconds?: number }>>({});
   const [bulkPrompt, setBulkPrompt] = useState('');
   const [bulkRepeatCount, setBulkRepeatCount] = useState(1);
+  const [bulkDuration, setBulkDuration] = useState<number | undefined>(5); // 기본 5초
 
   // 그룹 Task 현황
   const [groupTasks, setGroupTasks] = useState<GroupTasksResponse | null>(null);
@@ -428,11 +429,12 @@ export default function AdminGroupDetailPage({ params }: Props) {
 
   const handleAddAllWithOne = () => {
     if (!group) return;
-    const newTasks: Record<string, { prompt: string; repeat_count: number }> = {};
+    const newTasks: Record<string, { prompt: string; repeat_count: number; duration_seconds?: number }> = {};
     group.photos.forEach((photo) => {
       newTasks[photo.id] = {
         prompt: 'Generate video',
         repeat_count: 1,
+        duration_seconds: 5, // 기본 5초
       };
     });
     setSelectedTasks(newTasks);
@@ -443,11 +445,12 @@ export default function AdminGroupDetailPage({ params }: Props) {
       alert('프롬프트를 입력하세요.');
       return;
     }
-    const newTasks: Record<string, { prompt: string; repeat_count: number }> = {};
+    const newTasks: Record<string, { prompt: string; repeat_count: number; duration_seconds?: number }> = {};
     group.photos.forEach((photo) => {
       newTasks[photo.id] = {
         prompt: bulkPrompt,
         repeat_count: bulkRepeatCount,
+        duration_seconds: bulkDuration,
       };
     });
     setSelectedTasks(newTasks);
@@ -550,6 +553,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
         photo_id,
         prompt: task.prompt,
         repeat_count: task.repeat_count,
+        duration_seconds: task.duration_seconds,
       }));
 
     if (tasksToAdd.length === 0) {
@@ -976,6 +980,24 @@ export default function AdminGroupDetailPage({ params }: Props) {
                 />
               </div>
               <div className="space-y-1">
+                <Label className="text-xs">영상 길이</Label>
+                <Select
+                  value={bulkDuration?.toString() || '5'}
+                  onValueChange={(value) => setBulkDuration(value === 'default' ? undefined : parseInt(value))}
+                >
+                  <SelectTrigger className="w-28">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">기본 (5초)</SelectItem>
+                    <SelectItem value="3">3초</SelectItem>
+                    <SelectItem value="5">5초</SelectItem>
+                    <SelectItem value="7">7초</SelectItem>
+                    <SelectItem value="10">10초</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
                 <Label className="text-xs">반복 횟수</Label>
                 <Input
                   type="number"
@@ -1016,6 +1038,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
                               ...prev[photo.id],
                               prompt: e.target.value,
                               repeat_count: prev[photo.id]?.repeat_count || 1,
+                              duration_seconds: prev[photo.id]?.duration_seconds || 5,
                             },
                           }))
                         }
@@ -1023,6 +1046,33 @@ export default function AdminGroupDetailPage({ params }: Props) {
                     </div>
 
                     <div className="flex items-center gap-2">
+                      <Label>영상 길이:</Label>
+                      <Select
+                        value={selectedTasks[photo.id]?.duration_seconds?.toString() || '5'}
+                        onValueChange={(value) =>
+                          setSelectedTasks((prev) => ({
+                            ...prev,
+                            [photo.id]: {
+                              ...prev[photo.id],
+                              prompt: prev[photo.id]?.prompt || '',
+                              repeat_count: prev[photo.id]?.repeat_count || 1,
+                              duration_seconds: value === 'default' ? undefined : parseInt(value),
+                            },
+                          }))
+                        }
+                      >
+                        <SelectTrigger className="w-28">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="default">기본 (5초)</SelectItem>
+                          <SelectItem value="3">3초</SelectItem>
+                          <SelectItem value="5">5초</SelectItem>
+                          <SelectItem value="7">7초</SelectItem>
+                          <SelectItem value="10">10초</SelectItem>
+                        </SelectContent>
+                      </Select>
+
                       <Label>반복 횟수:</Label>
                       <Input
                         type="number"
@@ -1037,6 +1087,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
                               ...prev[photo.id],
                               prompt: prev[photo.id]?.prompt || '',
                               repeat_count: parseInt(e.target.value) || 0,
+                              duration_seconds: prev[photo.id]?.duration_seconds || 5,
                             },
                           }))
                         }

@@ -15,6 +15,7 @@ interface NextTaskData {
   prompt: string;
   leased_until: string;
   photo_storage_path: string;
+  frame_num: number | null;
 }
 
 /**
@@ -134,6 +135,7 @@ export async function POST(req: NextRequest) {
       prompt: updatedTask.prompt,
       leased_until: updatedTask.leased_until!,
       photo_storage_path: photoData.storage_path,
+      frame_num: updatedTask.frame_num || null, // null이면 Worker가 기본값 121 사용
     };
 
     return NextResponse.json<ApiResponse<NextTaskData>>({

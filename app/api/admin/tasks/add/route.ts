@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/server';
 import { verifyAdminToken } from '@/lib/auth/jwt';
+import { secondsToFrameNum } from '@/lib/utils/frame';
 import type { ApiResponse } from '@/lib/supabase/types';
 
 interface TaskAddRequest {
@@ -9,6 +10,7 @@ interface TaskAddRequest {
     photo_id: string;
     prompt: string;
     repeat_count: number; // 1 이상
+    duration_seconds?: number; // 영상 길이 (초), 기본값 5초
   }>;
 }
 
@@ -129,11 +131,18 @@ export async function POST(req: NextRequest) {
       photo_id: string;
       prompt: string;
       status: 'pending';
+      frame_num: number | null;
     }> = [];
 
     tasks.forEach((task) => {
       if (!task.photo_id || !task.prompt || task.repeat_count < 1) {
         return; // 유효하지 않은 task는 건너뛰기
+      }
+
+      // duration_seconds를 frame_num으로 변환
+      let frameNum: number | null = null;
+      if (task.duration_seconds !== undefined && task.duration_seconds > 0) {
+        frameNum = secondsToFrameNum(task.duration_seconds);
       }
 
       for (let i = 0; i < task.repeat_count; i++) {
@@ -142,6 +151,7 @@ export async function POST(req: NextRequest) {
           photo_id: task.photo_id,
           prompt: task.prompt,
           status: 'pending',
+          frame_num: frameNum, // null이면 Worker가 기본값 121 사용
         });
       }
     });
