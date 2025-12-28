@@ -20,10 +20,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="antialiased">
-        <GlobalLoader />
-        {children}
-        <ToasterProvider />
+      <body className="antialiased bg-gray-100">
+        <div className="max-w-[428px] mx-auto bg-white min-h-screen shadow-xl">
+          <GlobalLoader />
+          {children}
+          <ToasterProvider />
+        </div>
       </body>
     </html>
   );
