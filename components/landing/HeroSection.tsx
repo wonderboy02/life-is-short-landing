@@ -138,9 +138,9 @@ export default function HeroSection() {
   }, [scrollProgress]);
 
   return (
-    <section ref={heroSectionRef} className="container mx-auto px-4 py-6 sm:px-6">
+    <section ref={heroSectionRef} className="px-4 py-6">
       <HydrationLogger componentName="HeroSection" />
-      <div className="mx-auto max-w-md">
+      <div className="mx-auto">
         {/* Text Content */}
         <div className="mb-16 space-y-6 text-left">
           <h1 className="font-display text-4xl leading-tight font-bold tracking-tight">

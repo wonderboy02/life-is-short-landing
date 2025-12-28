@@ -4,6 +4,8 @@ import { hashPassword } from '@/lib/auth/password';
 import { generateShareCode } from '@/lib/utils/share-code';
 import { createGroupSchema } from '@/lib/validations/schemas';
 import type { ApiResponse, GroupCreateResponse } from '@/lib/supabase/types';
+import { sendSlackNotificationAsync } from '@/lib/slack/webhook';
+import { createGroupCreatedMessage } from '@/lib/slack/messages';
 
 export async function POST(req: NextRequest) {
   try {
@@ -81,6 +83,18 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+
+    // Slack 알림 전송 (비동기, fire-and-forget)
+    sendSlackNotificationAsync(
+      createGroupCreatedMessage({
+        groupId: group.id,
+        shareCode: group.share_code,
+        creatorNickname: group.creator_nickname,
+        contact: group.contact,
+        comment: group.comment,
+        createdAt: group.created_at,
+      })
+    );
 
     return NextResponse.json<ApiResponse<GroupCreateResponse>>({
       success: true,

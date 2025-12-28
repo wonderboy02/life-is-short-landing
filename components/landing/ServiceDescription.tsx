@@ -10,8 +10,8 @@ export default function ServiceDescription() {
 
   return (
     <section className="bg-neutral-100 py-16 md:py-24">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
+      <div className="px-4">
+        <div className="mx-auto">
           <h2 className="font-display mb-8 text-center text-3xl font-bold text-neutral-900 md:mb-12 md:text-4xl">
             저희의 서비스를 소개할게요.
           </h2>

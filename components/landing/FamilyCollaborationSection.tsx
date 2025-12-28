@@ -1,8 +1,8 @@
 export default function FamilyCollaborationSection() {
   return (
     <section className="bg-neutral-50 py-12 md:py-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
+      <div className="px-4">
+        <div className="mx-auto">
           <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-8">
             <div className="mb-6 text-center">
               <h2 className="font-display mb-2 text-2xl font-bold text-neutral-900">
