@@ -12,13 +12,13 @@ export default function ServiceDescription() {
     <section className="bg-neutral-100 py-16 md:py-24">
       <div className="px-4">
         <div className="mx-auto">
-          <h2 className="font-display mb-8 text-center text-3xl font-bold text-neutral-900 md:mb-12 md:text-4xl">
+          <h2 className="font-display mb-8 text-center text-3xl font-bold text-neutral-900 md:mb-12 md:text-2xl">
             저희의 서비스를 소개할게요.
           </h2>
           <div className="rounded-3xl border border-neutral-200 bg-white p-8 text-center shadow-lg md:p-12">
             <div className="space-y-6">
               <motion.p
-                className="leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed"
+                className="leading-relaxed text-neutral-800 md:text-lg md:leading-relaxed"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.8 }}
@@ -29,7 +29,7 @@ export default function ServiceDescription() {
                 어떨까요?
               </motion.p>
               <motion.p
-                className="leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed"
+                className="leading-relaxed text-neutral-800 md:text-lg md:leading-relaxed"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.8 }}
@@ -40,7 +40,7 @@ export default function ServiceDescription() {
                 거예요. 모를 일이지만, 눈물이 차오를 수도 있겠지요.
               </motion.p>
               <motion.p
-                className="leading-relaxed text-neutral-800 md:text-2xl md:leading-relaxed"
+                className="leading-relaxed text-neutral-800 md:text-lg md:leading-relaxed"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.8 }}
@@ -48,11 +48,11 @@ export default function ServiceDescription() {
                 variants={fadeInVariants}
               >
                 저희의 서비스는 앨범 속 부모님의 사진들을
-                <span className="text-lg font-semibold text-neutral-900"> 움직이는 영상</span>
+                <span className="text-lg md:text-xl font-semibold text-neutral-900"> 움직이는 영상</span>
                 으로 변환하여 부모님을 위한 최고의 선물로 빚어드리는 서비스입니다.
               </motion.p>
               <motion.p
-                className="leading-relaxed text-neutral-600 md:text-2xl md:leading-relaxed"
+                className="leading-relaxed text-neutral-600 md:text-lg md:leading-relaxed"
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.8 }}
@@ -60,7 +60,7 @@ export default function ServiceDescription() {
                 variants={fadeInVariants}
               >
                 기술의 한계로 인해{' '}
-                <span className="text-lg font-semibold text-neutral-900">
+                <span className="text-lg md:text-xl font-semibold text-neutral-900">
                   영상이 아닌 사진으로만 추억을 남길 수 있던
                 </span>{' '}
                 부모님들께,
