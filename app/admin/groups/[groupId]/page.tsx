@@ -1014,6 +1014,9 @@ export default function AdminGroupDetailPage({ params }: Props) {
                               <span className="truncate max-w-[200px]" title={task.prompt}>
                                 {task.prompt}
                               </span>
+                              <span className="text-xs text-neutral-500 shrink-0">
+                                {formatDate(task.created_at)}
+                              </span>
 
                               <div className="ml-auto flex items-center gap-2 shrink-0">
                                 {/* 완료된 영상 */}

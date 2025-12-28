@@ -1,8 +1,8 @@
 export default function BrandStory() {
   return (
     <section className="border-y border-neutral-100 bg-neutral-50 py-16 break-keep md:py-24">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl">
+      <div className="px-4">
+        <div className="mx-auto">
           <div className="mb-8 text-center md:mb-12">
             <h2 className="font-display lack-600 mb-6 border-b border-b-5 border-dotted pb-10 text-3xl leading-tight font-bold md:text-4xl">
               Life Is Short's <span className="text-xl">Brand Story</span>

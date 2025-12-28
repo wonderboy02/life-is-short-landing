@@ -1,8 +1,8 @@
 export default function Footer() {
   return (
     <footer className="border-t border-neutral-100 bg-neutral-50">
-      <div className="container mx-auto px-4 py-6 sm:px-6 md:py-16 lg:px-8">
-        <div className="mx-auto max-w-6xl">
+      <div className="px-4 py-6 md:py-16">
+        <div className="mx-auto">
           <div className="mb-8 grid grid-cols-2 gap-8">
             <div>
               <h3 className="font-display mb-3 text-lg font-semibold">Life is Short</h3>

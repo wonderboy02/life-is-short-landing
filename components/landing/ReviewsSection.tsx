@@ -34,7 +34,7 @@ export default function ReviewsSection() {
   return (
     <section className="overflow-hidden py-16 md:py-24">
       <HydrationLogger componentName="ReviewsSection (Marquee)" />
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-4">
         <div className="mb-12 text-center md:mb-16">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-neutral-100 px-4 py-2">
             <span className="text-3xl font-bold text-neutral-900">1,247</span>

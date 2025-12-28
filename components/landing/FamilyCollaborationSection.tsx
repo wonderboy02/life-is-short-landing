@@ -1,16 +1,14 @@
 export default function FamilyCollaborationSection() {
   return (
     <section className="bg-neutral-50 py-12 md:py-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl">
+      <div className="px-4">
+        <div className="mx-auto">
           <div className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:p-8">
             <div className="mb-6 text-center">
               <h2 className="font-display mb-2 text-2xl font-bold text-neutral-900">
-                옛날 사진을 몇장 안가지고 계시다고요?
+                옛날 사진이 부족하신가요?
               </h2>
-              <p className="text-base text-neutral-600">
-                링크 하나로 가족 모두가 함께 사진을 모을 수 있어요
-              </p>
+              <p className="text-base text-neutral-600">가족 모두가 함께 모아보세요!</p>
             </div>
 
             {/* Share Link Example */}

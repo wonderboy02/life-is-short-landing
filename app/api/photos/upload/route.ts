@@ -3,6 +3,8 @@ import { supabase } from '@/lib/supabase/client';
 import { verifyToken } from '@/lib/auth/jwt';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
 import type { ApiResponse, PhotoUploadResponse } from '@/lib/supabase/types';
+import { sendSlackNotificationAsync } from '@/lib/slack/webhook';
+import { createPhotoUploadedMessage } from '@/lib/slack/messages';
 
 export async function POST(req: NextRequest) {
   try {
@@ -134,6 +136,20 @@ export async function POST(req: NextRequest) {
     const { data: urlData } = supabase.storage
       .from('group-photos')
       .getPublicUrl(storagePath);
+
+    // Slack 알림 전송 (비동기, fire-and-forget)
+    sendSlackNotificationAsync(
+      createPhotoUploadedMessage({
+        photoId: photo.id,
+        groupId: photo.group_id,
+        uploaderNickname: photo.uploader_nickname,
+        fileName: photo.file_name,
+        fileSize: photo.file_size,
+        mimeType: photo.mime_type,
+        description: photo.description || undefined,
+        uploadedAt: photo.created_at,
+      })
+    );
 
     return NextResponse.json<ApiResponse<PhotoUploadResponse>>({
       success: true,

@@ -3,8 +3,8 @@ import { ArrowDown } from 'lucide-react';
 export default function ProcessSection() {
   return (
     <section className="border-y border-neutral-100 bg-white py-16 md:py-24">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
+      <div className="px-4">
+        <div className="mx-auto">
           <div className="mb-12 text-left">
             <h2 className="font-display mb-4 text-3xl font-bold">
               사진들을 폰으로 찍어 올려주시기만 하면 끝이에요
