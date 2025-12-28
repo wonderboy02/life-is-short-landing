@@ -267,6 +267,13 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
+      {/* 큐 현황 버튼 */}
+      <div className="flex justify-end">
+        <Button variant="outline" onClick={() => router.push('/admin/queue')}>
+          전체 큐 현황 보기
+        </Button>
+      </div>
+
       {/* 검색 */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>

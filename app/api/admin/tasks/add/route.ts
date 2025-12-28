@@ -132,7 +132,12 @@ export async function POST(req: NextRequest) {
       prompt: string;
       status: 'pending';
       frame_num: number | null;
+      created_at: string;
     }> = [];
+
+    // 시작 시간 (현재 시간)
+    const baseTime = new Date();
+    let timeOffset = 0; // 밀리초 단위
 
     tasks.forEach((task) => {
       if (!task.photo_id || !task.prompt || task.repeat_count < 1) {
@@ -146,13 +151,19 @@ export async function POST(req: NextRequest) {
       }
 
       for (let i = 0; i < task.repeat_count; i++) {
+        // 각 item마다 100ms(0.1초)씩 시간 차이를 둠
+        const itemTime = new Date(baseTime.getTime() + timeOffset);
+
         itemsToInsert.push({
           group_id,
           photo_id: task.photo_id,
           prompt: task.prompt,
           status: 'pending',
           frame_num: frameNum, // null이면 Worker가 기본값 121 사용
+          created_at: itemTime.toISOString(),
         });
+
+        timeOffset += 100; // 100ms(0.1초) 증가
       }
     });
 
