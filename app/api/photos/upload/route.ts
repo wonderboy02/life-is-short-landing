@@ -137,11 +137,19 @@ export async function POST(req: NextRequest) {
       .from('group-photos')
       .getPublicUrl(storagePath);
 
+    // 그룹 정보 조회 (Slack 알림용)
+    const { data: group } = await supabase
+      .from('groups')
+      .select('share_code')
+      .eq('id', photo.group_id)
+      .single();
+
     // Slack 알림 전송 (비동기, fire-and-forget)
     sendSlackNotificationAsync(
       createPhotoUploadedMessage({
         photoId: photo.id,
         groupId: photo.group_id,
+        shareCode: group?.share_code,
         uploaderNickname: photo.uploader_nickname,
         fileName: photo.file_name,
         fileSize: photo.file_size,
