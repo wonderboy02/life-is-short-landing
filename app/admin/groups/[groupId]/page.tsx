@@ -76,7 +76,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState<Record<string, { prompt: string; repeat_count: number; duration_seconds?: number }>>({});
   const [bulkPrompt, setBulkPrompt] = useState('');
-  const [bulkRepeatCount, setBulkRepeatCount] = useState(1);
+  const [bulkRepeatCount, setBulkRepeatCount] = useState('1'); // 문자열로 관리
   const [bulkDuration, setBulkDuration] = useState<number | undefined>(5); // 기본 5초
   const [isAddingTasks, setIsAddingTasks] = useState(false); // 중복 클릭 방지
 
@@ -459,7 +459,7 @@ export default function AdminGroupDetailPage({ params }: Props) {
     group.photos.forEach((photo) => {
       newTasks[photo.id] = {
         prompt: bulkPrompt,
-        repeat_count: bulkRepeatCount,
+        repeat_count: parseInt(bulkRepeatCount) || 1, // 문자열을 숫자로 변환
         duration_seconds: bulkDuration,
       };
     });
@@ -1184,7 +1184,13 @@ export default function AdminGroupDetailPage({ params }: Props) {
                   max={10}
                   className="w-20"
                   value={bulkRepeatCount}
-                  onChange={(e) => setBulkRepeatCount(parseInt(e.target.value) || 1)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    // 빈 문자열이거나 유효한 숫자인 경우만 업데이트
+                    if (val === '' || (!isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 10)) {
+                      setBulkRepeatCount(val);
+                    }
+                  }}
                 />
               </div>
               <Button variant="default" onClick={handleApplyBulkSettings}>
@@ -1282,18 +1288,22 @@ export default function AdminGroupDetailPage({ params }: Props) {
                         min={0}
                         max={10}
                         className="w-20"
-                        value={selectedTasks[photo.id]?.repeat_count || 0}
-                        onChange={(e) =>
-                          setSelectedTasks((prev) => ({
-                            ...prev,
-                            [photo.id]: {
-                              ...prev[photo.id],
-                              prompt: prev[photo.id]?.prompt || '',
-                              repeat_count: parseInt(e.target.value) || 0,
-                              duration_seconds: prev[photo.id]?.duration_seconds || 5,
-                            },
-                          }))
-                        }
+                        value={selectedTasks[photo.id]?.repeat_count ?? ''} // undefined이거나 없으면 빈 문자열
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          // 빈 문자열이거나 유효한 숫자(0~10)인 경우만 업데이트
+                          if (val === '' || (!isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 10)) {
+                            setSelectedTasks((prev) => ({
+                              ...prev,
+                              [photo.id]: {
+                                ...prev[photo.id],
+                                prompt: prev[photo.id]?.prompt || '',
+                                repeat_count: val === '' ? 0 : parseInt(val, 10),
+                                duration_seconds: prev[photo.id]?.duration_seconds || 5,
+                              },
+                            }))
+                          }
+                        }}
                       />
                       <span className="text-sm text-neutral-500">(0 = 추가 안 함)</span>
                     </div>
