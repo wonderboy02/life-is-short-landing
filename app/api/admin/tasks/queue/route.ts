@@ -62,6 +62,45 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // Stale task cleanup (leased_until 만료된 processing task를 failed로 변경)
+    try {
+      // 1. Stale task 조회
+      const { data: staleTasks, error: findStaleError } = await supabaseAdmin
+        .from('video_items')
+        .select('id, worker_id, prompt, processing_started_at')
+        .eq('status', 'processing')
+        .lt('leased_until', new Date().toISOString())
+        .not('leased_until', 'is', null);
+
+      if (findStaleError) {
+        console.error('[Cleanup] Stale task 조회 실패:', findStaleError);
+      } else if (staleTasks && staleTasks.length > 0) {
+        // 2. Stale task를 failed로 업데이트
+        const { error: updateStaleError } = await supabaseAdmin
+          .from('video_items')
+          .update({
+            status: 'failed',
+            error_message: 'Task timeout: No heartbeat received for 5+ minutes',
+            processing_completed_at: new Date().toISOString(),
+            leased_until: null,
+            worker_id: null,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('status', 'processing')
+          .lt('leased_until', new Date().toISOString())
+          .not('leased_until', 'is', null);
+
+        if (updateStaleError) {
+          console.error('[Cleanup] Stale task 업데이트 실패:', updateStaleError);
+        } else {
+          console.log(`[Cleanup] ${staleTasks.length}개 stale task를 failed로 변경`);
+        }
+      }
+    } catch (cleanupError) {
+      console.error('[Cleanup] 예상치 못한 오류:', cleanupError);
+      // 에러가 발생해도 큐 조회는 계속 진행
+    }
+
     // Query 파라미터 추출
     const { searchParams } = new URL(req.url);
     const groupIdFilter = searchParams.get('group_id');
