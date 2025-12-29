@@ -55,56 +55,9 @@ function formatDateTime(isoDate: string): string {
  * 그룹 생성 알림 메시지를 생성합니다.
  */
 export function createGroupCreatedMessage(data: GroupCreatedData): SlackMessage {
+  const time = formatDateTime(data.createdAt);
   return {
-    text: `🎉 새로운 그룹이 생성되었습니다! (${data.creatorNickname})`,
-    blocks: [
-      {
-        type: 'header',
-        text: {
-          type: 'plain_text',
-          text: '🎉 새로운 그룹 생성',
-        },
-      },
-      {
-        type: 'section',
-        fields: [
-          {
-            type: 'mrkdwn',
-            text: `*생성자:*\n${data.creatorNickname}`,
-          },
-          {
-            type: 'mrkdwn',
-            text: `*Share Code:*\n\`${data.shareCode}\``,
-          },
-          {
-            type: 'mrkdwn',
-            text: `*연락처:*\n${data.contact}`,
-          },
-          {
-            type: 'mrkdwn',
-            text: `*그룹 ID:*\n\`${data.groupId}\``,
-          },
-        ],
-      },
-      {
-        type: 'section',
-        fields: [
-          {
-            type: 'mrkdwn',
-            text: `*코멘트:*\n${data.comment || '(없음)'}`,
-          },
-        ],
-      },
-      {
-        type: 'context',
-        elements: [
-          {
-            type: 'mrkdwn',
-            text: `⏰ ${formatDateTime(data.createdAt)}`,
-          },
-        ],
-      },
-    ],
+    text: `*그룹 생성*\n${data.creatorNickname} / ${data.contact} / ${data.shareCode} / ${data.groupId} / ${time}`,
   };
 }
 
@@ -112,81 +65,8 @@ export function createGroupCreatedMessage(data: GroupCreatedData): SlackMessage 
  * 사진 업로드 알림 메시지를 생성합니다.
  */
 export function createPhotoUploadedMessage(data: PhotoUploadedData): SlackMessage {
-  const fields = [
-    {
-      type: 'mrkdwn',
-      text: `*업로더:*\n${data.uploaderNickname}`,
-    },
-    {
-      type: 'mrkdwn',
-      text: `*그룹 ID:*\n\`${data.groupId}\``,
-    },
-    {
-      type: 'mrkdwn',
-      text: `*파일명:*\n${data.fileName}`,
-    },
-    {
-      type: 'mrkdwn',
-      text: `*파일 크기:*\n${formatFileSize(data.fileSize)}`,
-    },
-    {
-      type: 'mrkdwn',
-      text: `*파일 타입:*\n${data.mimeType}`,
-    },
-    {
-      type: 'mrkdwn',
-      text: `*사진 ID:*\n\`${data.photoId}\``,
-    },
-  ];
-
-  // Share Code가 있으면 추가
-  if (data.shareCode) {
-    fields.splice(2, 0, {
-      type: 'mrkdwn',
-      text: `*Share Code:*\n\`${data.shareCode}\``,
-    });
-  }
-
-  const blocks: SlackMessage['blocks'] = [
-    {
-      type: 'header',
-      text: {
-        type: 'plain_text',
-        text: '📸 새로운 사진 업로드',
-      },
-    },
-    {
-      type: 'section',
-      fields,
-    },
-  ];
-
-  // 설명이 있으면 추가
-  if (data.description) {
-    blocks.push({
-      type: 'section',
-      fields: [
-        {
-          type: 'mrkdwn',
-          text: `*설명:*\n${data.description}`,
-        },
-      ],
-    });
-  }
-
-  // 시간 정보
-  blocks.push({
-    type: 'context',
-    elements: [
-      {
-        type: 'mrkdwn',
-        text: `⏰ ${formatDateTime(data.uploadedAt)}`,
-      },
-    ],
-  });
-
+  const time = formatDateTime(data.uploadedAt);
   return {
-    text: `📸 새로운 사진이 업로드되었습니다! (${data.uploaderNickname})`,
-    blocks,
+    text: `📸 *사진 업로드*\n${data.uploaderNickname} / ${data.shareCode || 'N/A'} / ${data.groupId} / ${time}`,
   };
 }
