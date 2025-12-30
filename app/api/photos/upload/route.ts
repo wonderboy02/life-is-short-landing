@@ -79,10 +79,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // 그룹 정보 조회
+    const { data: group, error: groupError } = await supabase
+      .from('groups')
+      .select('creator_nickname, share_code')
+      .eq('id', payload.groupId)
+      .single();
+
+    if (groupError || !group) {
+      return NextResponse.json<ApiResponse>(
+        {
+          success: false,
+          error: '그룹 정보를 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
+    }
+
     // 파일명 생성
     const photoId = crypto.randomUUID();
     const extension = file.name.split('.').pop() || 'jpg';
     const storagePath = `${payload.groupId}/${photoId}_original.${extension}`;
+
+    // 다운로드용 파일명 생성: {닉네임}_{코드}_{photoId앞8자리}.{확장자}
+    const sanitizedNickname = group.creator_nickname.replace(/[^a-zA-Z0-9가-힣]/g, '');
+    const shortCode = group.share_code || payload.groupId.substring(0, 6);
+    const shortId = photoId.substring(0, 8);
+    const downloadFileName = `${sanitizedNickname}_${shortCode}_${shortId}.${extension}`;
 
     // Supabase Storage에 업로드
     const { error: uploadError } = await supabase.storage
@@ -110,7 +133,7 @@ export async function POST(req: NextRequest) {
         id: photoId,
         group_id: payload.groupId,
         storage_path: storagePath,
-        file_name: file.name,
+        file_name: downloadFileName,
         file_size: file.size,
         mime_type: file.type,
         uploader_nickname: uploaderNickname.trim(),
@@ -137,19 +160,12 @@ export async function POST(req: NextRequest) {
       .from('group-photos')
       .getPublicUrl(storagePath);
 
-    // 그룹 정보 조회 (Slack 알림용)
-    const { data: group } = await supabase
-      .from('groups')
-      .select('share_code')
-      .eq('id', photo.group_id)
-      .single();
-
     // Slack 알림 전송 (비동기, fire-and-forget)
     sendSlackNotificationAsync(
       createPhotoUploadedMessage({
         photoId: photo.id,
         groupId: photo.group_id,
-        shareCode: group?.share_code,
+        shareCode: group.share_code,
         uploaderNickname: photo.uploader_nickname,
         fileName: photo.file_name,
         fileSize: photo.file_size,
