@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/server';
 import { verifyAdminToken } from '@/lib/auth/jwt';
 import type { ApiResponse } from '@/lib/supabase/types';
+import { extractStoragePathFromPresignedUrl } from '@/lib/utils/storage-path';
 
 /**
  * Admin: Task 삭제
@@ -38,7 +39,53 @@ export async function DELETE(
 
     const { taskId } = await params;
 
-    // Task 존재 확인 및 삭제
+    console.log(`[Task 삭제 시작] ID: ${taskId}`);
+
+    // Task 조회 (비디오 URL 가져오기)
+    const { data: task, error: fetchError } = await supabaseAdmin
+      .from('video_items')
+      .select('generated_video_url')
+      .eq('id', taskId)
+      .single();
+
+    if (fetchError) {
+      console.error('Task 조회 오류:', fetchError);
+      return NextResponse.json<ApiResponse>(
+        {
+          success: false,
+          error: 'Task를 찾을 수 없습니다.',
+        },
+        { status: 404 }
+      );
+    }
+
+    // Storage에서 비디오 파일 삭제
+    if (task?.generated_video_url) {
+      const storagePath = extractStoragePathFromPresignedUrl(task.generated_video_url);
+
+      if (storagePath) {
+        console.log(`[Storage 삭제 시도] 파일: ${storagePath}`);
+        const { error: storageError } = await supabaseAdmin.storage
+          .from('generated-videos')
+          .remove([storagePath]);
+
+        if (storageError) {
+          console.error('✗ 비디오 Storage 삭제 실패:', storageError);
+          // Storage 삭제 실패해도 계속 진행
+        } else {
+          console.log(`✓ Storage 파일 삭제 완료: ${storagePath}`);
+        }
+      } else {
+        console.warn('비디오 URL에서 storage path를 추출할 수 없습니다:', {
+          taskId,
+          url: task.generated_video_url,
+        });
+      }
+    } else {
+      console.log('[Storage 삭제 스킵] 비디오 URL이 없음 (pending/failed task)');
+    }
+
+    // DB 레코드 삭제
     const { error: deleteError } = await supabaseAdmin
       .from('video_items')
       .delete()
@@ -54,6 +101,8 @@ export async function DELETE(
         { status: 500 }
       );
     }
+
+    console.log(`✓ Task 삭제 완료: ${taskId}`);
 
     return NextResponse.json<ApiResponse>({
       success: true,

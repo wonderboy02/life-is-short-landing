@@ -913,7 +913,6 @@ export default function AdminGroupDetailPage({ params }: Props) {
                   {!selectionMode && (
                     <div
                       className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 p-2"
-                      onClick={(e) => e.stopPropagation()}
                     >
                       {/* 업로더 정보 */}
                       <div className="text-white text-xs text-center mb-2">
