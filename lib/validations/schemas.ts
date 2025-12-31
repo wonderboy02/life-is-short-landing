@@ -63,6 +63,6 @@ export const ALLOWED_MIME_TYPES = [
 ] as const;
 
 /**
- * 최대 파일 크기 (10MB)
+ * 최대 파일 크기 (20MB)
  */
-export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+export const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB in bytes

@@ -7,6 +7,7 @@ interface PhotoUploadClientProps {
   token: string;
   onUploadSuccess: () => void;
   onPhotoUploaded?: () => void;
+  onReady?: (triggerFileSelect: () => void) => void;
 }
 
 export default function PhotoUploadClient({
@@ -14,6 +15,7 @@ export default function PhotoUploadClient({
   token,
   onUploadSuccess,
   onPhotoUploaded,
+  onReady,
 }: PhotoUploadClientProps) {
   return (
     <PhotoUpload
@@ -21,6 +23,7 @@ export default function PhotoUploadClient({
       token={token}
       onUploadSuccess={onUploadSuccess}
       onPhotoUploaded={onPhotoUploaded}
+      onReady={onReady}
     />
   );
 }

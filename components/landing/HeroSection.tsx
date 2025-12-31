@@ -4,7 +4,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import HydrationLogger from './HydrationLogger';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onShowCTA?: (show: boolean) => void;
+}
+
+export default function HeroSection({ onShowCTA }: HeroSectionProps) {
   // Hero animation states
   const [isAnimationComplete, setIsAnimationComplete] = useState(false);
   const [showProcessing, setShowProcessing] = useState(false);
@@ -23,14 +27,6 @@ export default function HeroSection() {
 
   // 수동 스크롤 계산 (state로 관리)
   const [scrollProgress, setScrollProgress] = useState(0);
-
-  // Scroll to pricing section
-  const scrollToPricing = () => {
-    const pricingSection = document.getElementById('pricing');
-    if (pricingSection) {
-      pricingSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -116,8 +112,9 @@ export default function HeroSection() {
     if (showVideo) {
       setShowCTA(true);
       setCtaOpacity(1);
+      onShowCTA?.(true);
     }
-  }, [showVideo]);
+  }, [showVideo, onShowCTA]);
 
   // Show photo ghost 5 seconds after video appears
   useEffect(() => {
@@ -150,7 +147,7 @@ export default function HeroSection() {
           </h1>
           <p className="text-base text-pretty text-neutral-600">
             부모님의 청춘 시절, 그날에 멈춰버린 사진이<br></br>
-            최신 AI 와 전문가의 손길로 움직이는 영상이 되어 태어납니다.
+            최신 AI와 전문가의 손길로 움직이는 영상이 되어 태어납니다.
           </p>
         </div>
 
@@ -325,39 +322,31 @@ export default function HeroSection() {
             transition: 'opacity 0.5s ease-in-out',
           }}
         >
-          저희 팀이 직접 제작했던 예시 영상입니다
+          저희 팀이 직접 제작한 예시 영상입니다
         </p>
 
         {/* CTA Card - always rendered for space, opacity controlled */}
         <div
-          className="mx-auto mt-8"
+          className="mx-auto mt-8 mb-8"
           style={{
             maxWidth: '350px',
             opacity: ctaOpacity,
             transition: 'opacity 0.5s ease-in-out',
           }}
         >
-          <div className="w-full space-y-6 rounded-2xl bg-white p-8 shadow-lg">
+          <div className="w-full space-y-4 rounded-2xl bg-white p-6 shadow-lg">
             {/* Headline */}
             <h2 className="text-center text-2xl leading-tight font-bold">
-              AI와 함께, 부모님의 옛 사진들을 움직이는 영상으로 만들어드립니다.
+              부모님의 옛 사진들을
+              <br />
+              감동적인 1분 영상으로.
             </h2>
 
             {/* Value Props */}
             <div className="space-y-1 text-center text-neutral-600">
-              <p className="text">구글의 영상화 AI + 전문가의 편집</p>
-              <p className="text">하루 만에 완료되는 작업</p>
+              <p className="text">구글의 최신 영상화 AI + 전문가의 편집</p>
               <p className="text">세상에 단 하나뿐인 감동적인 선물</p>
             </div>
-
-            {/* CTA Button */}
-            <button
-              onClick={scrollToPricing}
-              className="w-full rounded-xl bg-neutral-900 py-4 text-lg text-white transition-colors hover:bg-neutral-800 active:bg-neutral-700"
-              style={{ minHeight: '56px' }}
-            >
-              지금 바로 신청하기
-            </button>
           </div>
         </div>
       </div>

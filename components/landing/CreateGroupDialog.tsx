@@ -117,6 +117,10 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
       // 앨범 생성 직후임을 표시하는 플래그 저장
       localStorage.setItem('album-just-created', result.data.shareCode);
 
+      // 생성자 닉네임을 localStorage에 저장 (사진 업로드 시 자동 사용)
+      const nicknameKey = `photo-uploader-nickname-${result.data.id}`;
+      localStorage.setItem(nicknameKey, data.creatorNickname);
+
       router.push(`/share/${result.data.shareCode}`);
     } catch (error) {
       console.error('앨범 생성 오류:', error);

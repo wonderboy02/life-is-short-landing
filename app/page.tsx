@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Header from '@/components/landing/Header';
 import Footer from '@/components/landing/Footer';
@@ -8,6 +11,7 @@ import BrandStory from '@/components/landing/BrandStory';
 import PricingWithDialog from '@/components/landing/PricingWithDialog';
 import PageLoadLogger from '@/components/landing/PageLoadLogger';
 import FamilyCollaborationSection from '@/components/landing/FamilyCollaborationSection';
+import FixedBottomBar from '@/components/FixedBottomBar';
 
 // Heavy components - lazy load
 const ReviewsSection = dynamic(() => import('@/components/landing/ReviewsSection'), {
@@ -16,6 +20,18 @@ const ReviewsSection = dynamic(() => import('@/components/landing/ReviewsSection
 
 export default function Home() {
   const isBetaTest = process.env.NEXT_PUBLIC_IS_BETA_TEST === 'true';
+  const [showBottomBar, setShowBottomBar] = useState(false);
+
+  const handleShowCTA = (show: boolean) => {
+    setShowBottomBar(show);
+  };
+
+  const scrollToPricing = () => {
+    const pricingSection = document.getElementById('pricing');
+    if (pricingSection) {
+      pricingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -24,7 +40,7 @@ export default function Home() {
 
       <main className="pt-16">
         {/* Hero Section - Interactive */}
-        <HeroSection />
+        <HeroSection onShowCTA={handleShowCTA} />
 
         {/* Service Description - Static */}
         <ServiceDescription />
@@ -46,6 +62,16 @@ export default function Home() {
       </main>
 
       <Footer />
+
+      {/* Fixed Bottom Bar - Only show when CTA is visible */}
+      {showBottomBar && (
+        <FixedBottomBar
+          timerText="00:05:30"
+          buttonText="지금 바로 신청하기"
+          onButtonClick={scrollToPricing}
+          showTimer={false}
+        />
+      )}
     </div>
   );
 }
