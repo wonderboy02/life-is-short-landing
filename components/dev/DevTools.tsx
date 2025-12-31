@@ -76,7 +76,7 @@ export default function DevTools({
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 active:scale-95 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110"
+          className="fixed bottom-6 right-6 z-[9999] w-14 h-14 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 active:scale-95 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110"
           title="개발 도구 열기"
         >
           <Settings className="w-6 h-6 animate-spin" style={{ animationDuration: '3s' }} />
@@ -85,7 +85,7 @@ export default function DevTools({
 
       {/* 개발 도구 패널 */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-80 bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden">
+        <div className="fixed bottom-6 right-6 z-[9999] w-80 bg-white rounded-2xl shadow-2xl border border-neutral-200 overflow-hidden">
           {/* 헤더 */}
           <div className="bg-purple-600 text-white px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">

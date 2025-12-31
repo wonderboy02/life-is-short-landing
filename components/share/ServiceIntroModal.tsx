@@ -1,8 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Upload, Palette, Video, ChevronDown } from 'lucide-react';
-import { formatNameWithParticle } from '@/lib/utils';
 
 interface ServiceIntroProps {
   onScrollToMain: () => void;
@@ -93,18 +91,8 @@ export default function ServiceIntro({
             </div>
           </div>
 
-          {/* CTA 버튼 */}
-          <div className="pt-2">
-            <Button
-              onClick={onScrollToMain}
-              className="h-14 w-full rounded-xl bg-white text-base font-semibold text-neutral-900 hover:bg-neutral-100"
-            >
-              {formatNameWithParticle(creatorNickname)} 함께 사진 모으기
-            </Button>
-          </div>
-
-          {/* 스크롤 힌트 - 버튼 바로 아래 */}
-          <div className="flex justify-center pt-4">
+          {/* 스크롤 힌트 */}
+          <div className="flex justify-center pt-8">
             <button
               onClick={onScrollToMain}
               className="flex flex-col items-center gap-1 text-white/60 transition-colors hover:text-white/90"

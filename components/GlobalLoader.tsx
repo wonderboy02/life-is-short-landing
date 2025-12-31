@@ -70,7 +70,7 @@ export default function GlobalLoader() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-white transition-opacity duration-300"
+      className="fixed inset-0 z-[8000] flex items-center justify-center bg-white transition-opacity duration-300"
       style={{
         opacity: isLoading ? 1 : 0,
         pointerEvents: isLoading ? 'auto' : 'none',

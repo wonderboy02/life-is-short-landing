@@ -37,8 +37,9 @@ export default function ProcessSection() {
                     훼손된 사진, 빛바랜 사진도 문제 없어요. 휴대폰 카메라로 찍어서 보내주시기만 하면
                     돼요.
                   </p>
-                  <p className="text-sm leading-5 break-keep text-neutral-600 pt-2">
-                    <span className="font-semibold text-neutral-900">사진이 없으신가요?</span> 링크를 가족들과 공유해서 함께 사진을 모아보세요.
+                  <p className="pt-2 text-sm leading-5 break-keep text-neutral-600">
+                    <span className="font-semibold text-neutral-900">사진이 없으신가요?</span>{' '}
+                    링크를 가족들과 공유해서 함께 사진을 모아보세요.
                   </p>
                 </div>
               </div>
@@ -103,8 +104,7 @@ export default function ProcessSection() {
                     복원된 사진들로 정성껏 영상을 빚어내요
                   </h3>
                   <p className="text-sm leading-5 text-neutral-600">
-                    Google 사의 최고 성능 영상 AI 엔진으로 영상화 작업을 진행해요. 결과물이
-                    만족스러울 때까지, 시행착오를 아끼지 않아요.
+                    Google의 Veo3 등 최신 AI를 모두 동시에 적용하여 아름다운 순간을 재현해요.
                   </p>
                 </div>
               </div>
@@ -130,7 +130,7 @@ export default function ProcessSection() {
                     영상과 복원된 사진 모두 원본 화질로 보내드려요
                   </h3>
                   <p className="text-sm leading-5 text-neutral-600">
-                    작업은 하루 정도 소요돼요. 완성된 영상과 복원된 사진들을 함께 원본 화질로
+                    작업은 2~3일 정도 소요돼요. 완성된 영상과 복원된 사진들을 함께 원본 화질로
                     보내드릴게요.
                   </p>
                 </div>

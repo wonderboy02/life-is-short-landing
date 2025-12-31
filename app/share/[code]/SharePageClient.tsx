@@ -8,6 +8,7 @@ import ShareLanding from '@/components/share/ShareLanding';
 import ServiceIntro from '@/components/share/ServiceIntroModal';
 import FirstVisitGuideModal from '@/components/share/FirstVisitGuideModal';
 import DevTools from '@/components/dev/DevTools';
+import FixedBottomBar from '@/components/FixedBottomBar';
 import { usePhotos } from '@/hooks/use-photos';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
 
@@ -39,6 +40,7 @@ export default function SharePageClient({
   const [shouldScrollAfterModalClose, setShouldScrollAfterModalClose] = useState(false);
   const [shareLandingMounted, setShareLandingMounted] = useState(false);
   const { photos, isLoading, refetch } = usePhotos(groupId, initialPhotos);
+  const triggerFileSelectRef = useRef<(() => void) | null>(null);
 
   // 영상 제작 상태
   const [videoStatus, setVideoStatus] = useState<'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null>(initialVideoStatus);
@@ -51,7 +53,6 @@ export default function SharePageClient({
   // Refs for smooth scrolling
   const shareLandingNodeRef = useRef<HTMLDivElement | null>(null);
   const photoGridRef = useRef<HTMLDivElement>(null);
-  const photoUploadRef = useRef<HTMLDivElement>(null);
 
   // 공통 스크롤 함수 - ShareLanding의 상단을 헤더 바로 아래에 위치시킴
   const scrollToShareLanding = useCallback(() => {
@@ -160,8 +161,11 @@ export default function SharePageClient({
     photoGridRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const scrollToUpload = () => {
-    photoUploadRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const handleAddPhotos = () => {
+    // 파일 선택 다이얼로그 열기
+    if (triggerFileSelectRef.current) {
+      triggerFileSelectRef.current();
+    }
   };
 
   // 영상 제작 요청 핸들러
@@ -244,7 +248,6 @@ export default function SharePageClient({
           photoCount={testMode ? testPhotoCount : photos.length}
           recentPhotos={photos.slice(0, 6)}
           onViewPhotos={scrollToPhotos}
-          onAddPhotos={scrollToUpload}
           onRequestVideo={handleRequestVideo}
           videoStatus={videoStatus}
           createdAt={
@@ -258,10 +261,7 @@ export default function SharePageClient({
       </div>
 
       {/* 사진 업로드 섹션 - Grid보다 먼저 배치 */}
-      <section
-        ref={photoUploadRef}
-        className="bg-white py-12 scroll-mt-16"
-      >
+      <section className="bg-white py-12 scroll-mt-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
             <PhotoUploadClient
@@ -269,6 +269,9 @@ export default function SharePageClient({
               token={token}
               onUploadSuccess={handleUploadSuccess}
               onPhotoUploaded={handlePhotoUploaded}
+              onReady={(trigger) => {
+                triggerFileSelectRef.current = trigger;
+              }}
             />
           </div>
         </div>
@@ -277,7 +280,7 @@ export default function SharePageClient({
       {/* 사진 그리드 섹션 */}
       <section
         ref={photoGridRef}
-        className="bg-neutral-50 py-12 scroll-mt-16"
+        className="bg-neutral-50 py-12 pb-28 scroll-mt-16"
       >
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-4xl mx-auto">
@@ -288,6 +291,14 @@ export default function SharePageClient({
           </div>
         </div>
       </section>
+
+      {/* Fixed Bottom Bar */}
+      <FixedBottomBar
+        timerText="00:05:30"
+        buttonText="사진 추가하기"
+        onButtonClick={handleAddPhotos}
+        showTimer={false}
+      />
     </>
   );
 }

@@ -2,10 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { flushSync } from 'react-dom';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Upload, X, Loader2, Edit2, CheckCircle2, XCircle, MoreVertical } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { X, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
 import UploaderDialog from './UploaderDialog';
@@ -26,6 +25,7 @@ interface PhotoUploadProps {
   token: string;
   onUploadSuccess?: () => void;
   onPhotoUploaded?: () => void; // 개별 사진 완료 시 호출
+  onReady?: (triggerFileSelect: () => void) => void; // 파일 선택 트리거 함수 전달
 }
 
 export default function PhotoUpload({
@@ -33,6 +33,7 @@ export default function PhotoUpload({
   token,
   onUploadSuccess,
   onPhotoUploaded,
+  onReady,
 }: PhotoUploadProps) {
   const [uploaderNickname, setUploaderNickname] = useState('');
   const [showNicknameDialog, setShowNicknameDialog] = useState(false);
@@ -65,6 +66,16 @@ export default function PhotoUpload({
     };
   }, [selectedFiles]);
 
+  // 파일 선택 트리거 함수를 부모에게 전달 (한 번만 실행)
+  useEffect(() => {
+    if (onReady) {
+      onReady(() => {
+        fileInputRef.current?.click();
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleNicknameConfirm = (nickname: string) => {
     setUploaderNickname(nickname);
     localStorage.setItem(nicknameKey, nickname);
@@ -77,24 +88,28 @@ export default function PhotoUpload({
     }
   };
 
-  const handleChangeNickname = () => {
-    setIsPendingUpload(false); // 닉네임 수정만 하는 경우
-    setShowNicknameDialog(true);
-  };
-
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
+    console.log('📸 선택된 파일 개수:', files.length);
+    console.log('📸 파일 목록:', files.map(f => f.name));
 
     // 파일 검증
     const validFiles = files.filter((file) => {
+      console.log(`🔍 파일: ${file.name}`);
+      console.log(`   - MIME 타입: ${file.type}`);
+      console.log(`   - 크기: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+
       if (!ALLOWED_MIME_TYPES.includes(file.type as any)) {
+        console.log(`   ❌ MIME 타입 불일치! (허용: ${ALLOWED_MIME_TYPES.join(', ')})`);
         toast.error(`${file.name}: JPG, PNG, WebP 형식만 지원합니다.`);
         return false;
       }
       if (file.size > MAX_FILE_SIZE) {
-        toast.error(`${file.name}: 파일 크기는 최대 10MB까지 가능합니다.`);
+        console.log(`   ❌ 파일 크기 초과! (최대: ${MAX_FILE_SIZE / 1024 / 1024}MB)`);
+        toast.error(`${file.name}: 파일 크기는 최대 20MB까지 가능합니다.`);
         return false;
       }
+      console.log(`   ✅ 검증 통과`);
       return true;
     });
 
@@ -105,7 +120,14 @@ export default function PhotoUpload({
       uploadStatus: 'pending' as UploadStatus,
     }));
 
-    setSelectedFiles((prev) => [...prev, ...filesWithDescription]);
+    console.log('✅ 검증 통과한 파일 개수:', validFiles.length);
+    console.log('🎯 추가할 파일 개수:', filesWithDescription.length);
+
+    setSelectedFiles((prev) => {
+      console.log('📦 기존 파일 개수:', prev.length);
+      console.log('📦 새로운 총 파일 개수:', prev.length + filesWithDescription.length);
+      return [...prev, ...filesWithDescription];
+    });
 
     // input 리셋 (같은 파일 다시 선택 가능하도록)
     if (fileInputRef.current) {
@@ -250,57 +272,19 @@ export default function PhotoUpload({
 
   return (
     <>
-      <div className="space-y-8">
-        {/* 헤더 */}
-        <div className="text-center space-y-3">
-          <h2 className="text-3xl font-bold font-display text-neutral-900">
-            나도 소중한 사진이 있다면?
-          </h2>
-          <p className="text-base text-neutral-600 leading-relaxed">
-            당신의 추억도 함께 모아주세요
-          </p>
-          {uploaderNickname && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleChangeNickname}
-              className="text-sm text-neutral-500 hover:text-neutral-700 -mt-1"
-            >
-              <Edit2 className="w-3 h-3 mr-1" />
-              {uploaderNickname}
-            </Button>
-          )}
-        </div>
+      {/* Hidden file input - 프로그래밍적으로만 트리거됨 (bottom bar 버튼 클릭 시) */}
+      <Input
+        id="photo-upload"
+        ref={fileInputRef}
+        type="file"
+        accept={ALLOWED_MIME_TYPES.join(',')}
+        multiple
+        onChange={handleFileSelect}
+        className="hidden"
+        disabled={isUploading}
+      />
 
-        {/* 파일 선택 */}
-        <div>
-          <label htmlFor="photo-upload" className="block cursor-pointer">
-            <div className="relative bg-gradient-to-br from-neutral-50 to-neutral-100/50 border-2 border-dashed border-neutral-300 rounded-2xl p-12 text-center hover:border-neutral-400 hover:from-neutral-100/80 hover:to-neutral-50 transition-all duration-300 group">
-              <div className="absolute inset-0 bg-neutral-900/0 group-hover:bg-neutral-900/[0.02] rounded-2xl transition-colors duration-300" />
-              <div className="relative">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white shadow-sm flex items-center justify-center group-hover:shadow-md transition-shadow">
-                  <Upload className="w-8 h-8 text-neutral-600" />
-                </div>
-                <p className="text-lg font-medium text-neutral-800 mb-2">
-                  여기를 눌러 사진을 선택하세요
-                </p>
-                <p className="text-sm text-neutral-500">
-                  JPG, PNG, WebP · 최대 10MB
-                </p>
-              </div>
-            </div>
-          </label>
-          <Input
-            id="photo-upload"
-            ref={fileInputRef}
-            type="file"
-            accept={ALLOWED_MIME_TYPES.join(',')}
-            multiple
-            onChange={handleFileSelect}
-            className="hidden"
-            disabled={isUploading}
-          />
-        </div>
+      <div className="space-y-8">
 
         {/* 선택된 파일 미리보기 */}
         {selectedFiles.length > 0 && (

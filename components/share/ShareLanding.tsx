@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, Clock, Image } from 'lucide-react';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
 import ImageViewerModal from './ImageViewerModal';
 
@@ -12,7 +11,6 @@ interface ShareLandingProps {
   photoCount: number;
   recentPhotos: PhotoWithUrl[];
   onViewPhotos: () => void;
-  onAddPhotos: () => void;
   onRequestVideo: () => Promise<{ success: boolean; error?: string }>;
   videoStatus: 'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null;
   createdAt: string;
@@ -24,7 +22,6 @@ export default function ShareLanding({
   photoCount,
   recentPhotos,
   onViewPhotos,
-  onAddPhotos,
   onRequestVideo,
   videoStatus,
   createdAt,
@@ -298,28 +295,6 @@ export default function ShareLanding({
             </div>
           )}
 
-          {/* CTA 버튼 */}
-          <div className="flex flex-col gap-3 pt-6">
-            <Button
-              onClick={onAddPhotos}
-              size="lg"
-              className="h-14 w-full rounded-xl bg-neutral-900 text-base font-semibold shadow-sm hover:bg-neutral-800"
-            >
-              내가 가진 사진 모으기
-            </Button>
-          </div>
-
-          {/* 스크롤 힌트 */}
-          <div className="flex justify-center pt-6">
-            <button
-              onClick={onAddPhotos}
-              className="flex flex-col items-center gap-1 text-neutral-400 transition-colors hover:text-neutral-600"
-              aria-label="아래로 스크롤"
-            >
-              <span className="text-xs">아래로</span>
-              <ChevronDown className="h-5 w-5 animate-bounce" />
-            </button>
-          </div>
         </div>
       </div>
 
