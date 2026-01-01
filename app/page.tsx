@@ -66,10 +66,10 @@ export default function Home() {
       {/* Fixed Bottom Bar - Only show when CTA is visible */}
       {showBottomBar && (
         <FixedBottomBar
-          timerText="00:05:30"
-          buttonText="지금 바로 신청하기"
-          onButtonClick={scrollToPricing}
-          showTimer={false}
+          primaryButton={{
+            text: "지금 바로 신청하기",
+            onClick: scrollToPricing,
+          }}
         />
       )}
     </div>

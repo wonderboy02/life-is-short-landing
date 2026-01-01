@@ -14,17 +14,22 @@ interface Props {
  */
 async function getGroupData(shareCode: string) {
   const baseUrl = getAppUrl();
+  const url = `${baseUrl}/api/groups/verify?code=${shareCode}`;
 
-  const response = await fetch(`${baseUrl}/api/groups/verify?code=${shareCode}`, {
-    cache: 'no-store', // 항상 최신 데이터 조회
-  });
+  try {
+    const response = await fetch(url, {
+      cache: 'no-store',
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      return null;
+    }
+
+    const result = await response.json();
+    return result.success ? result.data : null;
+  } catch (error) {
     return null;
   }
-
-  const result = await response.json();
-  return result.success ? result.data : null;
 }
 
 /**

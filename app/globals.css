@@ -125,6 +125,10 @@
 }
 
 @layer base {
+  html {
+    /* 작은 화면(320px)에서 13px, 큰 화면(430px)에서 16px로 자동 조정 */
+    font-size: clamp(13px, 3.72vw, 16px);
+  }
   * {
     @apply border-border outline-ring/50 break-keep;
   }

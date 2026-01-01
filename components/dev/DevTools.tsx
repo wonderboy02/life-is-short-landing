@@ -11,6 +11,14 @@ interface DevToolsProps {
   onTestModeChange?: (enabled: boolean) => void;
   onTestPhotoCountChange?: (count: number) => void;
   onTestTimeOffsetChange?: (offset: number) => void;
+  onTestVideoStatusChange?: (status: 'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null) => void;
+  // FixedBottomBar 상태 표시용
+  currentPhotoCount?: number;
+  currentVideoStatus?: 'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null;
+  hasTimeLeft?: boolean;
+  timeLeft?: { days: number; hours: number; minutes: number };
+  secondaryButtonText?: string;
+  secondaryButtonDisabled?: boolean;
 }
 
 export default function DevTools({
@@ -19,35 +27,25 @@ export default function DevTools({
   onTestModeChange,
   onTestPhotoCountChange,
   onTestTimeOffsetChange,
+  onTestVideoStatusChange,
+  currentPhotoCount,
+  currentVideoStatus,
+  hasTimeLeft,
+  timeLeft,
+  secondaryButtonText,
+  secondaryButtonDisabled,
 }: DevToolsProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [forceKakao, setForceKakao] = useState(false);
-
-  // 카카오톡 시뮬레이션 상태 초기화
-  useEffect(() => {
-    const saved = localStorage.getItem('dev-force-kakao');
-    setForceKakao(saved === 'true');
-  }, []);
 
   // Production 환경에서는 렌더링하지 않음
   if (process.env.NODE_ENV === 'production') {
     return null;
   }
 
-  const toggleKakaoMode = () => {
-    const newValue = !forceKakao;
-    setForceKakao(newValue);
-    localStorage.setItem('dev-force-kakao', String(newValue));
-    toast.success(newValue ? '카카오톡 웹뷰 모드 활성화' : '카카오톡 웹뷰 모드 비활성화');
-    console.log(`[Dev] 카카오톡 웹뷰 모드: ${newValue}`);
-  };
-
   const clearAllLocalStorage = () => {
     const count = localStorage.length;
     localStorage.clear();
-    setForceKakao(false); // 상태도 초기화
     toast.success(`localStorage 전체 삭제됨 (${count}개 항목)`);
-    console.log(`[Dev] localStorage 전체 삭제됨 (${count}개 항목)`);
   };
 
   const clearServiceIntro = () => {
@@ -55,7 +53,6 @@ export default function DevTools({
     const matchedKeys = keys.filter((key) => key.includes('service-intro-visited'));
     matchedKeys.forEach((key) => localStorage.removeItem(key));
     toast.success(`서비스 소개 모달 초기화 (${matchedKeys.length}개)`);
-    console.log(`[Dev] 서비스 소개 모달 초기화: ${matchedKeys.join(', ')}`);
   };
 
   const clearUploaderNickname = () => {
@@ -63,7 +60,6 @@ export default function DevTools({
     const matchedKeys = keys.filter((key) => key.includes('photo-uploader-nickname'));
     matchedKeys.forEach((key) => localStorage.removeItem(key));
     toast.success(`업로더 닉네임 초기화 (${matchedKeys.length}개)`);
-    console.log(`[Dev] 업로더 닉네임 초기화: ${matchedKeys.join(', ')}`);
   };
 
   const reloadPage = () => {
@@ -101,31 +97,55 @@ export default function DevTools({
           </div>
 
           {/* 내용 */}
-          <div className="p-4 space-y-3">
+          <div className="p-4 space-y-3 max-h-[80vh] overflow-y-auto">
             <div className="text-xs text-neutral-500 mb-3">
               개발 환경 전용 (Production에서는 숨김)
             </div>
 
-            {/* 카카오톡 웹뷰 시뮬레이션 */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between p-3 border border-neutral-200 rounded-lg bg-yellow-50">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-neutral-700">카카오톡 웹뷰</span>
-                  <span className="text-xs text-neutral-500">(공유 토스트 테스트)</span>
+            {/* FixedBottomBar 현재 상태 표시 */}
+            {currentPhotoCount !== undefined && (
+              <div className="space-y-2 p-4 border-2 border-blue-400 rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 shadow-md transition-all duration-300">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="text-base font-bold text-blue-900">
+                    📊 현재 상태
+                  </div>
+                  {testMode && (
+                    <span className="text-xs px-2 py-1 bg-blue-600 text-white rounded-full font-semibold animate-pulse">
+                      테스트 모드
+                    </span>
+                  )}
                 </div>
-                <Button
-                  onClick={toggleKakaoMode}
-                  variant={forceKakao ? "default" : "outline"}
-                  size="sm"
-                  className="h-7 text-xs min-w-[50px]"
-                >
-                  {forceKakao ? 'ON' : 'OFF'}
-                </Button>
+                <div className="space-y-2 text-sm bg-white p-3 rounded-md">
+                  <div className="flex justify-between items-center">
+                    <span className="text-neutral-700 font-medium">📷 사진 개수:</span>
+                    <span className="font-mono font-bold text-lg text-blue-600">{currentPhotoCount}장</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-neutral-700 font-medium">⏰ 남은 시간:</span>
+                    <span className="font-mono font-bold text-neutral-900">
+                      {hasTimeLeft
+                        ? `${timeLeft?.days}일 ${timeLeft?.hours}시간 ${timeLeft?.minutes}분`
+                        : '마감됨'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-neutral-700 font-medium">🎬 영상 상태:</span>
+                    <span className="font-mono font-bold text-purple-600">
+                      {currentVideoStatus || 'pending'}
+                    </span>
+                  </div>
+                  <div className="mt-3 pt-3 border-t-2 border-blue-200">
+                    <div className="text-neutral-700 font-medium mb-1">🔘 Secondary 버튼:</div>
+                    <div className={`font-bold text-base p-2 rounded ${secondaryButtonDisabled ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-700'}`}>
+                      "{secondaryButtonText}"
+                    </div>
+                    <div className={`text-sm mt-1 font-semibold ${secondaryButtonDisabled ? 'text-red-600' : 'text-green-600'}`}>
+                      {secondaryButtonDisabled ? '❌ 비활성화됨' : '✅ 활성화됨'}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <p className="text-xs text-neutral-500 pl-2">
-                카카오톡 전용 공유 안내 토스트를 테스트해요
-              </p>
-            </div>
+            )}
 
             {/* 서비스 소개 모달 초기화 */}
             <div className="space-y-1">
@@ -147,6 +167,7 @@ export default function DevTools({
               <div className="space-y-1">
                 <Button
                   onClick={() => {
+                    setIsOpen(false); // DevTools 자동 닫기
                     onShowFirstVisitModal();
                     toast.success('첫 방문 안내 모달 표시');
                   }}
@@ -163,7 +184,7 @@ export default function DevTools({
             )}
 
             {/* 상태 테스트 모드 */}
-            {onTestModeChange && onTestPhotoCountChange && onTestTimeOffsetChange && (
+            {onTestModeChange && onTestPhotoCountChange && onTestTimeOffsetChange && onTestVideoStatusChange && (
               <div className="border-t border-neutral-200 pt-3 mt-3">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -179,71 +200,180 @@ export default function DevTools({
                   </div>
 
                   {testMode && (
-                    <div className="space-y-2">
-                      {/* 상태 1: 시간 O + 사진 부족 */}
-                      <Button
-                        onClick={() => {
-                          onTestPhotoCountChange(5);
-                          onTestTimeOffsetChange(0);
-                          toast.success('상태 1: 시간 남음 + 사진 부족');
-                        }}
-                        variant="outline"
-                        className="w-full justify-start h-8 text-xs"
-                      >
-                        1️⃣ 시간 O + 사진 부족
-                      </Button>
+                    <div className="space-y-3">
+                      {/* 사진 개수 제어 */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-medium text-neutral-700">사진 개수</p>
+                        <div className="grid grid-cols-3 gap-2">
+                          <Button
+                            onClick={() => {
+                              onTestPhotoCountChange?.(0);
+                              toast.success('사진 0장으로 설정');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            0장
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestPhotoCountChange?.(5);
+                              toast.success('사진 5장으로 설정');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            5장
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestPhotoCountChange?.(15);
+                              toast.success('사진 15장으로 설정');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            15장
+                          </Button>
+                        </div>
+                      </div>
 
-                      {/* 상태 2: 시간 O + 사진 0장 */}
-                      <Button
-                        onClick={() => {
-                          onTestPhotoCountChange(0);
-                          onTestTimeOffsetChange(0);
-                          toast.success('상태 2: 시간 남음 + 사진 0장');
-                        }}
-                        variant="outline"
-                        className="w-full justify-start h-8 text-xs"
-                      >
-                        2️⃣ 시간 O + 사진 0장
-                      </Button>
+                      {/* 시간 제어 */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-medium text-neutral-700">시간 설정</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button
+                            onClick={() => {
+                              onTestTimeOffsetChange?.(48);
+                              toast.success('시간 48시간 남음으로 설정');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            시간 O
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestTimeOffsetChange?.(-1);
+                              toast.success('시간 마감으로 설정');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            시간 X
+                          </Button>
+                        </div>
+                      </div>
 
-                      {/* 상태 3: 시간 O + 사진 충분 */}
-                      <Button
-                        onClick={() => {
-                          onTestPhotoCountChange(15);
-                          onTestTimeOffsetChange(0);
-                          toast.success('상태 3: 시간 남음 + 사진 충분');
-                        }}
-                        variant="outline"
-                        className="w-full justify-start h-8 text-xs"
-                      >
-                        3️⃣ 시간 O + 사진 충분
-                      </Button>
+                      {/* 영상 상태 제어 */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-medium text-neutral-700">영상 상태</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Button
+                            onClick={() => {
+                              onTestVideoStatusChange('pending');
+                              toast.success('영상 상태: pending');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            pending
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestVideoStatusChange('requested');
+                              toast.success('영상 상태: requested');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            requested
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestVideoStatusChange('processing');
+                              toast.success('영상 상태: processing');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            processing
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestVideoStatusChange('completed');
+                              toast.success('영상 상태: completed');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            completed
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestVideoStatusChange('failed');
+                              toast.success('영상 상태: failed');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            failed
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestVideoStatusChange(null);
+                              toast.success('영상 상태: null');
+                            }}
+                            variant="outline"
+                            className="h-8 text-xs"
+                          >
+                            null
+                          </Button>
+                        </div>
+                      </div>
 
-                      {/* 상태 4: 시간 X + 사진 충분 */}
-                      <Button
-                        onClick={() => {
-                          onTestPhotoCountChange(15);
-                          onTestTimeOffsetChange(-80); // -80시간 (3일 넘김)
-                          toast.success('상태 4: 시간 마감 + 사진 충분');
-                        }}
-                        variant="outline"
-                        className="w-full justify-start h-8 text-xs"
-                      >
-                        4️⃣ 시간 X + 사진 충분
-                      </Button>
-
-                      {/* 상태 5: 시간 X + 사진 부족 */}
-                      <Button
-                        onClick={() => {
-                          onTestPhotoCountChange(5);
-                          onTestTimeOffsetChange(-80); // -80시간 (3일 넘김)
-                          toast.success('상태 5: 시간 마감 + 사진 부족');
-                        }}
-                        variant="outline"
-                        className="w-full justify-start h-8 text-xs"
-                      >
-                        5️⃣ 시간 X + 사진 부족
-                      </Button>
+                      {/* 프리셋 */}
+                      <div className="space-y-2 pt-2 border-t border-neutral-200">
+                        <p className="text-xs font-medium text-neutral-700">프리셋</p>
+                        <div className="space-y-1">
+                          <Button
+                            onClick={() => {
+                              onTestPhotoCountChange?.(15);
+                              onTestTimeOffsetChange?.(48);
+                              onTestVideoStatusChange?.('pending');
+                              toast.success('✅ 영상 생성 가능 상태');
+                            }}
+                            variant="outline"
+                            className="w-full justify-start h-8 text-xs bg-green-50"
+                          >
+                            ✅ 영상 생성 가능
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestPhotoCountChange?.(5);
+                              onTestTimeOffsetChange?.(48);
+                              onTestVideoStatusChange?.('pending');
+                              toast.success('📷 사진 부족 상태');
+                            }}
+                            variant="outline"
+                            className="w-full justify-start h-8 text-xs"
+                          >
+                            📷 사진 부족
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              onTestPhotoCountChange?.(15);
+                              onTestTimeOffsetChange?.(-1);
+                              onTestVideoStatusChange?.('pending');
+                              toast.success('⏰ 시간 마감 상태');
+                            }}
+                            variant="outline"
+                            className="w-full justify-start h-8 text-xs"
+                          >
+                            ⏰ 시간 마감
+                          </Button>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
