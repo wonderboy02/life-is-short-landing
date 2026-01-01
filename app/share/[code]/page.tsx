@@ -14,9 +14,28 @@ interface Props {
  */
 async function getGroupData(shareCode: string) {
   const baseUrl = getAppUrl();
+  const url = `${baseUrl}/api/groups/verify?code=${shareCode}`;
 
-  const response = await fetch(`${baseUrl}/api/groups/verify?code=${shareCode}`, {
+  console.log('[Share Page] Fetching group data:', {
+    baseUrl,
+    url,
+    shareCode,
+    env: {
+      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+      VERCEL_URL: process.env.VERCEL_URL,
+      VERCEL_BRANCH_URL: process.env.VERCEL_BRANCH_URL,
+      VERCEL_ENV: process.env.VERCEL_ENV,
+    }
+  });
+
+  const response = await fetch(url, {
     cache: 'no-store', // 항상 최신 데이터 조회
+  });
+
+  console.log('[Share Page] Response:', {
+    status: response.status,
+    statusText: response.statusText,
+    ok: response.ok,
   });
 
   if (!response.ok) {
