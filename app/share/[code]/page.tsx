@@ -28,22 +28,39 @@ async function getGroupData(shareCode: string) {
     }
   });
 
-  const response = await fetch(url, {
-    cache: 'no-store', // 항상 최신 데이터 조회
-  });
+  try {
+    const response = await fetch(url, {
+      cache: 'no-store',
+      // 타임아웃 설정
+      signal: AbortSignal.timeout(10000), // 10초 타임아웃
+    });
 
-  console.log('[Share Page] Response:', {
-    status: response.status,
-    statusText: response.statusText,
-    ok: response.ok,
-  });
+    console.log('[Share Page] Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+    });
 
-  if (!response.ok) {
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[Share Page] Response not OK:', errorText);
+      return null;
+    }
+
+    const result = await response.json();
+    return result.success ? result.data : null;
+  } catch (error) {
+    console.error('[Share Page] Fetch failed:', error);
+    // 에러 타입 확인
+    if (error instanceof Error) {
+      console.error('[Share Page] Error details:', {
+        name: error.name,
+        message: error.message,
+        cause: error.cause,
+      });
+    }
     return null;
   }
-
-  const result = await response.json();
-  return result.success ? result.data : null;
 }
 
 /**
