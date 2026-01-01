@@ -49,10 +49,27 @@ export default function SharePageClient({
   const [testMode, setTestMode] = useState(false);
   const [testPhotoCount, setTestPhotoCount] = useState<number>(0);
   const [testTimeOffset, setTestTimeOffset] = useState<number>(0); // 시간 오프셋 (시간 단위)
+  const [testVideoStatus, setTestVideoStatus] = useState<'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null>(null);
+
+  // testMode를 켤 때 현재 실제 값으로 초기화
+  const handleTestModeChange = (enabled: boolean) => {
+    if (enabled) {
+      setTestPhotoCount(photos.length);
+      setTestVideoStatus(videoStatus);
+      setTestTimeOffset(48); // 기본값: 48시간 남음
+    }
+    setTestMode(enabled);
+  };
 
   // Refs for smooth scrolling
   const shareLandingNodeRef = useRef<HTMLDivElement | null>(null);
   const photoGridRef = useRef<HTMLDivElement>(null);
+
+  // 타이머 상태
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+  const [forceRecalculate, setForceRecalculate] = useState(0); // 강제 재계산용
+  const MIN_PHOTOS = 10;
+  const DEADLINE_HOURS = 72; // 3일
 
   // 공통 스크롤 함수 - ShareLanding의 상단을 헤더 바로 아래에 위치시킴
   const scrollToShareLanding = useCallback(() => {
@@ -76,6 +93,41 @@ export default function SharePageClient({
       setShareLandingMounted(true);
     }
   }, []);
+
+  // 타이머 계산
+  useEffect(() => {
+    const calculateTimeLeft = () => {
+      const now = Date.now();
+      let deadline;
+
+      if (testMode) {
+        // 테스트 모드: 현재 시간 기준으로 testTimeOffset만큼 시간 남음
+        deadline = now + testTimeOffset * 60 * 60 * 1000;
+      } else {
+        // 실제 모드: createdAt 기준으로 72시간 후
+        const created = new Date(createdAt).getTime();
+        deadline = created + DEADLINE_HOURS * 60 * 60 * 1000;
+      }
+
+      const diff = deadline - now;
+
+      if (diff <= 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0 });
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      setTimeLeft({ days, hours, minutes });
+    };
+
+    calculateTimeLeft();
+    const interval = setInterval(calculateTimeLeft, 60000); // 1분마다 업데이트
+
+    return () => clearInterval(interval);
+  }, [createdAt, testMode, testTimeOffset, forceRecalculate]);
 
   // 앨범 생성 직후 확인 및 모달 표시
   useEffect(() => {
@@ -211,6 +263,41 @@ export default function SharePageClient({
     }
   };
 
+  // Secondary 버튼 상태 계산
+  const currentPhotoCount = testMode ? testPhotoCount : photos.length;
+  const currentVideoStatus = testMode ? testVideoStatus : videoStatus;
+  const photosNeeded = Math.max(0, MIN_PHOTOS - currentPhotoCount);
+  const hasTimeLeft = timeLeft.days > 0 || timeLeft.hours > 0 || timeLeft.minutes > 0;
+  const canGenerateVideo = currentPhotoCount >= MIN_PHOTOS && hasTimeLeft && (currentVideoStatus === 'pending' || currentVideoStatus === null);
+
+  const getSecondaryButtonConfig = () => {
+    // 시간 마감
+    if (!hasTimeLeft) {
+      return { text: '마감되었습니다', disabled: true };
+    }
+
+    // 영상 상태별
+    if (currentVideoStatus === 'completed') {
+      return { text: '영상 완성', disabled: true };
+    }
+    if (currentVideoStatus === 'processing') {
+      return { text: '영상 제작 중', disabled: true };
+    }
+    if (currentVideoStatus === 'requested') {
+      return { text: '영상 제작 중', disabled: true };
+    }
+
+    // 사진 부족
+    if (currentPhotoCount < MIN_PHOTOS) {
+      return { text: `${photosNeeded}장 더 필요해요`, disabled: true };
+    }
+
+    // 영상 제작 가능
+    return { text: '영상 만들기', disabled: false };
+  };
+
+  const secondaryButtonConfig = getSecondaryButtonConfig();
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -232,9 +319,19 @@ export default function SharePageClient({
       <DevTools
         onShowFirstVisitModal={() => setShowFirstVisitModal(true)}
         testMode={testMode}
-        onTestModeChange={setTestMode}
+        onTestModeChange={handleTestModeChange}
         onTestPhotoCountChange={setTestPhotoCount}
-        onTestTimeOffsetChange={setTestTimeOffset}
+        onTestTimeOffsetChange={(offset) => {
+          setTestTimeOffset(offset);
+          setForceRecalculate(prev => prev + 1);
+        }}
+        onTestVideoStatusChange={setTestVideoStatus}
+        currentPhotoCount={currentPhotoCount}
+        currentVideoStatus={currentVideoStatus}
+        hasTimeLeft={hasTimeLeft}
+        timeLeft={timeLeft}
+        secondaryButtonText={secondaryButtonConfig.text}
+        secondaryButtonDisabled={secondaryButtonConfig.disabled}
       />
 
       {/* 서비스 소개 섹션 */}
@@ -245,18 +342,9 @@ export default function SharePageClient({
         <ShareLanding
           creatorNickname={creatorNickname}
           comment={comment}
-          photoCount={testMode ? testPhotoCount : photos.length}
+          photoCount={currentPhotoCount}
           recentPhotos={photos.slice(0, 6)}
           onViewPhotos={scrollToPhotos}
-          onRequestVideo={handleRequestVideo}
-          videoStatus={videoStatus}
-          createdAt={
-            testMode
-              ? new Date(
-                  new Date(createdAt).getTime() + testTimeOffset * 60 * 60 * 1000
-                ).toISOString()
-              : createdAt
-          }
         />
       </div>
 
@@ -294,10 +382,15 @@ export default function SharePageClient({
 
       {/* Fixed Bottom Bar */}
       <FixedBottomBar
-        timerText="00:05:30"
-        buttonText="사진 추가하기"
-        onButtonClick={handleAddPhotos}
-        showTimer={false}
+        primaryButton={{
+          text: '사진 추가하기',
+          onClick: handleAddPhotos,
+        }}
+        secondaryButton={{
+          text: secondaryButtonConfig.text,
+          onClick: handleRequestVideo,
+          disabled: secondaryButtonConfig.disabled,
+        }}
       />
     </>
   );
