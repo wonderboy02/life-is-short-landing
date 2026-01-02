@@ -9,9 +9,9 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Copy, Check, Link2 } from 'lucide-react';
+import { Copy, Check, Link2, MessageCircle, Share2, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
-import { isKakaoTalkWebView } from '@/lib/utils';
+import { isKakaoTalkWebView, isInAppBrowser } from '@/lib/utils';
 
 interface FirstVisitGuideModalProps {
   open: boolean;
@@ -25,55 +25,86 @@ export default function FirstVisitGuideModal({
   shareUrl,
 }: FirstVisitGuideModalProps) {
   const [copied, setCopied] = useState(false);
+  const [showShareOptions, setShowShareOptions] = useState(false);
+  const [isKakaoReady, setIsKakaoReady] = useState(false);
 
-  // 카카오톡 공유 안내 이미지 프리로드
+  // Kakao SDK 로드 확인
   useEffect(() => {
-    const img = new Image();
-    img.src = '/kakao_share_example_2.webp';
+    const checkKakao = () => {
+      if (window.Kakao && window.Kakao.isInitialized()) {
+        setIsKakaoReady(true);
+      }
+    };
+
+    checkKakao();
+    const interval = setInterval(checkKakao, 100);
+    const timeout = setTimeout(() => clearInterval(interval), 3000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, []);
 
+  // 카카오톡으로 공유하기
+  const handleKakaoShare = () => {
+    if (window.Kakao && window.Kakao.isInitialized()) {
+      try {
+        const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+        const imageUrl = `${baseUrl}/favicon/logo.png`;
+
+        window.Kakao.Share.sendDefault({
+          objectType: 'feed',
+          content: {
+            title: '📸 추억 앨범',
+            description: '함께 사진을 추가해보세요!',
+            imageUrl: imageUrl,
+            link: {
+              mobileWebUrl: shareUrl,
+              webUrl: shareUrl,
+            },
+          },
+          buttons: [
+            {
+              title: '사진 추가하기',
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('카카오톡 공유 실패:', error);
+        toast.error('카카오톡 공유에 실패했습니다');
+      }
+    } else {
+      toast.error('카카오톡 공유 기능을 사용할 수 없습니다');
+    }
+  };
+
+  // 링크 복사하기
   const handleCopyUrl = async () => {
     try {
-      const isKakao = isKakaoTalkWebView();
-
-      // 카카오톡 웹뷰에서는 Web Share API 사용 안 함 (지원하지 않음)
-      // Web Share API 지원 확인 (모바일에서 주로 지원) && 카카오톡이 아닐 때
-      if (navigator.share && !isKakao) {
-        await navigator.share({
-          title: '추억 앨범',
-          text: '함께 사진을 추가해보세요!',
-          url: shareUrl,
-        });
-        // 공유 성공 시 별도 피드백 없음 (네이티브 UI가 제공)
-      } else {
-        // Fallback: URL 복사
-        await navigator.clipboard.writeText(shareUrl);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-
-        // 카카오톡 웹뷰에서는 풍성한 안내 토스트 표시
-        if (isKakao) {
-          toast.success('위 버튼을 눌러 가족들에게 공유해 보세요!', {
-            description: (
-              <div className="flex flex-col gap-2">
-                <img
-                  src="/kakao_share_example_2.webp"
-                  alt="카카오톡 공유 방법"
-                  className="mt-2 w-full rounded-lg border border-neutral-200"
-                  style={{ aspectRatio: '1080/357' }}
-                />
-                <p className="text-center text-sm text-neutral-600">링크도 복사했어요!</p>
-              </div>
-            ),
-            duration: 4000,
-          });
-        } else {
-          // 일반 환경에서는 간단한 토스트
-          toast.success('링크가 복사되었습니다');
-        }
-      }
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      toast.success('링크가 복사되었습니다');
     } catch (error) {
-      // 사용자가 공유를 취소한 경우 (AbortError)는 에러 표시 안 함
+      console.error('링크 복사 실패:', error);
+      toast.error('링크 복사에 실패했습니다');
+    }
+  };
+
+  // Web Share API 사용
+  const handleNativeShare = async () => {
+    try {
+      await navigator.share({
+        title: '추억 앨범',
+        text: '함께 사진을 추가해보세요!',
+        url: shareUrl,
+      });
+    } catch (error) {
       if ((error as Error).name !== 'AbortError') {
         console.error('공유 실패:', error);
       }
@@ -137,12 +168,65 @@ export default function FirstVisitGuideModal({
           <div className="min-w-0 space-y-2 pt-1 md:space-y-3 md:pt-2">
             {/* 공유하기 버튼 (강조) */}
             <Button
-              onClick={handleCopyUrl}
+              onClick={() => setShowShareOptions(!showShareOptions)}
               className="h-11 w-full min-w-0 gap-1.5 bg-neutral-900 text-sm font-semibold hover:bg-neutral-800 sm:gap-2 md:h-12 md:text-base"
             >
               <Link2 className="h-3.5 w-3.5 flex-shrink-0 md:h-4 md:w-4" />
-              <span className="truncate">가족들과 함께 모아보기</span>
+              <span className="truncate">가족들과 함께 모으기</span>
+              <ChevronDown
+                className={`h-3.5 w-3.5 flex-shrink-0 transition-transform md:h-4 md:w-4 ${
+                  showShareOptions ? 'rotate-180' : ''
+                }`}
+              />
             </Button>
+
+            {/* 공유 옵션 (펼쳐짐) */}
+            {showShareOptions && (
+              <div className="animate-in slide-in-from-top-2 space-y-2 duration-200">
+                {/* 카카오톡으로 공유하기 */}
+                {isKakaoReady && (
+                  <Button
+                    onClick={handleKakaoShare}
+                    variant="outline"
+                    size="lg"
+                    className="flex h-12 w-full items-center justify-start gap-3 text-sm md:h-14 md:text-base"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-400 md:h-10 md:w-10">
+                      <MessageCircle className="h-4 w-4 text-amber-900 md:h-5 md:w-5" />
+                    </div>
+                    <span className="font-medium">카카오톡으로 공유하기</span>
+                  </Button>
+                )}
+
+                {/* 링크 복사하기 */}
+                <Button
+                  onClick={handleCopyUrl}
+                  variant="outline"
+                  size="lg"
+                  className="flex h-12 w-full items-center justify-start gap-3 text-sm md:h-14 md:text-base"
+                >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 md:h-10 md:w-10">
+                    <Copy className="h-4 w-4 text-blue-600 md:h-5 md:w-5" />
+                  </div>
+                  <span className="font-medium">{copied ? '복사됨!' : '링크 복사하기'}</span>
+                </Button>
+
+                {/* 다른 방법으로 공유하기 (웹뷰가 아닐 때만) */}
+                {navigator.share && !isInAppBrowser() && (
+                  <Button
+                    onClick={handleNativeShare}
+                    variant="outline"
+                    size="lg"
+                    className="flex h-12 w-full items-center justify-start gap-3 text-sm md:h-14 md:text-base"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 md:h-10 md:w-10">
+                      <Share2 className="h-4 w-4 text-gray-600 md:h-5 md:w-5" />
+                    </div>
+                    <span className="font-medium">다른 방법으로 공유하기</span>
+                  </Button>
+                )}
+              </div>
+            )}
 
             {/* 사진 업로드하기 버튼 */}
             <Button

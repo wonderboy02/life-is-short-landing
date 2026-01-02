@@ -13,6 +13,18 @@ export const metadata: Metadata = {
     icon: '/favicon/icon.png',
     apple: '/favicon/apple-icon.png',
   },
+  openGraph: {
+    title: '추억을 다시, 영상으로',
+    description: 'AI가 오래된 사진에 생명을 불어넣습니다',
+    images: [
+      {
+        url: '/favicon/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'Life Is Short - 추억을 다시, 영상으로',
+      },
+    ],
+  },
 };
 
 export default async function RootLayout({

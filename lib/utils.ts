@@ -96,3 +96,19 @@ export function isKakaoTalkWebView(): boolean {
 
   return isRealKakao;
 }
+
+/**
+ * 인앱 브라우저(웹뷰)인지 확인 (Instagram, Facebook, KakaoTalk 등)
+ * @returns {boolean} 인앱 브라우저이면 true
+ */
+export function isInAppBrowser(): boolean {
+  if (typeof navigator === 'undefined') return false;
+
+  const ua = navigator.userAgent || '';
+  return (
+    ua.includes('Instagram') ||
+    ua.includes('FBAN') || // Facebook App
+    ua.includes('FBAV') || // Facebook App (Android)
+    ua.includes('KAKAOTALK')
+  );
+}

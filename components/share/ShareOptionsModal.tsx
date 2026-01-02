@@ -1,16 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Link2, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { isKakaoTalkWebView } from '@/lib/utils';
+import { isKakaoTalkWebView, isInAppBrowser } from '@/lib/utils';
 
 interface ShareOptionsModalProps {
   open: boolean;
@@ -53,13 +48,30 @@ export default function ShareOptionsModal({
   const handleKakaoShare = () => {
     if (window.Kakao && window.Kakao.isInitialized()) {
       try {
+        // 절대 URL 생성 (클라이언트에서는 window.location.origin 사용)
+        const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+        const imageUrl = `${baseUrl}/favicon/logo.png`;
+
         window.Kakao.Share.sendDefault({
-          objectType: 'text',
-          text: `${title}\n\n${text}\n\n${url}`,
-          link: {
-            mobileWebUrl: url,
-            webUrl: url,
+          objectType: 'feed',
+          content: {
+            title: '📸 ' + title,
+            description: text,
+            imageUrl: imageUrl,
+            link: {
+              mobileWebUrl: url,
+              webUrl: url,
+            },
           },
+          buttons: [
+            {
+              title: '사진 추가하기',
+              link: {
+                mobileWebUrl: url,
+                webUrl: url,
+              },
+            },
+          ],
         });
         onOpenChange(false);
       } catch (error) {
@@ -112,9 +124,7 @@ export default function ShareOptionsModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[340px] rounded-2xl">
         <DialogHeader>
-          <DialogTitle className="text-center text-lg font-semibold">
-            공유하기
-          </DialogTitle>
+          <DialogTitle className="text-center text-lg font-semibold">사진 같이모으기</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-3 py-4">
@@ -124,12 +134,12 @@ export default function ShareOptionsModal({
               onClick={handleKakaoShare}
               variant="outline"
               size="lg"
-              className="flex items-center justify-start gap-3 h-14 text-base"
+              className="flex h-14 items-center justify-start gap-3 text-base"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400">
                 <MessageCircle className="h-5 w-5 text-amber-900" />
               </div>
-              <span className="font-medium">카카오톡으로 공유하기</span>
+              <span className="font-medium">카카오톡으로 링크 보내기</span>
             </Button>
           )}
 
@@ -138,7 +148,7 @@ export default function ShareOptionsModal({
             onClick={handleCopyLink}
             variant="outline"
             size="lg"
-            className="flex items-center justify-start gap-3 h-14 text-base"
+            className="flex h-14 items-center justify-start gap-3 text-base"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
               <Link2 className="h-5 w-5 text-blue-600" />
@@ -147,12 +157,13 @@ export default function ShareOptionsModal({
           </Button>
 
           {/* 다른 방법으로 공유하기 (Web Share API) */}
-          {navigator.share && !isKakaoTalkWebView() && (
+          {/* 웹뷰가 아니고 Web Share API가 지원되는 경우에만 표시 */}
+          {navigator.share && !isInAppBrowser() && (
             <Button
               onClick={handleNativeShare}
               variant="outline"
               size="lg"
-              className="flex items-center justify-start gap-3 h-14 text-base"
+              className="flex h-14 items-center justify-start gap-3 text-base"
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100">
                 <Share2 className="h-5 w-5 text-gray-600" />
