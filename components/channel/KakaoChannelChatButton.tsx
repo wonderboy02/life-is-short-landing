@@ -62,20 +62,37 @@ export default function KakaoChannelChatButton({
 
     setIsLoading(true);
 
+    let appLaunched = false;
+
+    // 페이지가 숨겨지면 (앱이 열리면) 성공으로 간주
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        appLaunched = true;
+        setIsLoading(false);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     try {
+      // SDK로 채팅 시작 시도
       window.Kakao.Channel.chat({
         channelPublicId,
       });
-
-      // 카카오톡 창이 열리는 동안 로딩 표시 (2초)
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
     } catch (error) {
-      console.error('카카오톡 채팅 열기 실패:', error);
-      toast.error('카카오톡 상담을 시작할 수 없습니다');
-      setIsLoading(false);
+      console.error('카카오톡 채팅 SDK 호출 실패:', error);
     }
+
+    // 2초 후에도 앱이 실행되지 않았으면 fallback URL로 이동
+    setTimeout(() => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+
+      if (!appLaunched) {
+        console.log('SDK 실패, fallback URL 사용');
+        const fallbackUrl = `https://pf.kakao.com/${channelPublicId}/chat`;
+        window.location.href = fallbackUrl;
+      }
+    }, 2000);
   };
 
   // 사이즈별 스타일 (기본값, className으로 오버라이드 가능)
