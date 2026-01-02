@@ -78,7 +78,7 @@ export default function KakaoChannelChatButton({
     }
   };
 
-  // 사이즈별 스타일
+  // 사이즈별 스타일 (기본값, className으로 오버라이드 가능)
   const sizeClasses = {
     sm: 'h-8 w-8',
     default: 'h-9 w-9',

@@ -418,7 +418,7 @@ export default function SharePageBottomBar({
                   onClick={handlePrimaryClick}
                   disabled={isUploading}
                   size="lg"
-                  className="w-full"
+                  className="w-full h-12"
                 >
                   {isUploading ? (
                     <>
@@ -433,7 +433,7 @@ export default function SharePageBottomBar({
                 {/* Secondary 버튼 행 - 카카오톡 + Secondary */}
                 <div className="flex gap-2">
                   {/* 카카오톡 1:1 상담 버튼 */}
-                  <KakaoChannelChatButton size="lg" />
+                  <KakaoChannelChatButton size="lg" className="h-12" />
 
                   {/* Secondary 버튼 */}
                   <Button
@@ -441,7 +441,7 @@ export default function SharePageBottomBar({
                     disabled={secondaryButton.disabled || isUploading}
                     size="lg"
                     variant={secondaryButton.disabled ? 'outline' : 'default'}
-                    className="flex-1"
+                    className="flex-1 h-12"
                   >
                     {secondaryButton.text}
                   </Button>
@@ -452,14 +452,14 @@ export default function SharePageBottomBar({
                 {/* Secondary 버튼이 없을 때: 카카오톡 + Primary */}
                 <div className="flex gap-2">
                   {/* 카카오톡 1:1 상담 버튼 */}
-                  <KakaoChannelChatButton size="lg" />
+                  <KakaoChannelChatButton size="lg" className="h-12" />
 
                   {/* Primary 버튼 */}
                   <Button
                     onClick={handlePrimaryClick}
                     disabled={isUploading}
                     size="lg"
-                    className="flex-1"
+                    className="flex-1 h-12"
                   >
                     {isUploading ? (
                       <>

@@ -20,14 +20,14 @@ export default function LandingBottomBar({ primaryButton }: LandingBottomBarProp
       <div className="px-4 py-3">
         <div className="flex gap-2">
           {/* 카카오톡 1:1 상담 버튼 */}
-          <KakaoChannelChatButton size="lg" />
+          <KakaoChannelChatButton size="lg" className="h-12" />
 
           {/* Primary 버튼 */}
           <Button
             onClick={primaryButton.onClick}
             disabled={primaryButton.disabled}
             size="lg"
-            className="flex-1"
+            className="flex-1 h-12"
           >
             {primaryButton.text}
           </Button>
