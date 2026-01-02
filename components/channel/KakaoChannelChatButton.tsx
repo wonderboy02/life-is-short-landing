@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { isMobileDevice } from '@/lib/utils/deviceDetection';
 
 interface KakaoChannelChatButtonProps {
   /**
@@ -62,19 +63,43 @@ export default function KakaoChannelChatButton({
 
     setIsLoading(true);
 
-    try {
-      window.Kakao.Channel.chat({
-        channelPublicId,
-      });
+    const isMobile = isMobileDevice();
 
-      // 카카오톡 창이 열리는 동안 로딩 표시 (2초)
+    if (isMobile) {
+      // 모바일: SDK 사용 (앱 실행 시도)
+      let appLaunched = false;
+
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          appLaunched = true;
+          setIsLoading(false);
+        }
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      try {
+        window.Kakao.Channel.chat({
+          channelPublicId,
+        });
+      } catch (error) {
+        console.error('카카오톡 채팅 SDK 호출 실패:', error);
+      }
+
+      // 2초 후에도 앱이 실행되지 않았으면 fallback URL로 이동
       setTimeout(() => {
-        setIsLoading(false);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+
+        if (!appLaunched) {
+          console.log('앱 실행 실패, fallback URL 사용');
+          const fallbackUrl = `https://pf.kakao.com/${channelPublicId}/chat`;
+          window.location.href = fallbackUrl;
+        }
       }, 2000);
-    } catch (error) {
-      console.error('카카오톡 채팅 열기 실패:', error);
-      toast.error('카카오톡 상담을 시작할 수 없습니다');
-      setIsLoading(false);
+    } else {
+      // PC: 바로 웹 URL로 이동
+      const fallbackUrl = `https://pf.kakao.com/${channelPublicId}/chat`;
+      window.location.href = fallbackUrl;
     }
   };
 
