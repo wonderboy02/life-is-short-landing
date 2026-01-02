@@ -6,6 +6,10 @@ import type { ApiResponse, PhotoUploadResponse } from '@/lib/supabase/types';
 import { sendSlackNotificationAsync } from '@/lib/slack/webhook';
 import { createPhotoUploadedMessage } from '@/lib/slack/messages';
 
+// Next.js body size limit 설정 (20MB)
+export const runtime = 'nodejs';
+export const maxDuration = 30; // 30초 타임아웃
+
 export async function POST(req: NextRequest) {
   try {
     // JWT 검증

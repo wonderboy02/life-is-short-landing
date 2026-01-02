@@ -1,15 +1,18 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Loader2 } from 'lucide-react';
-import PhotoUploadClient from './PhotoUploadClient';
 import PhotoGridClient from './PhotoGridClient';
 import ShareLanding from '@/components/share/ShareLanding';
 import ServiceIntro from '@/components/share/ServiceIntroModal';
 import FirstVisitGuideModal from '@/components/share/FirstVisitGuideModal';
 import DevTools from '@/components/dev/DevTools';
-import FixedBottomBar from '@/components/FixedBottomBar';
+import SharePageBottomBar from '@/components/share/SharePageBottomBar';
 import { usePhotos } from '@/hooks/use-photos';
+import { useTimer } from '@/hooks/use-timer';
+import { useScrollToSection } from '@/hooks/use-scroll-to-section';
+import { useVideoStatus } from '@/hooks/use-video-status';
+import { useFirstVisit } from '@/hooks/use-first-visit';
 import type { PhotoWithUrl } from '@/lib/supabase/types';
 
 interface SharePageClientProps {
@@ -24,6 +27,9 @@ interface SharePageClientProps {
   initialVideoStatus: 'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null;
 }
 
+const MIN_PHOTOS = 10;
+const DEADLINE_HOURS = 72; // 3일
+
 export default function SharePageClient({
   groupId,
   comment,
@@ -35,23 +41,47 @@ export default function SharePageClient({
   createdAt,
   initialVideoStatus,
 }: SharePageClientProps) {
+  // 사진 관리
   const [refreshKey, setRefreshKey] = useState(0);
-  const [showFirstVisitModal, setShowFirstVisitModal] = useState(false);
-  const [shouldScrollAfterModalClose, setShouldScrollAfterModalClose] = useState(false);
-  const [shareLandingMounted, setShareLandingMounted] = useState(false);
   const { photos, isLoading, refetch } = usePhotos(groupId, initialPhotos);
-  const triggerFileSelectRef = useRef<(() => void) | null>(null);
+  const photoGridRef = useRef<HTMLDivElement>(null);
 
-  // 영상 제작 상태
-  const [videoStatus, setVideoStatus] = useState<'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null>(initialVideoStatus);
+  // FixedBottomBar 높이 관리
+  const [bottomBarHeight, setBottomBarHeight] = useState(0);
 
-  // 개발 도구용 테스트 상태
+  // 테스트 모드 상태 (개발 도구용)
   const [testMode, setTestMode] = useState(false);
   const [testPhotoCount, setTestPhotoCount] = useState<number>(0);
-  const [testTimeOffset, setTestTimeOffset] = useState<number>(0); // 시간 오프셋 (시간 단위)
-  const [testVideoStatus, setTestVideoStatus] = useState<'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null>(null);
+  const [testTimeOffset, setTestTimeOffset] = useState<number>(0);
+  const [testVideoStatus, setTestVideoStatus] = useState<
+    'pending' | 'requested' | 'processing' | 'completed' | 'failed' | null
+  >(null);
 
-  // testMode를 켤 때 현재 실제 값으로 초기화
+  // 커스텀 훅 사용
+  const { timeLeft, hasTimeLeft } = useTimer({
+    createdAt,
+    deadlineHours: DEADLINE_HOURS,
+    testMode,
+    testTimeOffset,
+  });
+
+  const { sectionRef: shareLandingRef, scrollToSection: scrollToShareLanding } =
+    useScrollToSection();
+
+  const { videoStatus, setVideoStatus, requestVideo } = useVideoStatus({
+    initialStatus: initialVideoStatus,
+    groupId,
+    token,
+  });
+
+  const { showFirstVisitModal, setShowFirstVisitModal, hasVisited, markAsVisited } =
+    useFirstVisit({
+      groupId,
+      shareCode,
+      isLoading,
+    });
+
+  // 테스트 모드 토글 시 초기화
   const handleTestModeChange = (enabled: boolean) => {
     if (enabled) {
       setTestPhotoCount(photos.length);
@@ -61,119 +91,12 @@ export default function SharePageClient({
     setTestMode(enabled);
   };
 
-  // Refs for smooth scrolling
-  const shareLandingNodeRef = useRef<HTMLDivElement | null>(null);
-  const photoGridRef = useRef<HTMLDivElement>(null);
-
-  // 타이머 상태
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
-  const [forceRecalculate, setForceRecalculate] = useState(0); // 강제 재계산용
-  const MIN_PHOTOS = 10;
-  const DEADLINE_HOURS = 72; // 3일
-
-  // 공통 스크롤 함수 - ShareLanding의 상단을 헤더 바로 아래에 위치시킴
-  const scrollToShareLanding = useCallback(() => {
-    if (!shareLandingNodeRef.current) return;
-
-    const headerHeight = 64; // h-16 = 64px
-    const elementTop = shareLandingNodeRef.current.getBoundingClientRect().top;
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const targetPosition = scrollTop + elementTop - headerHeight;
-
-    window.scrollTo({
-      top: targetPosition,
-      behavior: 'smooth'
-    });
-  }, []);
-
-  // ref callback - ref 저장 및 마운트 상태 업데이트
-  const shareLandingRef = useCallback((node: HTMLDivElement | null) => {
-    shareLandingNodeRef.current = node;
-    if (node) {
-      setShareLandingMounted(true);
-    }
-  }, []);
-
-  // 타이머 계산
+  // 자동 스크롤 처리 (첫 방문 모달 닫힌 후 or 재방문자)
   useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = Date.now();
-      let deadline;
-
-      if (testMode) {
-        // 테스트 모드: 현재 시간 기준으로 testTimeOffset만큼 시간 남음
-        deadline = now + testTimeOffset * 60 * 60 * 1000;
-      } else {
-        // 실제 모드: createdAt 기준으로 72시간 후
-        const created = new Date(createdAt).getTime();
-        deadline = created + DEADLINE_HOURS * 60 * 60 * 1000;
-      }
-
-      const diff = deadline - now;
-
-      if (diff <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0 });
-        return;
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-      setTimeLeft({ days, hours, minutes });
-    };
-
-    calculateTimeLeft();
-    const interval = setInterval(calculateTimeLeft, 60000); // 1분마다 업데이트
-
-    return () => clearInterval(interval);
-  }, [createdAt, testMode, testTimeOffset, forceRecalculate]);
-
-  // 앨범 생성 직후 확인 및 모달 표시
-  useEffect(() => {
-    if (!isLoading) {
-      const justCreatedCode = localStorage.getItem('album-just-created');
-
-      // 앨범을 방금 생성했고, 현재 페이지가 그 앨범이면 모달 표시
-      if (justCreatedCode === shareCode) {
-        setShowFirstVisitModal(true);
-        // 플래그 제거 (한 번만 표시)
-        localStorage.removeItem('album-just-created');
-      }
-    }
-  }, [shareCode, isLoading]);
-
-  // 첫 방문 모달이 닫힐 때 스크롤 준비
-  useEffect(() => {
-    if (!showFirstVisitModal && shouldScrollAfterModalClose) {
-      const visitKey = `service-intro-visited-${groupId}`;
-      localStorage.setItem(visitKey, 'true');
-
-      // 모달 닫기 애니메이션 완료 후 스크롤
-      setTimeout(() => {
-        scrollToShareLanding();
-      }, 400);
-
-      setShouldScrollAfterModalClose(false);
-    }
-  }, [showFirstVisitModal, shouldScrollAfterModalClose, groupId, scrollToShareLanding]);
-
-  // 모달 열림 추적
-  useEffect(() => {
-    if (showFirstVisitModal) {
-      setShouldScrollAfterModalClose(true);
-    }
-  }, [showFirstVisitModal]);
-
-  // 재방문자 자동 스크롤 - 로딩 완료 후 실행
-  useEffect(() => {
-    // 로딩 완료 && 모달 표시 안 함 && ShareLanding 마운트됨
-    if (!isLoading && !showFirstVisitModal && shareLandingMounted) {
-      const visitKey = `service-intro-visited-${groupId}`;
-      const hasVisited = localStorage.getItem(visitKey);
-
-      if (hasVisited) {
-        // DOM 렌더링 완료 보장
+    // 로딩 완료 && 첫 방문 모달이 닫힌 상태
+    if (!isLoading && !showFirstVisitModal && shareLandingRef.current) {
+      if (hasVisited()) {
+        // 재방문자: 즉시 스크롤
         requestAnimationFrame(() => {
           setTimeout(() => {
             scrollToShareLanding();
@@ -181,118 +104,57 @@ export default function SharePageClient({
         });
       }
     }
-  }, [isLoading, showFirstVisitModal, shareLandingMounted, groupId, scrollToShareLanding]);
+  }, [isLoading, showFirstVisitModal, hasVisited, scrollToShareLanding, shareLandingRef]);
 
+  // 사진 업로드 성공 핸들러
   const handleUploadSuccess = () => {
-    // 전체 업로드 완료 시 사진 목록 최종 새로고침
     refetch();
     setRefreshKey((prev) => prev + 1);
   };
 
   const handlePhotoUploaded = async () => {
-    // 첫 번째 사진 업로드 완료 시: refetch 후 스크롤
     await refetch();
     setRefreshKey((prev) => prev + 1);
-
-    // refetch 완료 후 스크롤 (다음 프레임에서 실행)
     requestAnimationFrame(() => {
       photoGridRef.current?.scrollIntoView({ behavior: 'smooth' });
     });
   };
 
+  // 스크롤 핸들러
   const scrollToMain = useCallback(() => {
-    // localStorage에 방문 기록 저장
-    const visitKey = `service-intro-visited-${groupId}`;
-    localStorage.setItem(visitKey, 'true');
-
-    // 공통 함수 사용
+    markAsVisited();
     scrollToShareLanding();
-  }, [groupId, scrollToShareLanding]);
+  }, [markAsVisited, scrollToShareLanding]);
 
   const scrollToPhotos = () => {
     photoGridRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleAddPhotos = () => {
-    // 파일 선택 다이얼로그 열기
-    if (triggerFileSelectRef.current) {
-      triggerFileSelectRef.current();
-    }
-  };
-
-  // 영상 제작 요청 핸들러
-  const handleRequestVideo = async () => {
-    try {
-      const response = await fetch(`/api/groups/${groupId}/video`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setVideoStatus('requested');
-        return { success: true };
-      } else {
-        return { success: false, error: result.error };
-      }
-    } catch (error) {
-      console.error('영상 제작 요청 오류:', error);
-      return { success: false, error: '서버 오류가 발생했습니다.' };
-    }
-  };
-
-  const handleGenerateVideo = async () => {
-    try {
-      const response = await fetch(`/api/groups/${groupId}/video`, {
-        method: 'POST',
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        alert('영상 제작이 신청되었습니다. 관리자가 확인 후 제작을 진행합니다.');
-      } else {
-        alert(result.error || '영상 제작 신청에 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('영상 제작 신청 오류:', error);
-      alert('서버 오류가 발생했습니다.');
-    }
   };
 
   // Secondary 버튼 상태 계산
   const currentPhotoCount = testMode ? testPhotoCount : photos.length;
   const currentVideoStatus = testMode ? testVideoStatus : videoStatus;
   const photosNeeded = Math.max(0, MIN_PHOTOS - currentPhotoCount);
-  const hasTimeLeft = timeLeft.days > 0 || timeLeft.hours > 0 || timeLeft.minutes > 0;
-  const canGenerateVideo = currentPhotoCount >= MIN_PHOTOS && hasTimeLeft && (currentVideoStatus === 'pending' || currentVideoStatus === null);
+  const canGenerateVideo =
+    currentPhotoCount >= MIN_PHOTOS &&
+    hasTimeLeft &&
+    (currentVideoStatus === 'pending' || currentVideoStatus === null);
 
   const getSecondaryButtonConfig = () => {
-    // 시간 마감
     if (!hasTimeLeft) {
       return { text: '마감되었습니다', disabled: true };
     }
 
-    // 영상 상태별
     if (currentVideoStatus === 'completed') {
       return { text: '영상 완성', disabled: true };
     }
-    if (currentVideoStatus === 'processing') {
-      return { text: '영상 제작 중', disabled: true };
-    }
-    if (currentVideoStatus === 'requested') {
+    if (currentVideoStatus === 'processing' || currentVideoStatus === 'requested') {
       return { text: '영상 제작 중', disabled: true };
     }
 
-    // 사진 부족
     if (currentPhotoCount < MIN_PHOTOS) {
       return { text: `${photosNeeded}장 더 필요해요`, disabled: true };
     }
 
-    // 영상 제작 가능
     return { text: '영상 만들기', disabled: false };
   };
 
@@ -311,8 +173,19 @@ export default function SharePageClient({
       {/* 첫 방문 안내 모달 */}
       <FirstVisitGuideModal
         open={showFirstVisitModal}
-        onOpenChange={setShowFirstVisitModal}
+        onOpenChange={(open) => {
+          setShowFirstVisitModal(open);
+          // 모달 닫힐 때 방문 기록 저장 및 스크롤
+          if (!open) {
+            markAsVisited();
+            setTimeout(() => {
+              scrollToShareLanding();
+            }, 400);
+          }
+        }}
         shareUrl={shareUrl}
+        creatorNickname={creatorNickname}
+        shareCode={shareCode}
       />
 
       {/* 개발 도구 (개발 환경 전용) */}
@@ -321,10 +194,7 @@ export default function SharePageClient({
         testMode={testMode}
         onTestModeChange={handleTestModeChange}
         onTestPhotoCountChange={setTestPhotoCount}
-        onTestTimeOffsetChange={(offset) => {
-          setTestTimeOffset(offset);
-          setForceRecalculate(prev => prev + 1);
-        }}
+        onTestTimeOffsetChange={setTestTimeOffset}
         onTestVideoStatusChange={setTestVideoStatus}
         currentPhotoCount={currentPhotoCount}
         currentVideoStatus={currentVideoStatus}
@@ -335,7 +205,13 @@ export default function SharePageClient({
       />
 
       {/* 서비스 소개 섹션 */}
-      <ServiceIntro onScrollToMain={scrollToMain} creatorNickname={creatorNickname} comment={comment} />
+      <ServiceIntro
+        onScrollToMain={scrollToMain}
+        creatorNickname={creatorNickname}
+        comment={comment}
+        shareUrl={shareUrl}
+        shareCode={shareCode}
+      />
 
       {/* 랜딩 섹션 */}
       <div ref={shareLandingRef}>
@@ -348,49 +224,32 @@ export default function SharePageClient({
         />
       </div>
 
-      {/* 사진 업로드 섹션 - Grid보다 먼저 배치 */}
-      <section className="bg-white py-12 scroll-mt-16">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <PhotoUploadClient
-              groupId={groupId}
-              token={token}
-              onUploadSuccess={handleUploadSuccess}
-              onPhotoUploaded={handlePhotoUploaded}
-              onReady={(trigger) => {
-                triggerFileSelectRef.current = trigger;
-              }}
-            />
-          </div>
-        </div>
-      </section>
-
       {/* 사진 그리드 섹션 */}
       <section
         ref={photoGridRef}
-        className="bg-neutral-50 py-12 pb-28 scroll-mt-16"
+        className="bg-neutral-50 py-10 scroll-mt-16"
+        style={{ paddingBottom: `${bottomBarHeight + 32}px` }}
       >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-2xl font-semibold mb-6 font-display">
-              모인 추억들
-            </h2>
+        <div className="container mx-auto px-4">
+          <div className="max-w-lg mx-auto">
+            <h2 className="text-2xl font-semibold mb-6 font-display">모인 추억들</h2>
             <PhotoGridClient key={refreshKey} groupId={groupId} />
           </div>
         </div>
       </section>
 
       {/* Fixed Bottom Bar */}
-      <FixedBottomBar
-        primaryButton={{
-          text: '사진 추가하기',
-          onClick: handleAddPhotos,
-        }}
+      <SharePageBottomBar
+        groupId={groupId}
+        token={token}
+        onRefetch={handleUploadSuccess}
+        onPhotoUploaded={handlePhotoUploaded}
         secondaryButton={{
           text: secondaryButtonConfig.text,
-          onClick: handleRequestVideo,
+          onClick: requestVideo,
           disabled: secondaryButtonConfig.disabled,
         }}
+        onHeightChange={setBottomBarHeight}
       />
     </>
   );

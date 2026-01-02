@@ -2,6 +2,7 @@ import type React from 'react';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { ToasterProvider } from '@/components/providers/toaster-provider';
+import { KakaoProvider } from '@/components/providers/kakao-provider';
 import GlobalLoader from '@/components/GlobalLoader';
 import './globals.css';
 
@@ -11,6 +12,18 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon/icon.png',
     apple: '/favicon/apple-icon.png',
+  },
+  openGraph: {
+    title: '추억을 다시, 영상으로',
+    description: 'AI가 오래된 사진에 생명을 불어넣습니다',
+    images: [
+      {
+        url: '/favicon/logo.png',
+        width: 512,
+        height: 512,
+        alt: 'Life Is Short - 추억을 다시, 영상으로',
+      },
+    ],
   },
 };
 
@@ -26,6 +39,7 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body className="antialiased bg-gray-100">
+        <KakaoProvider />
         {isAdminPage ? (
           // Admin 페이지: 전체 width 사용
           <>

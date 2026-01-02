@@ -2,45 +2,75 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { flushSync } from 'react-dom';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { X, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
-import UploaderDialog from './UploaderDialog';
-import ImageViewerModal from './ImageViewerModal';
+import UploaderDialog from '@/components/share/UploaderDialog';
+import ImageViewerModal from '@/components/share/ImageViewerModal';
+import KakaoChannelChatButton from '@/components/channel/KakaoChannelChatButton';
 
 type UploadStatus = 'pending' | 'uploading' | 'success' | 'failed';
 
 interface FileWithDescription {
-  id: string; // 고유 ID
+  id: string;
   file: File;
   previewUrl: string;
   uploadStatus: UploadStatus;
   error?: string;
 }
 
-interface PhotoUploadProps {
-  groupId: string;
-  token: string;
-  onUploadSuccess?: () => void;
-  onPhotoUploaded?: () => void; // 개별 사진 완료 시 호출
-  onReady?: (triggerFileSelect: () => void) => void; // 파일 선택 트리거 함수 전달
+interface ButtonConfig {
+  text: string;
+  onClick: () => void;
+  disabled?: boolean;
 }
 
-export default function PhotoUpload({
+interface SharePageBottomBarProps {
+  /**
+   * 그룹 ID
+   */
+  groupId: string;
+  /**
+   * 인증 토큰
+   */
+  token: string;
+  /**
+   * 업로드 성공 시 호출되는 콜백 (refetch)
+   */
+  onRefetch?: () => void;
+  /**
+   * 첫 사진 업로드 성공 시 호출되는 콜백 (스크롤)
+   */
+  onPhotoUploaded?: () => void;
+  /**
+   * 보조 버튼 설정 (선택)
+   */
+  secondaryButton?: ButtonConfig;
+  /**
+   * 높이 변경 콜백 (px 단위)
+   */
+  onHeightChange?: (height: number) => void;
+}
+
+export default function SharePageBottomBar({
   groupId,
   token,
-  onUploadSuccess,
+  onRefetch,
   onPhotoUploaded,
-  onReady,
-}: PhotoUploadProps) {
-  const [uploaderNickname, setUploaderNickname] = useState('');
-  const [showNicknameDialog, setShowNicknameDialog] = useState(false);
-  const [isPendingUpload, setIsPendingUpload] = useState(false); // 업로드 대기 중인지 추적
+  secondaryButton,
+  onHeightChange,
+}: SharePageBottomBarProps) {
+  // 상태 관리
   const [selectedFiles, setSelectedFiles] = useState<FileWithDescription[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploaderNickname, setUploaderNickname] = useState('');
+  const [showNicknameDialog, setShowNicknameDialog] = useState(false);
+  const [isPendingUpload, setIsPendingUpload] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const firstSuccessTriggeredRef = useRef(false);
 
@@ -53,8 +83,6 @@ export default function PhotoUpload({
     if (savedNickname) {
       setUploaderNickname(savedNickname);
     }
-    // 닉네임이 없어도 바로 다이얼로그를 표시하지 않음
-    // 사진 업로드 시도할 때 체크하여 표시함
   }, [nicknameKey]);
 
   // cleanup: 컴포넌트 언마운트 시 미리보기 URL 해제
@@ -66,15 +94,27 @@ export default function PhotoUpload({
     };
   }, [selectedFiles]);
 
-  // 파일 선택 트리거 함수를 부모에게 전달 (한 번만 실행)
+  // ResizeObserver: 높이 변화 감지
   useEffect(() => {
-    if (onReady) {
-      onReady(() => {
-        fileInputRef.current?.click();
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (!containerRef.current || !onHeightChange) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const height = entry.target.getBoundingClientRect().height;
+        onHeightChange(height);
+      }
+    });
+
+    resizeObserver.observe(containerRef.current);
+
+    // 초기 높이 측정
+    const initialHeight = containerRef.current.getBoundingClientRect().height;
+    onHeightChange(initialHeight);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [onHeightChange]);
 
   const handleNicknameConfirm = (nickname: string) => {
     setUploaderNickname(nickname);
@@ -91,7 +131,7 @@ export default function PhotoUpload({
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     console.log('📸 선택된 파일 개수:', files.length);
-    console.log('📸 파일 목록:', files.map(f => f.name));
+    console.log('📸 파일 목록:', files.map((f) => f.name));
 
     // 파일 검증
     const validFiles = files.filter((file) => {
@@ -114,9 +154,9 @@ export default function PhotoUpload({
     });
 
     const filesWithDescription = validFiles.map((file) => ({
-      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // 고유 ID 생성
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       file,
-      previewUrl: URL.createObjectURL(file), // 미리보기 URL 생성
+      previewUrl: URL.createObjectURL(file),
       uploadStatus: 'pending' as UploadStatus,
     }));
 
@@ -156,7 +196,7 @@ export default function PhotoUpload({
 
     if (!nickname.trim()) {
       toast.error('닉네임을 설정해주세요');
-      setIsPendingUpload(true); // 업로드 대기 중 플래그 설정
+      setIsPendingUpload(true);
       setShowNicknameDialog(true);
       return;
     }
@@ -248,7 +288,8 @@ export default function PhotoUpload({
       // 실패한 항목 토스트 표시
       failedResults.forEach((result) => {
         if (result) {
-          toast.error(`${result.fileName}: ${result.error || '업로드 실패'}`);
+          const errorMsg = result.error?.trim() || '업로드 실패';
+          toast.error(`${result.fileName}: ${errorMsg}`);
         }
       });
 
@@ -256,10 +297,18 @@ export default function PhotoUpload({
         toast.success(`${successCount}개의 추억이 저장되었습니다 ✨`);
 
         // 성공한 파일만 목록에서 제거
-        setSelectedFiles((prev) => prev.filter((f) => f.uploadStatus !== 'success'));
+        setSelectedFiles((prev) => {
+          // 성공한 파일 cleanup
+          prev
+            .filter((f) => f.uploadStatus === 'success')
+            .forEach((f) => {
+              URL.revokeObjectURL(f.previewUrl);
+            });
+          return prev.filter((f) => f.uploadStatus !== 'success');
+        });
 
         // 최종 refetch
-        onUploadSuccess?.();
+        onRefetch?.();
       }
 
       if (successCount === 0 && failedResults.length > 0) {
@@ -270,11 +319,23 @@ export default function PhotoUpload({
     }
   };
 
+  // Primary 버튼 동작
+  const handlePrimaryClick = () => {
+    if (selectedFiles.length > 0) {
+      handleUpload();
+    } else {
+      fileInputRef.current?.click();
+    }
+  };
+
+  const primaryButtonText = selectedFiles.length > 0
+    ? `${selectedFiles.length}개 추억 저장하기`
+    : '사진 추가하기';
+
   return (
     <>
-      {/* Hidden file input - 프로그래밍적으로만 트리거됨 (bottom bar 버튼 클릭 시) */}
+      {/* Hidden file input */}
       <Input
-        id="photo-upload"
         ref={fileInputRef}
         type="file"
         accept={ALLOWED_MIME_TYPES.join(',')}
@@ -284,90 +345,139 @@ export default function PhotoUpload({
         disabled={isUploading}
       />
 
-      <div className="space-y-8">
-
-        {/* 선택된 파일 미리보기 */}
+      <div
+        ref={containerRef}
+        className="fixed bottom-0 left-1/2 z-50 w-[min(428px,100vw)] -translate-x-1/2 border-t border-neutral-200 bg-white/80 backdrop-blur-sm"
+      >
+        {/* 섬네일 스크롤 영역 (조건부 렌더링) */}
         {selectedFiles.length > 0 && (
-          <div className="space-y-5">
-            <div className="text-center">
-              <p className="text-lg font-semibold text-neutral-800">
-                {selectedFiles.length}개의 추억을 준비했어요
-              </p>
-            </div>
-
-            <div className="max-h-[600px] overflow-y-auto">
-              <div className="grid grid-cols-3 gap-3">
-                {selectedFiles.map((item, index) => (
+          <div className="relative border-b border-neutral-200">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 py-2 bg-neutral-50">
+              {selectedFiles.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="relative flex-shrink-0 w-12 h-12"
+                >
+                  {/* 섬네일 이미지 */}
                   <div
-                    key={item.id}
-                    className="relative bg-white rounded-lg overflow-hidden border border-neutral-200 hover:border-neutral-300 transition-colors aspect-square cursor-pointer"
+                    className="relative w-full h-full rounded-lg overflow-hidden border border-neutral-200 cursor-pointer"
                     onClick={() => setSelectedImageIndex(index)}
                   >
-                    {/* 이미지 미리보기 */}
                     <img
                       src={item.previewUrl}
                       alt={item.file.name}
-                      className="w-full h-full object-cover pointer-events-none"
+                      className="w-full h-full object-cover"
                     />
 
-                    {/* 삭제 버튼 */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRemoveFile(item.id);
-                      }}
-                      disabled={isUploading}
-                      className="absolute top-2 right-2 z-10 w-7 h-7 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center transition-colors backdrop-blur-sm disabled:opacity-50 shadow-md"
-                      aria-label="삭제"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-
-                    {/* 상태 뱃지 */}
-                    <div className="absolute bottom-2 left-2 pointer-events-none">
-                      {item.uploadStatus === 'uploading' && (
-                        <div className="flex items-center gap-1 bg-blue-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                          <span>업로드 중</span>
-                        </div>
-                      )}
-                      {item.uploadStatus === 'success' && (
-                        <div className="flex items-center gap-1 bg-green-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
-                          <CheckCircle2 className="w-3 h-3" />
-                          <span>완료</span>
-                        </div>
-                      )}
-                      {item.uploadStatus === 'failed' && (
-                        <div className="flex items-center gap-1 bg-red-500/90 text-white text-[10px] font-medium px-2 py-1 rounded-full backdrop-blur-sm">
-                          <XCircle className="w-3 h-3" />
-                          <span>실패</span>
-                        </div>
-                      )}
-                    </div>
+                    {/* 상태 표시 */}
+                    {item.uploadStatus === 'uploading' && (
+                      <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
+                        <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                      </div>
+                    )}
+                    {item.uploadStatus === 'success' && (
+                      <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-tl-lg flex items-center justify-center">
+                        <CheckCircle2 className="w-3 h-3 text-white" />
+                      </div>
+                    )}
+                    {item.uploadStatus === 'failed' && (
+                      <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
+                        <XCircle className="w-4 h-4 text-red-600" />
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
+
+                  {/* 삭제 버튼 */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveFile(item.id);
+                    }}
+                    disabled={isUploading}
+                    className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center disabled:opacity-50 transition-colors shadow-md"
+                    aria-label="삭제"
+                  >
+                    <X className="w-4 h-4 text-white" />
+                  </button>
+                </div>
+              ))}
             </div>
+            {/* 스크롤 힌트 gradient */}
+            <div className="absolute top-0 right-0 w-8 h-full bg-gradient-to-l from-neutral-50 to-transparent pointer-events-none" />
           </div>
         )}
 
-        {/* 업로드 버튼 */}
-        {selectedFiles.length > 0 && (
-          <Button
-            onClick={() => handleUpload()}
-            disabled={isUploading}
-            className="w-full bg-neutral-900 hover:bg-neutral-800 h-14 text-base font-semibold rounded-xl shadow-sm"
-          >
-            {isUploading ? (
+        {/* 버튼 영역 */}
+        <div className="px-4 py-3">
+          <div className="space-y-2">
+            {secondaryButton ? (
               <>
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                추억을 저장하는 중...
+                {/* Secondary 버튼이 있을 때: Primary는 전체 너비, Secondary와 카카오톡은 같은 줄 */}
+                {/* Primary 버튼 */}
+                <Button
+                  onClick={handlePrimaryClick}
+                  disabled={isUploading}
+                  size="lg"
+                  className="w-full h-12"
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      추억을 저장하는 중...
+                    </>
+                  ) : (
+                    primaryButtonText
+                  )}
+                </Button>
+
+                {/* Secondary 버튼 행 - 카카오톡 + Secondary */}
+                <div className="flex gap-2">
+                  {/* 카카오톡 1:1 상담 버튼 */}
+                  <KakaoChannelChatButton size="lg" className="h-12 w-12" />
+
+                  {/* Secondary 버튼 */}
+                  <Button
+                    onClick={secondaryButton.onClick}
+                    disabled={secondaryButton.disabled || isUploading}
+                    size="lg"
+                    variant={secondaryButton.disabled ? 'outline' : 'default'}
+                    className="flex-1 h-12"
+                  >
+                    {secondaryButton.text}
+                  </Button>
+                </div>
               </>
             ) : (
-              `${selectedFiles.length}개의 추억 저장하기`
+              <>
+                {/* Secondary 버튼이 없을 때: 카카오톡 + Primary */}
+                <div className="flex gap-2">
+                  {/* 카카오톡 1:1 상담 버튼 */}
+                  <KakaoChannelChatButton size="lg" className="h-12 w-12" />
+
+                  {/* Primary 버튼 */}
+                  <Button
+                    onClick={handlePrimaryClick}
+                    disabled={isUploading}
+                    size="lg"
+                    className="flex-1 h-12"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        추억을 저장하는 중...
+                      </>
+                    ) : (
+                      primaryButtonText
+                    )}
+                  </Button>
+                </div>
+              </>
             )}
-          </Button>
-        )}
+          </div>
+        </div>
+
+        {/* Safe area padding for iOS */}
+        <div className="h-[env(safe-area-inset-bottom)]" />
       </div>
 
       {/* 닉네임 설정 다이얼로그 */}
