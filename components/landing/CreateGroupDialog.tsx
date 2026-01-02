@@ -43,21 +43,36 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
 
-  // Input focus 시 자동 스크롤
+  // Input focus/click 시 자동 스크롤
   useEffect(() => {
+    const scrollToInput = (target: HTMLElement) => {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 350); // 키보드 애니메이션 대기
+    };
+
     const handleFocus = (e: FocusEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
-        setTimeout(() => {
-          e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 300); // 키보드 애니메이션 대기
+        scrollToInput(e.target);
+      }
+    };
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+        scrollToInput(target);
       }
     };
 
     if (open) {
       document.addEventListener('focusin', handleFocus);
+      document.addEventListener('click', handleClick);
     }
 
-    return () => document.removeEventListener('focusin', handleFocus);
+    return () => {
+      document.removeEventListener('focusin', handleFocus);
+      document.removeEventListener('click', handleClick);
+    };
   }, [open]);
 
   const {
