@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MessageCircleQuestion } from 'lucide-react';
+import { MessagesSquare } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface KakaoChannelChatButtonProps {
@@ -85,11 +85,11 @@ export default function KakaoChannelChatButton({
     lg: 'h-10 w-10',
   };
 
-  // 아이콘 크기 - globals.css의 폰트 크기 비율(13:16)과 동일하게 조정
+  // 아이콘 크기 - globals.css의 폰트 크기 비율(13:16)과 동일하게 조정 (20% 증가)
   const iconSizes = {
-    sm: 'w-[clamp(0.975rem,3.72vw,1.2rem)] h-[clamp(0.975rem,3.72vw,1.2rem)]',
-    default: 'w-[clamp(1.09rem,3.72vw,1.35rem)] h-[clamp(1.09rem,3.72vw,1.35rem)]',
-    lg: 'w-[clamp(1.22rem,3.72vw,1.5rem)] h-[clamp(1.22rem,3.72vw,1.5rem)]',
+    sm: 'w-[clamp(1.17rem,3.72vw,1.44rem)] h-[clamp(1.17rem,3.72vw,1.44rem)]',
+    default: 'w-[clamp(1.31rem,3.72vw,1.62rem)] h-[clamp(1.31rem,3.72vw,1.62rem)]',
+    lg: 'w-[clamp(1.46rem,3.72vw,1.8rem)] h-[clamp(1.46rem,3.72vw,1.8rem)]',
   };
 
   if (!isKakaoReady) {
@@ -106,7 +106,7 @@ export default function KakaoChannelChatButton({
         } ${className}`}
         aria-label="카카오톡 1:1 상담"
       >
-        <MessageCircleQuestion className={iconSizes[size]} />
+        <MessagesSquare className={iconSizes[size]} />
         <span>1:1 상담</span>
       </button>
     );
@@ -121,7 +121,7 @@ export default function KakaoChannelChatButton({
       } ${sizeClasses[size]} ${className}`}
       aria-label="카카오톡 1:1 상담"
     >
-      <MessageCircleQuestion className={`${iconSizes[size]} text-neutral-900`} />
+      <MessagesSquare className={`${iconSizes[size]} text-neutral-900`} />
     </button>
   );
 }
