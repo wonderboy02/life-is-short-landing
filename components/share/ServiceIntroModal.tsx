@@ -19,7 +19,7 @@ export default function ServiceIntro({
   shareCode,
 }: ServiceIntroProps) {
   return (
-    <section className="relative flex min-h-[100dvh] flex-col bg-neutral-900">
+    <section className="relative flex min-h-[80dvh] flex-col bg-neutral-900">
       {/* 영상 배경 */}
       <div className="absolute inset-0 overflow-hidden">
         <video
