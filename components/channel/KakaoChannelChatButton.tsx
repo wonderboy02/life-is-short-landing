@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface KakaoChannelChatButtonProps {
@@ -33,6 +33,7 @@ export default function KakaoChannelChatButton({
   className = '',
 }: KakaoChannelChatButtonProps) {
   const [isKakaoReady, setIsKakaoReady] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Kakao SDK 로드 확인
   useEffect(() => {
@@ -59,13 +60,21 @@ export default function KakaoChannelChatButton({
       return;
     }
 
+    setIsLoading(true);
+
     try {
       window.Kakao.Channel.chat({
         channelPublicId,
       });
+
+      // 카카오톡 창이 열리는 동안 로딩 표시 (2초)
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
     } catch (error) {
       console.error('카카오톡 채팅 열기 실패:', error);
       toast.error('카카오톡 상담을 시작할 수 없습니다');
+      setIsLoading(false);
     }
   };
 
@@ -77,9 +86,9 @@ export default function KakaoChannelChatButton({
   };
 
   const iconSizes = {
-    sm: 'h-5 w-5',
-    default: 'h-6 w-6',
-    lg: 'h-7 w-7',
+    sm: 'h-4 w-4',
+    default: 'h-5 w-5',
+    lg: 'h-5 w-5',
   };
 
   if (!isKakaoReady) {
@@ -91,10 +100,13 @@ export default function KakaoChannelChatButton({
     return (
       <button
         onClick={handleClick}
-        className={`flex items-center gap-2 rounded-lg bg-yellow-400 px-4 py-3 font-medium text-amber-900 transition-all hover:bg-yellow-500 active:scale-95 ${className}`}
+        disabled={isLoading}
+        className={`flex items-center gap-2 rounded-lg border border-neutral-900 px-4 py-3 font-medium text-neutral-900 transition-all hover:bg-neutral-50 active:bg-neutral-100 ${
+          isLoading ? 'bg-neutral-200' : 'bg-white'
+        } ${className}`}
         aria-label="카카오톡 1:1 상담"
       >
-        <MessageCircle className={iconSizes[size]} />
+        <MessageSquare className={iconSizes[size]} />
         <span>1:1 상담</span>
       </button>
     );
@@ -104,10 +116,13 @@ export default function KakaoChannelChatButton({
   return (
     <button
       onClick={handleClick}
-      className={`flex items-center justify-center rounded-lg bg-yellow-400 transition-all hover:bg-yellow-500 active:scale-95 ${sizeClasses[size]} ${className}`}
+      disabled={isLoading}
+      className={`flex items-center justify-center rounded-lg border border-neutral-900 transition-all hover:bg-neutral-50 active:bg-neutral-100 ${
+        isLoading ? 'bg-neutral-200' : 'bg-white'
+      } ${sizeClasses[size]} ${className}`}
       aria-label="카카오톡 1:1 상담"
     >
-      <MessageCircle className={`${iconSizes[size]} text-amber-900`} />
+      <MessageSquare className={`${iconSizes[size]} text-neutral-900`} />
     </button>
   );
 }

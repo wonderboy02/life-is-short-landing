@@ -371,10 +371,10 @@ export default function SharePageBottomBar({
                       handleRemoveFile(item.id);
                     }}
                     disabled={isUploading}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center disabled:opacity-50 transition-colors"
+                    className="absolute -top-1 -right-1 z-10 w-6 h-6 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center disabled:opacity-50 transition-colors"
                     aria-label="삭제"
                   >
-                    <X className="w-3 h-3 text-white" />
+                    <X className="w-4 h-4 text-white" />
                   </button>
 
                   {/* 상태 표시 */}
