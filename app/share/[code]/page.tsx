@@ -116,7 +116,7 @@ export default async function SharePage({ params }: Props) {
             <div className="relative">
               {/* 공유 버튼 강조를 위한 pulse 효과 */}
               <div className="pointer-events-none absolute inset-0 animate-pulse rounded-md bg-blue-100 opacity-30" />
-              <ShareUrlButton url={shareUrl} />
+              <ShareUrlButton url={shareUrl} buttonText="사진 요청하기" showIcon={false} />
             </div>
           </div>
         </div>

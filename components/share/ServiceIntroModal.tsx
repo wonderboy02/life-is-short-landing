@@ -1,17 +1,20 @@
 'use client';
 
 import { Upload, Palette, Video, ChevronDown } from 'lucide-react';
+import ShareUrlButton from '@/components/share/ShareUrlButton';
 
 interface ServiceIntroProps {
   onScrollToMain: () => void;
   creatorNickname: string;
   comment: string;
+  shareUrl: string;
 }
 
 export default function ServiceIntro({
   onScrollToMain,
   creatorNickname,
   comment,
+  shareUrl,
 }: ServiceIntroProps) {
   return (
     <section className="relative flex min-h-[100dvh] flex-col bg-neutral-900">
@@ -58,8 +61,17 @@ export default function ServiceIntro({
               <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
                 <Upload className="h-6 w-6 text-white" />
               </div>
-              <div>
-                <h3 className="mb-1 text-base font-semibold text-white">1. 사진 모으기</h3>
+              <div className="flex-1">
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <h3 className="text-base font-semibold text-white">1. 사진 모으기</h3>
+                  <ShareUrlButton
+                    url={shareUrl}
+                    title="추억 앨범"
+                    text="함께 사진을 추가해보세요!"
+                    buttonText="사진 요청하기"
+                    showIcon={false}
+                  />
+                </div>
                 <p className="text-xs leading-relaxed text-neutral-300">
                   가족, 친구들과 함께 옛 사진을 모아요
                 </p>

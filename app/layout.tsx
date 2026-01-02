@@ -2,6 +2,7 @@ import type React from 'react';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { ToasterProvider } from '@/components/providers/toaster-provider';
+import { KakaoProvider } from '@/components/providers/kakao-provider';
 import GlobalLoader from '@/components/GlobalLoader';
 import './globals.css';
 
@@ -26,6 +27,7 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body className="antialiased bg-gray-100">
+        <KakaoProvider />
         {isAdminPage ? (
           // Admin 페이지: 전체 width 사용
           <>

@@ -285,6 +285,16 @@ export default function PhotoUpload({
       />
 
       <div className="space-y-8">
+        {/* 파일 미선택 시 안내 */}
+        {selectedFiles.length === 0 && (
+          <div className="text-center py-4">
+            <p className="text-sm text-neutral-500">
+              하단의 "사진 추가하기" 버튼을 눌러
+              <br />
+              추억을 업로드해주세요
+            </p>
+          </div>
+        )}
 
         {/* 선택된 파일 미리보기 */}
         {selectedFiles.length > 0 && (

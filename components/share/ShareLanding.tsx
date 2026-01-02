@@ -22,9 +22,9 @@ export default function ShareLanding({
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   return (
-    <section className="flex min-h-[100dvh] flex-col justify-between bg-white px-4 py-12">
+    <section className="flex min-h-[50dvh] flex-col justify-between bg-white px-4 py-10">
       <div className="flex flex-1 items-center justify-center">
-        <div className="mx-auto w-full max-w-lg space-y-10">
+        <div className="mx-auto w-full max-w-lg space-y-8">
           {/* 메인 메시지 */}
           <div className="space-y-6 text-center">
             <div className="space-y-2">
@@ -76,7 +76,6 @@ export default function ShareLanding({
               </div>
             </div>
           )}
-
         </div>
       </div>
 

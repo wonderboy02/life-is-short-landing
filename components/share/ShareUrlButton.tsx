@@ -10,12 +10,16 @@ interface ShareUrlButtonProps {
   url: string;
   title?: string;
   text?: string;
+  buttonText?: string;
+  showIcon?: boolean;
 }
 
 export default function ShareUrlButton({
   url,
   title = '추억 앨범',
   text = '함께 사진을 추가해보세요!',
+  buttonText = '공유',
+  showIcon = true,
 }: ShareUrlButtonProps) {
   const [copied, setCopied] = useState(false);
 
@@ -29,8 +33,39 @@ export default function ShareUrlButton({
     try {
       const isKakao = isKakaoTalkWebView();
 
+      // 1순위: Kakao SDK를 사용한 카카오톡 공유 (모든 환경에서 작동)
+      if (window.Kakao && window.Kakao.isInitialized()) {
+        try {
+          window.Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+              title: title,
+              description: text,
+              imageUrl: 'https://your-domain.com/og-image.jpg', // TODO: OG 이미지 URL로 교체
+              link: {
+                mobileWebUrl: url,
+                webUrl: url,
+              },
+            },
+            buttons: [
+              {
+                title: '사진 추가하기',
+                link: {
+                  mobileWebUrl: url,
+                  webUrl: url,
+                },
+              },
+            ],
+          });
+          return; // 카카오톡 공유 성공 시 종료
+        } catch (kakaoError) {
+          console.error('카카오톡 공유 실패:', kakaoError);
+          // 카카오톡 공유 실패 시 다음 방법으로 fallback
+        }
+      }
+
+      // 2순위: Web Share API (일반 모바일 브라우저)
       // 카카오톡 웹뷰에서는 Web Share API 사용 안 함 (지원하지 않음)
-      // Web Share API 지원 확인 (모바일에서 주로 지원) && 카카오톡이 아닐 때
       if (navigator.share && !isKakao) {
         await navigator.share({
           title,
@@ -39,7 +74,7 @@ export default function ShareUrlButton({
         });
         // 공유 성공 시 별도 피드백 없음 (네이티브 UI가 제공)
       } else {
-        // Fallback: URL 복사
+        // 3순위 Fallback: URL 복사
         await navigator.clipboard.writeText(url);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -75,8 +110,8 @@ export default function ShareUrlButton({
 
   return (
     <Button onClick={handleShare} variant="outline" size="sm" className="flex items-center gap-2">
-      {copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-      <span>{copied ? '복사됨' : '공유'}</span>
+      {showIcon && (copied ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />)}
+      <span>{copied ? '복사됨' : buttonText}</span>
     </Button>
   );
 }
