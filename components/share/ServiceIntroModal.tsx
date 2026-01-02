@@ -108,7 +108,7 @@ export default function ServiceIntro({
           </div>
 
           {/* 스크롤 힌트 */}
-          <div className="flex justify-center pt-8">
+          <div className="flex justify-center">
             <button
               onClick={onScrollToMain}
               className="flex flex-col items-center gap-1 text-white/60 transition-colors hover:text-white/90"
