@@ -142,7 +142,7 @@ export default function HeroSection({ onShowCTA }: HeroSectionProps) {
         {/* Photo Grid */}
         <div ref={gridRef} className="mx-auto mb-16" style={{ maxWidth: '350px', position: 'relative' }}>
           {/* 하단 레이어: 고정된 흐린 사진 (처음부터 끝까지 존재) */}
-          <div className="grid grid-cols-3 gap-2" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+          <div className="grid grid-cols-3 gap-2" style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 0 }}>
             {Array.from({ length: 9 }).map((_, index) => (
               <div
                 key={`ghost-${index}`}
