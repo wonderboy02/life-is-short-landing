@@ -80,15 +80,15 @@ export default function KakaoChannelChatButton({
 
   // 사이즈별 스타일
   const sizeClasses = {
-    sm: 'h-10 w-10',
-    default: 'h-12 w-12',
-    lg: 'h-14 w-14',
+    sm: 'h-8 w-8',
+    default: 'h-9 w-9',
+    lg: 'h-10 w-10',
   };
 
   const iconSizes = {
     sm: 'h-4 w-4',
-    default: 'h-5 w-5',
-    lg: 'h-5 w-5',
+    default: 'h-4 w-4',
+    lg: 'h-4 w-4',
   };
 
   if (!isKakaoReady) {
@@ -100,9 +100,8 @@ export default function KakaoChannelChatButton({
     return (
       <button
         onClick={handleClick}
-        disabled={isLoading}
-        className={`flex items-center gap-2 rounded-lg border border-neutral-900 px-4 py-3 font-medium text-neutral-900 transition-all hover:bg-neutral-50 active:bg-neutral-100 ${
-          isLoading ? 'bg-neutral-200' : 'bg-white'
+        className={`flex items-center gap-2 rounded-lg border border-neutral-900 px-4 py-3 font-medium text-neutral-900 transition-colors duration-200 hover:bg-neutral-50 active:bg-neutral-100 ${
+          isLoading ? 'bg-neutral-200 pointer-events-none' : 'bg-white'
         } ${className}`}
         aria-label="카카오톡 1:1 상담"
       >
@@ -116,9 +115,8 @@ export default function KakaoChannelChatButton({
   return (
     <button
       onClick={handleClick}
-      disabled={isLoading}
-      className={`flex items-center justify-center rounded-lg border border-neutral-900 transition-all hover:bg-neutral-50 active:bg-neutral-100 ${
-        isLoading ? 'bg-neutral-200' : 'bg-white'
+      className={`flex items-center justify-center rounded-lg border border-neutral-900 transition-colors duration-200 hover:bg-neutral-50 active:bg-neutral-100 ${
+        isLoading ? 'bg-neutral-200 pointer-events-none' : 'bg-white'
       } ${sizeClasses[size]} ${className}`}
       aria-label="카카오톡 1:1 상담"
     >

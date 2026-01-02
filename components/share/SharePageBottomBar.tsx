@@ -288,7 +288,8 @@ export default function SharePageBottomBar({
       // 실패한 항목 토스트 표시
       failedResults.forEach((result) => {
         if (result) {
-          toast.error(`${result.fileName}: ${result.error || '업로드 실패'}`);
+          const errorMsg = result.error?.trim() || '업로드 실패';
+          toast.error(`${result.fileName}: ${errorMsg}`);
         }
       });
 
@@ -355,14 +356,36 @@ export default function SharePageBottomBar({
               {selectedFiles.map((item, index) => (
                 <div
                   key={item.id}
-                  className="relative flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden border border-neutral-200 cursor-pointer"
-                  onClick={() => setSelectedImageIndex(index)}
+                  className="relative flex-shrink-0 w-12 h-12"
                 >
-                  <img
-                    src={item.previewUrl}
-                    alt={item.file.name}
-                    className="w-full h-full object-cover"
-                  />
+                  {/* 섬네일 이미지 */}
+                  <div
+                    className="relative w-full h-full rounded-lg overflow-hidden border border-neutral-200 cursor-pointer"
+                    onClick={() => setSelectedImageIndex(index)}
+                  >
+                    <img
+                      src={item.previewUrl}
+                      alt={item.file.name}
+                      className="w-full h-full object-cover"
+                    />
+
+                    {/* 상태 표시 */}
+                    {item.uploadStatus === 'uploading' && (
+                      <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
+                        <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                      </div>
+                    )}
+                    {item.uploadStatus === 'success' && (
+                      <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-tl-lg flex items-center justify-center">
+                        <CheckCircle2 className="w-3 h-3 text-white" />
+                      </div>
+                    )}
+                    {item.uploadStatus === 'failed' && (
+                      <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
+                        <XCircle className="w-4 h-4 text-red-600" />
+                      </div>
+                    )}
+                  </div>
 
                   {/* 삭제 버튼 */}
                   <button
@@ -371,28 +394,11 @@ export default function SharePageBottomBar({
                       handleRemoveFile(item.id);
                     }}
                     disabled={isUploading}
-                    className="absolute -top-1 -right-1 z-10 w-6 h-6 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center disabled:opacity-50 transition-colors"
+                    className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-black/70 hover:bg-black/90 rounded-full flex items-center justify-center disabled:opacity-50 transition-colors shadow-md"
                     aria-label="삭제"
                   >
                     <X className="w-4 h-4 text-white" />
                   </button>
-
-                  {/* 상태 표시 */}
-                  {item.uploadStatus === 'uploading' && (
-                    <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
-                      <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
-                    </div>
-                  )}
-                  {item.uploadStatus === 'success' && (
-                    <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-tl-lg flex items-center justify-center">
-                      <CheckCircle2 className="w-3 h-3 text-white" />
-                    </div>
-                  )}
-                  {item.uploadStatus === 'failed' && (
-                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
-                      <XCircle className="w-4 h-4 text-red-600" />
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
