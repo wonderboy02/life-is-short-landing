@@ -7,7 +7,7 @@ import ShareLanding from '@/components/share/ShareLanding';
 import ServiceIntro from '@/components/share/ServiceIntroModal';
 import FirstVisitGuideModal from '@/components/share/FirstVisitGuideModal';
 import DevTools from '@/components/dev/DevTools';
-import FixedBottomBar from '@/components/FixedBottomBar';
+import SharePageBottomBar from '@/components/share/SharePageBottomBar';
 import { usePhotos } from '@/hooks/use-photos';
 import { useTimer } from '@/hooks/use-timer';
 import { useScrollToSection } from '@/hooks/use-scroll-to-section';
@@ -239,7 +239,7 @@ export default function SharePageClient({
       </section>
 
       {/* Fixed Bottom Bar */}
-      <FixedBottomBar
+      <SharePageBottomBar
         groupId={groupId}
         token={token}
         onRefetch={handleUploadSuccess}

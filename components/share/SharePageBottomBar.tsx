@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
 import UploaderDialog from '@/components/share/UploaderDialog';
 import ImageViewerModal from '@/components/share/ImageViewerModal';
+import KakaoChannelChatButton from '@/components/channel/KakaoChannelChatButton';
 
 type UploadStatus = 'pending' | 'uploading' | 'success' | 'failed';
 
@@ -26,7 +27,7 @@ interface ButtonConfig {
   disabled?: boolean;
 }
 
-interface FixedBottomBarProps {
+interface SharePageBottomBarProps {
   /**
    * 그룹 ID
    */
@@ -53,14 +54,14 @@ interface FixedBottomBarProps {
   onHeightChange?: (height: number) => void;
 }
 
-export default function FixedBottomBar({
+export default function SharePageBottomBar({
   groupId,
   token,
   onRefetch,
   onPhotoUploaded,
   secondaryButton,
   onHeightChange,
-}: FixedBottomBarProps) {
+}: SharePageBottomBarProps) {
   // 상태 관리
   const [selectedFiles, setSelectedFiles] = useState<FileWithDescription[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -403,34 +404,68 @@ export default function FixedBottomBar({
         {/* 버튼 영역 */}
         <div className="px-4 py-3">
           <div className="space-y-2">
-            {/* Primary 버튼 */}
-            <Button
-              onClick={handlePrimaryClick}
-              disabled={isUploading}
-              size="lg"
-              className="w-full"
-            >
-              {isUploading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  추억을 저장하는 중...
-                </>
-              ) : (
-                primaryButtonText
-              )}
-            </Button>
+            {secondaryButton ? (
+              <>
+                {/* Secondary 버튼이 있을 때: Primary는 전체 너비, Secondary와 카카오톡은 같은 줄 */}
+                {/* Primary 버튼 */}
+                <Button
+                  onClick={handlePrimaryClick}
+                  disabled={isUploading}
+                  size="lg"
+                  className="w-full"
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      추억을 저장하는 중...
+                    </>
+                  ) : (
+                    primaryButtonText
+                  )}
+                </Button>
 
-            {/* Secondary 버튼 */}
-            {secondaryButton && (
-              <Button
-                onClick={secondaryButton.onClick}
-                disabled={secondaryButton.disabled || isUploading}
-                size="lg"
-                variant={secondaryButton.disabled ? 'outline' : 'default'}
-                className="w-full"
-              >
-                {secondaryButton.text}
-              </Button>
+                {/* Secondary 버튼 행 - 카카오톡 + Secondary */}
+                <div className="flex gap-2">
+                  {/* 카카오톡 1:1 상담 버튼 */}
+                  <KakaoChannelChatButton size="lg" />
+
+                  {/* Secondary 버튼 */}
+                  <Button
+                    onClick={secondaryButton.onClick}
+                    disabled={secondaryButton.disabled || isUploading}
+                    size="lg"
+                    variant={secondaryButton.disabled ? 'outline' : 'default'}
+                    className="flex-1"
+                  >
+                    {secondaryButton.text}
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Secondary 버튼이 없을 때: 카카오톡 + Primary */}
+                <div className="flex gap-2">
+                  {/* 카카오톡 1:1 상담 버튼 */}
+                  <KakaoChannelChatButton size="lg" />
+
+                  {/* Primary 버튼 */}
+                  <Button
+                    onClick={handlePrimaryClick}
+                    disabled={isUploading}
+                    size="lg"
+                    className="flex-1"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        추억을 저장하는 중...
+                      </>
+                    ) : (
+                      primaryButtonText
+                    )}
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         </div>

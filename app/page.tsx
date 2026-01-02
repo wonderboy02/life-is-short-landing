@@ -11,7 +11,7 @@ import BrandStory from '@/components/landing/BrandStory';
 import PricingWithDialog from '@/components/landing/PricingWithDialog';
 import PageLoadLogger from '@/components/landing/PageLoadLogger';
 import FamilyCollaborationSection from '@/components/landing/FamilyCollaborationSection';
-import FixedBottomBar from '@/components/FixedBottomBar';
+import LandingBottomBar from '@/components/landing/LandingBottomBar';
 
 // Heavy components - lazy load
 const ReviewsSection = dynamic(() => import('@/components/landing/ReviewsSection'), {
@@ -65,7 +65,7 @@ export default function Home() {
 
       {/* Fixed Bottom Bar - Only show when CTA is visible */}
       {showBottomBar && (
-        <FixedBottomBar
+        <LandingBottomBar
           primaryButton={{
             text: "지금 바로 신청하기",
             onClick: scrollToPricing,
