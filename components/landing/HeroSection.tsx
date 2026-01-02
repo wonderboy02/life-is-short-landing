@@ -180,9 +180,10 @@ export default function HeroSection({ onShowCTA }: HeroSectionProps) {
               const translateX = scrollProgress * (-deltaCol * cellSize);
               const translateY = scrollProgress * (-deltaRow * cellSize + moveDistance);
 
-              // opacity 계산: 0까지 완전히 사라짐
-              const opacity =
-                scrollProgress < 0.6 ? 1 : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4);
+              // opacity 계산: 한번 사라지면 영구적으로 0 유지
+              const opacity = photosDisappeared
+                ? 0
+                : (scrollProgress < 0.6 ? 1 : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4));
               const scale = 1 - scrollProgress * 0.1;
 
               return (
