@@ -43,6 +43,38 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [showPrivacyDialog, setShowPrivacyDialog] = useState(false);
 
+  // Input focus/click 시 자동 스크롤
+  useEffect(() => {
+    const scrollToInput = (target: HTMLElement) => {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 350); // 키보드 애니메이션 대기
+    };
+
+    const handleFocus = (e: FocusEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        scrollToInput(e.target);
+      }
+    };
+
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
+        scrollToInput(target);
+      }
+    };
+
+    if (open) {
+      document.addEventListener('focusin', handleFocus);
+      document.addEventListener('click', handleClick);
+    }
+
+    return () => {
+      document.removeEventListener('focusin', handleFocus);
+      document.removeEventListener('click', handleClick);
+    };
+  }, [open]);
+
   const {
     register,
     handleSubmit,
@@ -150,7 +182,7 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className="flex h-[85vh] max-h-[700px] w-full max-w-none flex-col overflow-hidden rounded-none p-0 sm:max-w-md sm:rounded-lg"
+          className="flex h-[75dvh] max-h-[650px] w-full max-w-none flex-col overflow-hidden rounded-none p-0 sm:h-[80vh] sm:max-w-md sm:rounded-lg"
           showCloseButton={false}
         >
           {/* Header */}
@@ -198,10 +230,10 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.3 }}
-                    className="absolute inset-0 flex flex-col px-6 pt-2 pb-6"
+                    className="absolute inset-0 flex flex-col overflow-y-auto px-6 pt-2 pb-4"
                   >
                     {/* Preview Image with Caption */}
-                    <div className="mb-6 flex flex-col items-center gap-2">
+                    <div className="mb-4 flex flex-col items-center gap-2">
                       <p className="text-xs font-medium text-neutral-600">
                         작성해주신 닉네임은 이렇게 가족에게 보여집니다!
                       </p>
@@ -209,9 +241,9 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
                         <Image
                           src="/create_group_name.png"
                           alt="가족들이 보게 될 화면 미리보기"
-                          width={200}
-                          height={200}
-                          className="h-auto w-48"
+                          width={160}
+                          height={160}
+                          className="h-auto w-32"
                         />
                       </div>
                     </div>
@@ -255,10 +287,10 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.3 }}
-                    className="absolute inset-0 flex flex-col overflow-y-auto px-6 pt-2 pb-6"
+                    className="absolute inset-0 flex flex-col overflow-y-auto px-6 pt-2 pb-4"
                   >
                     {/* Preview Image with Caption */}
-                    <div className="mb-6 flex flex-col items-center gap-2">
+                    <div className="mb-4 flex flex-col items-center gap-2">
                       <p className="text-xs font-medium text-neutral-600">
                         가족들이 보게 될 화면이에요
                       </p>
@@ -266,9 +298,9 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
                         <Image
                           src="/create_group_coment.png"
                           alt="가족들이 보게 될 화면 미리보기"
-                          width={200}
-                          height={200}
-                          className="h-auto w-48"
+                          width={160}
+                          height={160}
+                          className="h-auto w-32"
                         />
                       </div>
                     </div>
@@ -330,7 +362,7 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
                     animate="center"
                     exit="exit"
                     transition={{ duration: 0.3 }}
-                    className="absolute inset-0 flex flex-col overflow-y-auto px-6 py-6"
+                    className="absolute inset-0 flex flex-col overflow-y-auto px-6 pt-2 pb-4"
                   >
                     <div className="space-y-4">
                       {/* 연락처 */}

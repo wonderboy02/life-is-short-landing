@@ -18,7 +18,6 @@ export default function HeroSection({ onShowCTA }: HeroSectionProps) {
   const [showCTA, setShowCTA] = useState(false);
   const [ctaOpacity, setCtaOpacity] = useState(0);
   const [indicatorOpacity, setIndicatorOpacity] = useState(1);
-  const [showPhotoGhost, setShowPhotoGhost] = useState(false);
 
   const heroSectionRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -116,17 +115,6 @@ export default function HeroSection({ onShowCTA }: HeroSectionProps) {
     }
   }, [showVideo, onShowCTA]);
 
-  // Show photo ghost 5 seconds after video appears
-  useEffect(() => {
-    if (!showVideo) return;
-
-    const timer = setTimeout(() => {
-      setShowPhotoGhost(true);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, [showVideo]);
-
   // Fade out indicator when animation completes
   useEffect(() => {
     if (scrollProgress >= 0.9) {
@@ -152,8 +140,27 @@ export default function HeroSection({ onShowCTA }: HeroSectionProps) {
         </div>
 
         {/* Photo Grid */}
-        <div ref={gridRef} className="mx-auto mb-16" style={{ maxWidth: '350px' }}>
-          <div className="grid grid-cols-3 gap-2">
+        <div ref={gridRef} className="mx-auto mb-16" style={{ maxWidth: '350px', position: 'relative' }}>
+          {/* 하단 레이어: 고정된 흐린 사진 (처음부터 끝까지 존재) */}
+          <div className="grid grid-cols-3 gap-2" style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+            {Array.from({ length: 9 }).map((_, index) => (
+              <div
+                key={`ghost-${index}`}
+                className="aspect-square overflow-hidden rounded-lg bg-neutral-100"
+                style={{ opacity: 0.08 }}
+              >
+                <img
+                  src={`/hero/${index + 1}.webp`}
+                  alt=""
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* 상단 레이어: 동적으로 움직이는 사진 */}
+          <div className="grid grid-cols-3 gap-2" style={{ position: 'relative', zIndex: 1 }}>
             {Array.from({ length: 9 }).map((_, index) => {
               // Row and column position
               const row = Math.floor(index / 3);
@@ -169,62 +176,19 @@ export default function HeroSection({ onShowCTA }: HeroSectionProps) {
               const cellSize = 110;
               const moveDistance = 300;
 
-              // 8.6초 후: 초기 위치에 희미하게 표시 (transition 없이 즉시)
-              if (showPhotoGhost) {
-                return (
-                  <div
-                    key={index}
-                    className="aspect-square overflow-hidden rounded-lg bg-neutral-100"
-                    style={{
-                      transform: 'translate(0px, 0px) scale(1)',
-                      opacity: 0.08,
-                      transition: 'none',
-                    }}
-                  >
-                    <img
-                      src={`/hero/${index + 1}.webp`}
-                      alt={`Photo ${index + 1}`}
-                      loading={index < 3 ? 'eager' : 'lazy'}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                );
-              }
-
-              // 3.6초 후 영상이 뜬 후: opacity 0으로 고정 (스크롤 무시)
-              if (showVideo) {
-                return (
-                  <div
-                    key={index}
-                    className="aspect-square overflow-hidden rounded-lg bg-neutral-100"
-                    style={{
-                      transform: 'translate(0px, 0px) scale(1)',
-                      opacity: 0,
-                      transition: 'none',
-                    }}
-                  >
-                    <img
-                      src={`/hero/${index + 1}.webp`}
-                      alt={`Photo ${index + 1}`}
-                      loading={index < 3 ? 'eager' : 'lazy'}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                );
-              }
-
-              // 스크롤 중: 스크롤 기반 애니메이션
+              // 스크롤 기반 애니메이션
               const translateX = scrollProgress * (-deltaCol * cellSize);
               const translateY = scrollProgress * (-deltaRow * cellSize + moveDistance);
 
-              // opacity 계산: 0까지 완전히 사라짐
-              const opacity =
-                scrollProgress < 0.6 ? 1 : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4);
+              // opacity 계산: 한번 사라지면 영구적으로 0 유지
+              const opacity = photosDisappeared
+                ? 0
+                : (scrollProgress < 0.6 ? 1 : Math.max(0, 1 - (scrollProgress - 0.6) / 0.4));
               const scale = 1 - scrollProgress * 0.1;
 
               return (
                 <div
-                  key={index}
+                  key={`active-${index}`}
                   className="aspect-square overflow-hidden rounded-lg bg-neutral-100"
                   style={{
                     transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,

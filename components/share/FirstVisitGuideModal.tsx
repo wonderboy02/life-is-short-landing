@@ -109,27 +109,15 @@ export default function FirstVisitGuideModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] max-w-sm overflow-hidden rounded-lg p-3 sm:w-[90vw] sm:p-4 md:p-6">
         <DialogHeader className="min-w-0">
-          <DialogTitle className="font-display text-xl font-bold text-neutral-900 md:text-2xl">
+          <DialogTitle className="font-display pt-2 text-xl font-bold text-neutral-900 md:text-2xl">
             추억 앨범이 만들어졌어요
           </DialogTitle>
           <DialogDescription className="text-sm text-neutral-600 md:text-base">
-            가족들과 함께 소중한 순간들을 모아보세요
+            사진을 가족들과 함께 모아보세요!
           </DialogDescription>
         </DialogHeader>
 
         <div className="mt-4 min-w-0 space-y-4 md:mt-6 md:space-y-6">
-          {/* 안내사항 */}
-          <div className="min-w-0 rounded-xl border border-neutral-200 bg-neutral-50 p-2.5 sm:p-3 md:p-5">
-            <div className="min-w-0 space-y-2 md:space-y-3">
-              <div className="space-y-2 text-xs leading-relaxed text-neutral-600 md:space-y-2.5 md:text-sm">
-                <p className="break-words">
-                  링크를 가족들과 나눠보세요. 더 많은 사진이 모일수록, 부모님의 청춘이 더 생생하게
-                  되살아나요.
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* URL 표시 및 복사 */}
           <div className="min-w-0 space-y-2 md:space-y-3">
             <div className="flex items-center gap-2">
@@ -234,7 +222,7 @@ export default function FirstVisitGuideModal({
 
           {/* 추가 안내 */}
           <p className="px-1 pt-1 text-center text-[10px] break-words text-neutral-400 md:text-xs">
-            링크는 오른쪽 위 버튼에서 다시 확인할 수 있어요
+            앨범으로 돌아오기 위한 링크이므로 꼭 저장해 두세요!
           </p>
         </div>
       </DialogContent>

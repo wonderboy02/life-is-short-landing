@@ -10,6 +10,7 @@ import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from '@/lib/validations/schemas';
 import UploaderDialog from '@/components/share/UploaderDialog';
 import ImageViewerModal from '@/components/share/ImageViewerModal';
 import KakaoChannelChatButton from '@/components/channel/KakaoChannelChatButton';
+import { supabase } from '@/lib/supabase/client';
 
 type UploadStatus = 'pending' | 'uploading' | 'success' | 'failed';
 
@@ -217,18 +218,51 @@ export default function SharePageBottomBar({
       const uploadPromises = selectedFiles.map(async (item) => {
         const { id, file } = item;
 
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('groupId', groupId);
-        formData.append('uploaderNickname', nickname.trim());
-
         try {
-          const response = await fetch('/api/photos/upload', {
+          // 1. 파일명 생성
+          const photoId = crypto.randomUUID();
+          const extension = file.name.split('.').pop() || 'jpg';
+          const storagePath = `${groupId}/${photoId}_original.${extension}`;
+          const shortId = photoId.substring(0, 8);
+          const fileName = `photo_${shortId}.${extension}`;
+
+          // 2. Supabase Storage에 직접 업로드
+          const { error: uploadError } = await supabase.storage
+            .from('group-photos')
+            .upload(storagePath, file, {
+              contentType: file.type,
+              upsert: false,
+            });
+
+          if (uploadError) {
+            console.error(`${file.name} Storage 업로드 오류:`, uploadError);
+            setSelectedFiles((prev) =>
+              prev.map((f) =>
+                f.id === id
+                  ? { ...f, uploadStatus: 'failed' as UploadStatus, error: uploadError.message }
+                  : f
+              )
+            );
+            return { success: false, fileName: file.name, error: uploadError.message };
+          }
+
+          // 3. 메타데이터 API 호출
+          const response = await fetch('/api/photos/metadata', {
             method: 'POST',
             headers: {
+              'Content-Type': 'application/json',
               Authorization: `Bearer ${token}`,
             },
-            body: formData,
+            body: JSON.stringify({
+              photoId,
+              groupId,
+              storagePath,
+              fileName,
+              fileSize: file.size,
+              mimeType: file.type,
+              uploaderNickname: nickname.trim(),
+              description: null,
+            }),
           });
 
           const result = await response.json();
@@ -249,7 +283,9 @@ export default function SharePageBottomBar({
 
             return { success: true, fileName: file.name };
           } else {
-            // 실패 상태로 변경
+            // 메타데이터 저장 실패 시 Storage에서 파일 삭제 (cleanup)
+            await supabase.storage.from('group-photos').remove([storagePath]);
+
             setSelectedFiles((prev) =>
               prev.map((f) =>
                 f.id === id
@@ -261,7 +297,6 @@ export default function SharePageBottomBar({
           }
         } catch (error) {
           console.error(`${file.name} 업로드 오류:`, error);
-          // 실패 상태로 변경
           setSelectedFiles((prev) =>
             prev.map((f) =>
               f.id === id
