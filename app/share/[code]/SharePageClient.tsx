@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Loader2 } from 'lucide-react';
-import PhotoUpload from '@/components/share/PhotoUpload';
 import PhotoGridClient from './PhotoGridClient';
 import ShareLanding from '@/components/share/ShareLanding';
 import ServiceIntro from '@/components/share/ServiceIntroModal';
@@ -45,7 +44,6 @@ export default function SharePageClient({
   // 사진 관리
   const [refreshKey, setRefreshKey] = useState(0);
   const { photos, isLoading, refetch } = usePhotos(groupId, initialPhotos);
-  const triggerFileSelectRef = useRef<(() => void) | null>(null);
   const photoGridRef = useRef<HTMLDivElement>(null);
 
   // FixedBottomBar 높이 관리
@@ -130,12 +128,6 @@ export default function SharePageClient({
 
   const scrollToPhotos = () => {
     photoGridRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleAddPhotos = () => {
-    if (triggerFileSelectRef.current) {
-      triggerFileSelectRef.current();
-    }
   };
 
   // Secondary 버튼 상태 계산
@@ -230,23 +222,6 @@ export default function SharePageClient({
         />
       </div>
 
-      {/* 사진 업로드 섹션 */}
-      <section className="bg-white py-10 scroll-mt-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-lg mx-auto">
-            <PhotoUpload
-              groupId={groupId}
-              token={token}
-              onUploadSuccess={handleUploadSuccess}
-              onPhotoUploaded={handlePhotoUploaded}
-              onReady={(trigger) => {
-                triggerFileSelectRef.current = trigger;
-              }}
-            />
-          </div>
-        </div>
-      </section>
-
       {/* 사진 그리드 섹션 */}
       <section
         ref={photoGridRef}
@@ -263,10 +238,10 @@ export default function SharePageClient({
 
       {/* Fixed Bottom Bar */}
       <FixedBottomBar
-        primaryButton={{
-          text: '사진 추가하기',
-          onClick: handleAddPhotos,
-        }}
+        groupId={groupId}
+        token={token}
+        onRefetch={handleUploadSuccess}
+        onPhotoUploaded={handlePhotoUploaded}
         secondaryButton={{
           text: secondaryButtonConfig.text,
           onClick: requestVideo,

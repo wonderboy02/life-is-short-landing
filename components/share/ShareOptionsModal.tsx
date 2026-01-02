@@ -63,13 +63,22 @@ export default function ShareOptionsModal({
           objectType: 'feed',
           content: {
             title: messageText,
-            description: url,
+            description: '추억 사진을 함께 모아 영상으로 만들어요',
             imageUrl: imageUrl,
             link: {
               mobileWebUrl: url,
               webUrl: url,
             },
           },
+          buttons: [
+            {
+              title: '사진 모으러 가기',
+              link: {
+                mobileWebUrl: url,
+                webUrl: url,
+              },
+            },
+          ],
         });
         onOpenChange(false);
       } catch (error) {

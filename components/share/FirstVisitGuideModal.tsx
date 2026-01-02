@@ -64,13 +64,22 @@ export default function FirstVisitGuideModal({
           objectType: 'feed',
           content: {
             title: messageText,
-            description: shareUrl,
+            description: '추억 사진을 함께 모아 영상으로 만들어요',
             imageUrl: imageUrl,
             link: {
               mobileWebUrl: shareUrl,
               webUrl: shareUrl,
             },
           },
+          buttons: [
+            {
+              title: '사진 모으러 가기',
+              link: {
+                mobileWebUrl: shareUrl,
+                webUrl: shareUrl,
+              },
+            },
+          ],
         });
       } catch (error) {
         console.error('카카오톡 공유 실패:', error);
