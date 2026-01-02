@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { MessagesSquare } from 'lucide-react';
 import { toast } from 'sonner';
+import { isMobileDevice } from '@/lib/utils/deviceDetection';
 
 interface KakaoChannelChatButtonProps {
   /**
@@ -62,37 +63,44 @@ export default function KakaoChannelChatButton({
 
     setIsLoading(true);
 
-    let appLaunched = false;
+    const isMobile = isMobileDevice();
 
-    // 페이지가 숨겨지면 (앱이 열리면) 성공으로 간주
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        appLaunched = true;
-        setIsLoading(false);
+    if (isMobile) {
+      // 모바일: SDK 사용 (앱 실행 시도)
+      let appLaunched = false;
+
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          appLaunched = true;
+          setIsLoading(false);
+        }
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      try {
+        window.Kakao.Channel.chat({
+          channelPublicId,
+        });
+      } catch (error) {
+        console.error('카카오톡 채팅 SDK 호출 실패:', error);
       }
-    };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+      // 2초 후에도 앱이 실행되지 않았으면 fallback URL로 이동
+      setTimeout(() => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
 
-    try {
-      // SDK로 채팅 시작 시도
-      window.Kakao.Channel.chat({
-        channelPublicId,
-      });
-    } catch (error) {
-      console.error('카카오톡 채팅 SDK 호출 실패:', error);
+        if (!appLaunched) {
+          console.log('앱 실행 실패, fallback URL 사용');
+          const fallbackUrl = `https://pf.kakao.com/${channelPublicId}/chat`;
+          window.location.href = fallbackUrl;
+        }
+      }, 2000);
+    } else {
+      // PC: 바로 웹 URL로 이동
+      const fallbackUrl = `https://pf.kakao.com/${channelPublicId}/chat`;
+      window.location.href = fallbackUrl;
     }
-
-    // 2초 후에도 앱이 실행되지 않았으면 fallback URL로 이동
-    setTimeout(() => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-
-      if (!appLaunched) {
-        console.log('SDK 실패, fallback URL 사용');
-        const fallbackUrl = `https://pf.kakao.com/${channelPublicId}/chat`;
-        window.location.href = fallbackUrl;
-      }
-    }, 2000);
   };
 
   // 사이즈별 스타일 (기본값, className으로 오버라이드 가능)
