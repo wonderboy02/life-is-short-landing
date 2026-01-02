@@ -17,12 +17,14 @@ interface FirstVisitGuideModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   shareUrl: string;
+  creatorNickname?: string;
 }
 
 export default function FirstVisitGuideModal({
   open,
   onOpenChange,
   shareUrl,
+  creatorNickname,
 }: FirstVisitGuideModalProps) {
   const [copied, setCopied] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -53,26 +55,22 @@ export default function FirstVisitGuideModal({
         const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
         const imageUrl = `${baseUrl}/favicon/logo.png`;
 
+        // 메시지 텍스트 생성
+        const messageText = creatorNickname
+          ? `${creatorNickname}과 함께 사진을 모아주세요!`
+          : '함께 사진을 모아주세요!';
+
         window.Kakao.Share.sendDefault({
           objectType: 'feed',
           content: {
-            title: '📸 추억 앨범',
-            description: '함께 사진을 추가해보세요!',
+            title: messageText,
+            description: shareUrl,
             imageUrl: imageUrl,
             link: {
               mobileWebUrl: shareUrl,
               webUrl: shareUrl,
             },
           },
-          buttons: [
-            {
-              title: '사진 추가하기',
-              link: {
-                mobileWebUrl: shareUrl,
-                webUrl: shareUrl,
-              },
-            },
-          ],
         });
       } catch (error) {
         console.error('카카오톡 공유 실패:', error);

@@ -192,6 +192,7 @@ export default function SharePageClient({
           }
         }}
         shareUrl={shareUrl}
+        creatorNickname={creatorNickname}
       />
 
       {/* 개발 도구 (개발 환경 전용) */}

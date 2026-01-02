@@ -13,6 +13,7 @@ interface ShareOptionsModalProps {
   url: string;
   title?: string;
   text?: string;
+  creatorNickname?: string;
 }
 
 export default function ShareOptionsModal({
@@ -21,6 +22,7 @@ export default function ShareOptionsModal({
   url,
   title = '추억 앨범',
   text = '함께 사진을 추가해보세요!',
+  creatorNickname,
 }: ShareOptionsModalProps) {
   const [copied, setCopied] = useState(false);
   const [isKakaoReady, setIsKakaoReady] = useState(false);
@@ -52,26 +54,22 @@ export default function ShareOptionsModal({
         const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
         const imageUrl = `${baseUrl}/favicon/logo.png`;
 
+        // 메시지 텍스트 생성
+        const messageText = creatorNickname
+          ? `${creatorNickname}과 함께 사진을 모아주세요!`
+          : '함께 사진을 모아주세요!';
+
         window.Kakao.Share.sendDefault({
           objectType: 'feed',
           content: {
-            title: '📸 ' + title,
-            description: text,
+            title: messageText,
+            description: url,
             imageUrl: imageUrl,
             link: {
               mobileWebUrl: url,
               webUrl: url,
             },
           },
-          buttons: [
-            {
-              title: '사진 추가하기',
-              link: {
-                mobileWebUrl: url,
-                webUrl: url,
-              },
-            },
-          ],
         });
         onOpenChange(false);
       } catch (error) {
@@ -139,7 +137,7 @@ export default function ShareOptionsModal({
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-400">
                 <MessageCircle className="h-5 w-5 text-amber-900" />
               </div>
-              <span className="font-medium">카카오톡으로 링크 보내기</span>
+              <span className="font-medium">카카오톡으로 사진 요청하기</span>
             </Button>
           )}
 

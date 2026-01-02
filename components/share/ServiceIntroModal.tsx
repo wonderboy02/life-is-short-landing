@@ -70,6 +70,7 @@ export default function ServiceIntro({
                     text="함께 사진을 추가해보세요!"
                     buttonText="사진 요청하기"
                     showIcon={false}
+                    creatorNickname={creatorNickname}
                   />
                 </div>
                 <p className="text-xs leading-relaxed text-neutral-300">
