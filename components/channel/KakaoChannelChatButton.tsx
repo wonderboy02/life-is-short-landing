@@ -85,10 +85,11 @@ export default function KakaoChannelChatButton({
     lg: 'h-10 w-10',
   };
 
+  // 아이콘 크기 - globals.css의 폰트 크기 비율(13:16)과 동일하게 조정
   const iconSizes = {
-    sm: 'h-4 w-4',
-    default: 'h-4 w-4',
-    lg: 'h-4 w-4',
+    sm: 'w-[clamp(0.975rem,3.72vw,1.2rem)] h-[clamp(0.975rem,3.72vw,1.2rem)]',
+    default: 'w-[clamp(1.09rem,3.72vw,1.35rem)] h-[clamp(1.09rem,3.72vw,1.35rem)]',
+    lg: 'w-[clamp(1.22rem,3.72vw,1.5rem)] h-[clamp(1.22rem,3.72vw,1.5rem)]',
   };
 
   if (!isKakaoReady) {
