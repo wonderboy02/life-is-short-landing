@@ -167,7 +167,7 @@ export default function CreateGroupDialog({ open, onOpenChange }: CreateGroupDia
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className="flex h-auto max-h-[70dvh] w-full max-w-none flex-col overflow-hidden rounded-none p-0 sm:max-h-[600px] sm:max-w-md sm:rounded-lg"
+          className="flex h-[75dvh] max-h-[650px] w-full max-w-none flex-col overflow-hidden rounded-none p-0 sm:h-[80vh] sm:max-w-md sm:rounded-lg"
           showCloseButton={false}
         >
           {/* Header */}
