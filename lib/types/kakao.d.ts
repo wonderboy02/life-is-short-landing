@@ -26,6 +26,10 @@ declare global {
             };
           }>;
         }) => void;
+        sendCustom: (settings: {
+          templateId: number;
+          templateArgs?: Record<string, string>;
+        }) => void;
       };
     };
   }

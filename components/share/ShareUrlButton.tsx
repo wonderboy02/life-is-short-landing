@@ -12,6 +12,7 @@ interface ShareUrlButtonProps {
   buttonText?: string;
   showIcon?: boolean;
   creatorNickname?: string;
+  shareCode?: string;
 }
 
 export default function ShareUrlButton({
@@ -21,6 +22,7 @@ export default function ShareUrlButton({
   buttonText = '공유',
   showIcon = true,
   creatorNickname,
+  shareCode,
 }: ShareUrlButtonProps) {
   const [showModal, setShowModal] = useState(false);
 
@@ -43,6 +45,7 @@ export default function ShareUrlButton({
         title={title}
         text={text}
         creatorNickname={creatorNickname}
+        shareCode={shareCode}
       />
     </>
   );

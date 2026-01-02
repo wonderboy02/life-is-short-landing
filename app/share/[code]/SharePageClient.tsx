@@ -185,6 +185,7 @@ export default function SharePageClient({
         }}
         shareUrl={shareUrl}
         creatorNickname={creatorNickname}
+        shareCode={shareCode}
       />
 
       {/* 개발 도구 (개발 환경 전용) */}
@@ -209,6 +210,7 @@ export default function SharePageClient({
         creatorNickname={creatorNickname}
         comment={comment}
         shareUrl={shareUrl}
+        shareCode={shareCode}
       />
 
       {/* 랜딩 섹션 */}

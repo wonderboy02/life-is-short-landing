@@ -11,13 +11,14 @@ import {
 import { Button } from '@/components/ui/button';
 import { Copy, Check, Link2, MessageCircle, Share2, ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
-import { isKakaoTalkWebView, isInAppBrowser } from '@/lib/utils';
+import { isKakaoTalkWebView, isInAppBrowser, formatNameWithParticle } from '@/lib/utils';
 
 interface FirstVisitGuideModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   shareUrl: string;
   creatorNickname?: string;
+  shareCode?: string;
 }
 
 export default function FirstVisitGuideModal({
@@ -25,6 +26,7 @@ export default function FirstVisitGuideModal({
   onOpenChange,
   shareUrl,
   creatorNickname,
+  shareCode,
 }: FirstVisitGuideModalProps) {
   const [copied, setCopied] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
@@ -52,34 +54,19 @@ export default function FirstVisitGuideModal({
   const handleKakaoShare = () => {
     if (window.Kakao && window.Kakao.isInitialized()) {
       try {
-        const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-        const imageUrl = `${baseUrl}/favicon/logo.png`;
+        // 메시지 제목 생성 (받침에 따라 "과"/"와" 선택)
+        const messageTitle = creatorNickname
+          ? `${formatNameWithParticle(creatorNickname)} 함께 옛날 사진 모으기`
+          : '함께 옛날 사진 모으기';
 
-        // 메시지 텍스트 생성
-        const messageText = creatorNickname
-          ? `${creatorNickname}과 함께 사진을 모아주세요!`
-          : '함께 사진을 모아주세요!';
-
-        window.Kakao.Share.sendDefault({
-          objectType: 'feed',
-          content: {
-            title: messageText,
-            description: '추억 사진을 함께 모아 영상으로 만들어요',
-            imageUrl: imageUrl,
-            link: {
-              mobileWebUrl: shareUrl,
-              webUrl: shareUrl,
-            },
+        // 커스텀 템플릿 사용
+        window.Kakao.Share.sendCustom({
+          templateId: 127469,
+          templateArgs: {
+            CODE: shareCode || '',
+            message_title: messageTitle,
+            message_content: '옛날 사진을 모아서 영상으로 감동을 전합니다.',
           },
-          buttons: [
-            {
-              title: '사진 모으러 가기',
-              link: {
-                mobileWebUrl: shareUrl,
-                webUrl: shareUrl,
-              },
-            },
-          ],
         });
       } catch (error) {
         console.error('카카오톡 공유 실패:', error);

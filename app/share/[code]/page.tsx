@@ -121,6 +121,7 @@ export default async function SharePage({ params }: Props) {
                 buttonText="사진 요청하기"
                 showIcon={false}
                 creatorNickname={groupData.creatorNickname}
+                shareCode={code}
               />
             </div>
           </div>

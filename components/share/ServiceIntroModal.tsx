@@ -8,6 +8,7 @@ interface ServiceIntroProps {
   creatorNickname: string;
   comment: string;
   shareUrl: string;
+  shareCode: string;
 }
 
 export default function ServiceIntro({
@@ -15,6 +16,7 @@ export default function ServiceIntro({
   creatorNickname,
   comment,
   shareUrl,
+  shareCode,
 }: ServiceIntroProps) {
   return (
     <section className="relative flex min-h-[100dvh] flex-col bg-neutral-900">
@@ -71,6 +73,7 @@ export default function ServiceIntro({
                     buttonText="사진 요청하기"
                     showIcon={false}
                     creatorNickname={creatorNickname}
+                    shareCode={shareCode}
                   />
                 </div>
                 <p className="text-xs leading-relaxed text-neutral-300">
