@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { MessageCircleQuestion } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface KakaoChannelChatButtonProps {
@@ -105,7 +105,7 @@ export default function KakaoChannelChatButton({
         } ${className}`}
         aria-label="카카오톡 1:1 상담"
       >
-        <MessageSquare className={iconSizes[size]} />
+        <MessageCircleQuestion className={iconSizes[size]} />
         <span>1:1 상담</span>
       </button>
     );
@@ -115,12 +115,12 @@ export default function KakaoChannelChatButton({
   return (
     <button
       onClick={handleClick}
-      className={`flex items-center justify-center rounded-lg border border-neutral-900 transition-colors duration-200 hover:bg-neutral-50 active:bg-neutral-100 ${
+      className={`flex items-center justify-center rounded-lg border border-neutral-900 transition-colors duration-200 hover:bg-neutral-50 active:bg-neutral-100 shrink-0 ${
         isLoading ? 'bg-neutral-200 pointer-events-none' : 'bg-white'
       } ${sizeClasses[size]} ${className}`}
       aria-label="카카오톡 1:1 상담"
     >
-      <MessageSquare className={`${iconSizes[size]} text-neutral-900`} />
+      <MessageCircleQuestion className={`${iconSizes[size]} text-neutral-900`} />
     </button>
   );
 }

@@ -433,7 +433,7 @@ export default function SharePageBottomBar({
                 {/* Secondary 버튼 행 - 카카오톡 + Secondary */}
                 <div className="flex gap-2">
                   {/* 카카오톡 1:1 상담 버튼 */}
-                  <KakaoChannelChatButton size="lg" className="h-12" />
+                  <KakaoChannelChatButton size="lg" className="h-12 w-12" />
 
                   {/* Secondary 버튼 */}
                   <Button
@@ -452,7 +452,7 @@ export default function SharePageBottomBar({
                 {/* Secondary 버튼이 없을 때: 카카오톡 + Primary */}
                 <div className="flex gap-2">
                   {/* 카카오톡 1:1 상담 버튼 */}
-                  <KakaoChannelChatButton size="lg" className="h-12" />
+                  <KakaoChannelChatButton size="lg" className="h-12 w-12" />
 
                   {/* Primary 버튼 */}
                   <Button
