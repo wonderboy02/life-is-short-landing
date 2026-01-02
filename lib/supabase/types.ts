@@ -61,6 +61,28 @@ export interface PhotoUploadResponse {
   url: string;
 }
 
+/**
+ * 사진 메타데이터 저장 요청 (클라이언트 → 서버)
+ */
+export interface PhotoMetadataRequest {
+  photoId: string;
+  groupId: string;
+  storagePath: string;
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+  uploaderNickname: string;
+  description?: string | null;
+}
+
+/**
+ * 사진 메타데이터 저장 응답 (서버 → 클라이언트)
+ */
+export interface PhotoMetadataResponse {
+  photoId: string;
+  url: string;
+}
+
 export interface PhotoListResponse {
   photos: PhotoWithUrl[];
   total: number;
